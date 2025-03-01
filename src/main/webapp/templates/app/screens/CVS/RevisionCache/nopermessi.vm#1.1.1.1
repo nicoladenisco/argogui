@@ -1,0 +1,24 @@
+$page.setTitle($I.I("Permessi insufficienti"))
+$data.getTemplateInfo().setLayoutTemplate("Default.vm")
+
+<table>
+  <tr>
+    <td>
+      <img src="$ui.image('AdAwareSE.png')" align="left" border="0"
+           alt="SECURITY ERROR" title="SECURITY ERROR">
+    </td>
+    <td>
+      $I.I("<h2>SECURITY ERROR</h2>
+      <p>Si sta tentando di accedere ad una area riservata.</p>
+      <p>
+        I permessi posseduti non sono sufficienti ad attivare
+        la funzionalita' richiesta.<br>
+        Per ulteriori dettagli rivolgersi all'amministratore di sistema.
+      </p>")
+      <p>
+        $I.I("Permessi non posseduti:") <b>$data.getSession().getAttribute("LAST_PERM_KEY")</b>
+      </p>
+    </td>
+  </tr>
+</table>
+

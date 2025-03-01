@@ -1,59 +1,72 @@
-## Licensed to the Apache Software Foundation (ASF) under one
-## or more contributor license agreements.  See the NOTICE file
-## distributed with this work for additional information
-## regarding copyright ownership.  The ASF licenses this file
-## to you under the Apache License, Version 2.0 (the
-## "License"); you may not use this file except in compliance
-## with the License.  You may obtain a copy of the License at
-##
-##   http://www.apache.org/licenses/LICENSE-2.0
-##
-## Unless required by applicable law or agreed to in writing,
-## software distributed under the License is distributed on an
-## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-## KIND, either express or implied.  See the License for the
-## specific language governing permissions and limitations
-## under the License.
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    $navigation.setTemplate("CommonHead.vm")
 
-$page.addStyleSheet("http://www.w3schools.com/lib/w3.css")
-$page.addStyleSheet("http://www.w3schools.com/lib/w3-theme-blue-grey.css")
-$page.setTitle("Sample Apache Turbine Application")
-$page.addScript($ui.getScript("page.js"))
-<html lang="$l10n.Locale">
-<meta http-equiv="Content-type" content="$data.ContentType" />
+    <SCRIPT type="text/javascript">
+      $data.getFormScript()
+    </SCRIPT>
+  </head>
 
-#TurbineHtmlHead()
+  <body role="document">
 
-<link href="$ui.getStylecss()" rel="stylesheet" type="text/css" />
+    $navigation.setTemplate("MenuNew.vm")
 
-<body #TurbineHtmlBodyAttributes() class="w3-theme-l4">
+    <br><br><br>
+    <div class="container" role="main">
 
-	<div class="w3-wrapper">
-
-    <!-- Header -->
-    <header class="w3-container w3-center w3-padding-32 w3-theme">
-          <img class="w3-right" src="$ui.image('turbine4-project.png')" /> 
-          #if ( $data.getUser().hasLoggedIn() ) 
-            #set ( $u = $data.getUser() )
-            <div class="w3-right">
-          <h5>Hello $!u.FirstName</h5>
-            </div>
-      #end
-    </header>
-
-        <!-- Default Menu -->
-        $navigation.setTemplate("/Menu.vm")
-
-        <!-- Content -->
-        <div class="w3-left w3-padding" id="content">
-                $screen_placeholder
+      #if($allarme)
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          <div id="allarme" class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+              <tr>
+                <td class="main-alert alert-info" align="center" valign="middle" width="130">
+                  <a href="$link.setPage('maint.vm')?type=maint-allarmi">
+                    <img src="$ui.image('error.png')" border="0">
+                  </a>
+                </td>
+                <td class="main-alert alert-info" align="left" valign="top">
+                  $allarme
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
+      </div>
+      #end
 
-        <!-- Footer -->
-        <footer class="w3-bottom">
-			<p>Powered by <img src="$ui.image('pb-turbine100px.png')"/></p>
-        </footer>
-	</div>
+      #if($data.getMessage())
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          <div id="messaggio" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+              <tr>
+                <td class="main-alert alert-danger" align="center" valign="middle" width="130">
+                  <img src="$ui.image('alert.png')" border="0">
+                </td>
+                <td class="main-alert alert-danger" align="left" valign="top">
+                  $data.getMessage()
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      #end
 
-</body>
+      $screen_placeholder
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          $navigation.setTemplate("DefaultBottom.vm")
+        </div>
+      </div>
+
+    </div>
+  </body>
 </html>
+
+

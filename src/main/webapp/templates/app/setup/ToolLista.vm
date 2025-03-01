@@ -1,0 +1,17 @@
+<!-- INIZIO ToolLista.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function apriFinestraEdit_$type(url, tipo)
+  {
+    apriFinestraEdit(url, tipo);
+  }
+
+</SCRIPT>
+
+
+<form name="fo$type" method="post" action="$baseUri">
+  $phtml
+</form>
+
+<!-- FINE ToolLista.vm -->

@@ -19,6 +19,9 @@ import org.argogui.services.dcmsrv.DicomServer;
 import org.argogui.services.dcmsrv.StudyResultBean;
 import org.argogui.utils.SU;
 import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspWriter;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.sirio6.beans.BeanFactory;
 import org.sirio6.utils.CoreRunData;
@@ -89,5 +92,10 @@ public class VisualizzatoreBean extends ArgoBaseBean
 
     mapParams.put(studyUID, ctx);
     return ctx;
+  }
+
+  public static void runJsp(HttpServletRequest request, HttpServletResponse response, JspWriter writer)
+     throws Exception
+  {
   }
 }

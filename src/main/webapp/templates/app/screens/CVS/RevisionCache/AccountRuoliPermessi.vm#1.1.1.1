@@ -1,0 +1,105 @@
+$page.setTitle($I.I("Account associazione ruoli/permessi"))
+
+<!-- INIZIO AccountRuoliPermessi.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function esportaPermessi()
+  {
+    var urlwin = "$content.getURI('/xml/exportPermessi.jsp')";
+    openStandardDialog(urlwin);
+  }
+
+  function importaPermessi()
+  {
+    var urlwin = "$link.setPage('AccountImportPermessi.vm')";
+    modalWindow(urlwin, 200, 200, 600, 400);
+  }
+
+  function ricarica()
+  {
+    var url = "$link.setPage('AccountRuoliPermessi.vm').addPathInfo('reload', '1')";
+    goPage(url);
+  }
+
+  function tuttiSI(idPerm)
+  {
+    var src = "RPC_" + idPerm + "_";
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith(src))
+        this.checked = true;
+    });
+  }
+
+  function tuttiNO(idPerm)
+  {
+    var src = "RPC_" + idPerm + "_";
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith(src))
+        this.checked = false;
+    });
+  }
+
+  function tuttiRoleSI(idRole)
+  {
+    var src = "_" + idRole;
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith("RPC_") && this.name.endsWith(src))
+        this.checked = true;
+    });
+  }
+
+  function tuttiRoleNO(idRole)
+  {
+    var src = "_" + idRole;
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith("RPC_") && this.name.endsWith(src))
+        this.checked = false;
+    });
+  }
+
+  // attiva il menu locale superfish
+  jQuery(function () {
+    jQuery('ul.lf-menu').superfish();
+  });
+
+</SCRIPT>
+
+<STYLE type="text/css">
+
+  .rigel_formtable a
+  {
+    font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; color: #990000; font-weight: bold;
+  }
+
+</STYLE>
+
+<div id="innerbody">
+
+  <h3>
+    <span class="label label-primary">$I.I("Associazione dei permessi ai rispettivi ruoli")</span>
+
+    #menuCellScript ("Esporta" "esportaPermessi();" $ui.menuFieldTextStyle)
+    #menuCellScript ("Importa" "importaPermessi();" $ui.menuFieldTextStyle)
+
+    #menuCell ("Aggiorna" $link.setPage("AccountRuoliPermessi.vm").addPathInfo("reload", "1") $ui.menuFieldTextStyle)
+    #menuCell ("Salva" "javascript:document.fo.submit();" $ui.menuFieldTextStyle)
+    #menuCell ("Abbandona" $data.homeLink  $ui.menuFieldTextStyle)
+  </H3>
+
+  <form action="AccountRuoliPermessi.vm" method="post" name="fo">
+    <input type="hidden" name="action" value="SalvaRuoliPermessi">
+    $html
+  </form>
+
+</div>
+<!-- FINE AccountRuoliPermessi.vm -->
+

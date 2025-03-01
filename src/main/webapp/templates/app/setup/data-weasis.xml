@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wado_query xmlns= "http://www.weasis.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            wadoURL="$wadoUri" requireOnlySOPInstanceUID="true" additionnalParameters="&amp;aetitle=${aetitle}"
+            overrideDicomTagsList="" >
+  #foreach($pat in $patients)
+  <Patient PatientID="${pat.id}" PatientName="${pat.name}" PatientBirthDate="${pat.birth}" >
+    #foreach($std in $pat.studies)
+    <Study StudyInstanceUID="${std.studyInstanceUID}" StudyDescription="${std.studyDesc}" StudyDate="${std.studyDate}" StudyTime="${std.studyTime}" >
+      #foreach($ser in $std.series)
+      <Series SeriesInstanceUID="$ser.serieInstanceUID" SeriesDescription="$ser.descrizione" SeriesNumber="$ser.num" Modality="$ser.modalita" >
+        #foreach($img in $ser.images)
+        <Instance SOPInstanceUID="$img.sOPInstanceUID" InstanceNumber="$img.num" />
+        #end
+      </Series>
+      #end
+    </Study>
+    #end
+  </Patient>
+  #end
+</wado_query>

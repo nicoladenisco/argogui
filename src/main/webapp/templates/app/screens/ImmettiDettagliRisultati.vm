@@ -1,0 +1,111 @@
+$page.setTitle($I.I("Inserimento valore risultato"))
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<script type="text/javascript">
+
+  var myUrl = "$link.setPage('ImmettiDettagliRisultati.vm')";
+
+  function salva()
+  {
+    relCommand("salvadettagli");
+    showLoading();
+  }
+
+  function chiudi()
+  {
+    window.close();
+    window.opener.ricarica();
+  }
+
+  function relCommand(comando)
+  {
+    document.fo.command.value = comando;
+    document.fo.submit();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/SalvaConvalidaRisultati?command="+encodeURIComponent(comando));
+  }
+
+</script>
+
+<div id="innerbody">
+  <form action="$link.setPage('ImmettiDettagliRisultati.vm')" name="fo" method="post">
+
+    <input type="hidden" name="action" value="SalvaConvalidaRisultati"/>
+    <input type="hidden" name="command" value=""/>
+    <input type="hidden" name="idesa" value="$esa.id"/>
+    <input type="hidden" name="idpar" value="$par.id"/>
+    <input type="hidden" name="idres" value="$res.id"/>
+    <input type="hidden" name="id" value="$id"/>
+    <input type="hidden" name="type" value="$type"/>
+
+    <table width=100%>
+      <tr>
+        <td bgcolor="$ui.topbarbgcolor" class="big_title">
+          &nbsp; $I.I("Inserimento valore risultato")
+        </td>
+      </tr>
+    </table>
+
+    <div style="padding: 5px">
+      <table width=100%>
+        <tr>
+          <td>$I.I("Esame")</td>
+          <td>
+            <span style="font-size: 12px; color: #000077">$!esa.codice - $!esa.descrizione</span>
+          </td>
+        </tr>
+        <tr>
+          <td>$I.I("Parametro")</td>
+          <td>
+            <span style="font-size: 18px; color: #990000; font-weight: bold">$!par.codice</span>
+          </td>
+        </tr>
+        <tr>
+          <td>$I.I("Strumento")</td>
+          <td>
+            $!res.strumento
+          </td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td align="left">
+            $modsta.getImmagineRisulato($r.test)
+            &nbsp;
+          </td>
+        </tr>
+        <tr>
+          <td>$I.I("Valore")</td>
+          <td>
+            <textarea name="VAL_RES" rows="4" cols="60">$!res.risultato</textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>$I.I("Note")</td>
+          <td>
+            <textarea name="VAL_NOTE" rows="4" cols="60">$!res.note</textarea>
+          </td>
+        </tr>
+        #if($htmlPre)
+        <tr>
+          <td>$I.I("Precedenti")</td>
+          <td>
+            $htmlPre
+          </td>
+        </tr>
+        #end
+
+        <tr>
+          <td>&nbsp;</td>
+          <td>
+            <input type="button" onclick="salva();" value="Salva">
+            <input type="button" onclick="chiudi();" value="Chiudi">
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </form>
+</div>

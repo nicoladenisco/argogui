@@ -1,0 +1,80 @@
+#collapse, #collapse ul{
+    width:10em;
+    padding:0;
+    margin:0;
+    list-style-type:none;
+}
+#collapse ul{
+    position:relative;
+    top:0;
+    left:0;
+    display:none;
+    background-color:#ffffff;
+    width:9em;
+    margin:0 auto;
+}
+#collapse li ul{
+    margin:0 auto;
+}
+#collapse li{
+    display:block;
+    border:1px solid black;
+}
+#collapse li a{
+    display:block;
+    padding:2px;
+    color:#000000;
+    text-decoration:none;
+}
+#collapse li a:hover{
+    color: #FFFAB5;
+    background-color: #fa551a;
+}
+#collapse li ul.click{
+    display:block;
+}
+#collapse li.click{
+    background-color: #fa551a;
+    padding-bottom:.2em;
+}
+#collapse ul a:hover{
+    background-color:#fa7d50;
+}
+#collapse ul li.click{
+    background-color:#fa7d50;
+}
+#collapse li a.subMenu, #collapse ul li a.subMenu {
+	background-repeat: no-repeat;
+	background-image: url('down.gif');
+	background-position: bottom right;
+}
+#collapse a.click{
+    background-image:none;
+    color: #FFFAB5;
+}
+h1 {
+    color: #4b12a9;
+	border-bottom: 2px dotted #4b12a9;
+}
+#content {
+    position: relative;
+    top: 30px;
+    margin: 1em 12em 1em 12em;
+}
+#downloads a {
+    color: #000000;
+}
+#downloads a:hover {
+    color: #4b12a9;
+}
+#downloads a:visited {
+    text-decoration: line-through;
+}
+p:first-letter {
+	margin-left: 15px;
+}
+p.drop:first-letter {
+	margin-right: 5px;
+	font: bold 3em times, serif;
+	float: left;
+}

@@ -1,0 +1,239 @@
+$page.setTitle($I.I("Profilo dell'utente - informazioni sull'account"))
+
+<!-- INIZIO ProfiloUtente.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  var myUrl = "$link.setPage('ProfiloUtente.vm')";
+
+  function salva()
+  {
+    relCommand('salva');
+  }
+
+  function passwd()
+  {
+    if (!testCampoNull(document.fo.newpass1, "Password 1"))
+      return;
+    if (!testCampoNull(document.fo.newpass2, "Password 2"))
+      return;
+
+    var pass1 = document.fo.newpass1.value;
+    var pass2 = document.fo.newpass2.value;
+    if (pass1 != pass2)
+    {
+      alert("$I.I('Le due password inserite non coincidono: correggere per renderle uguali.')");
+      return;
+    }
+
+    relCommand('passwd');
+  }
+
+  function associaCert(cert)
+  {
+    document.fo.cert.value = cert;
+    relCommand("associa");
+  }
+
+  function cancellaCert(cert)
+  {
+    document.fo.cert.value = cert;
+    relCommand("cancella");
+  }
+
+  function relCommand(comando)
+  {
+    document.fo.command.value = comando;
+    document.fo.submit();
+    showLoading();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/EditUtenteAction?command=" + encodeURIComponent(comando));
+    showLoading();
+  }
+
+</SCRIPT>
+
+<div id="innerbody">
+
+  <h3>
+    <span class="label label-primary">$I.I("Dati per l'utente") $user.name</span>
+
+    #menuCellScript ("Salva dati" "salva()" $ui.menuFieldTextStyle)
+    #menuCellScript ("Cambia password" "passwd()" $ui.menuFieldTextStyle)
+  </h3>
+
+  <form name="fo" method="post" action="$link.setPage('ProfiloUtente.vm')">
+
+    <input type="hidden" name="command" value="">
+    <input type="hidden" name="cert" value="">
+    <input type="hidden" name="action" value="EditUtenteAction">
+
+
+    <div class="row">
+      <div class="col-md-6">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Dati generali utente")</h3>
+          </div>
+          <div class="panel-body">
+            <table width="100%" cellspacing="3" cellpadding="3">
+              <tr>
+                <td>$I.I("Nome di login")</td>
+                <td>$user.name</td>
+              </tr>
+              <tr>
+                <td>$I.I("Nome reale")</td>
+                <td><input type="input" name="firstName" value="$!user.firstName"></input></td>
+              </tr>
+              <tr>
+                <td>$I.I("Cognome")</td>
+                <td><input type="input" name="lastName" value="$!user.lastName"></input></td>
+              </tr>
+              <tr>
+                <td>$I.I("E-mail")</td>
+                <td><input type="input" name="email" value="$!user.email"></input></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td><input type="button" value="$I.I('Salva dati utente')" onclick="salva();"></input></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-6">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Cambio password")</h3>
+          </div>
+          <div class="panel-body">
+            <table width="100%" cellspacing="3" cellpadding="3">
+              <tr>
+                <td>$I.I("Vecchia password")</td>
+                <td><input type="password" name="oldpass" value=""></input></td>
+              </tr>
+              <tr>
+                <td>$I.I("Nuova password")</td>
+                <td><input type="password" name="newpass1" value=""></input></td>
+              </tr>
+              <tr>
+                <td>$I.I("Nuova password (ripetere)")</td>
+                <td><input type="password" name="newpass2" value=""></input></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td><input type="button" value="$I.I('Cambia password')" onclick="passwd();"></input></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    #if($certs)
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Certificati digitali attualmente utilizzati per la connessione")</h3>
+          </div>
+          <div class="panel-body">
+            <table width="100%" cellspacing="3" cellpadding="3">
+              #foreach($c in $certs)
+              #set($userCertName = $c.cert.subjectDN.name)
+              #set($certid = $c.cert.serialNumber)
+              <tr>
+                <td>$I.I("Nome del soggetto")</td>
+                <td>$userCertName</td>
+                #if($c.inUse)
+                <td>$I.I("Già associato")</td>
+                #else
+                <td><input type="button" value="$I.I('Associa')" onclick="associaCert('$certid')"></td>
+                #end
+              </tr>
+              #end
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    #end
+
+    #if($stored)
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Certificati digitali associati all'utente")</h3>
+          </div>
+          <div class="panel-body">
+
+            <table width="100%" cellspacing="3" cellpadding="3">
+              <tr>
+                <td bgcolor="#CCCCFF" align="center" colspan="3">
+                  $I.I("Certificati digitali associati all'utente")
+                </td>
+              </tr>
+              #foreach($s in $stored)
+              #set($userCertName = $c.certChain)
+              #set($certid = $c.smartcardId)
+              <tr>
+                <td>$I.I("Nome del soggetto")</td>
+                <td>$!s.certChain</td>
+                <td><input type="button" value="Cancella" onclick="cancellaCert('$certid')"></td>
+              </tr>
+              #end
+            </table>
+            #if($chooseLogon == true)
+            <br>
+            <table width="100%">
+              <tr>
+                <td bgcolor="#CCCCFF" align="center" colspan="3">
+                  $I.I("Abilitazione all'accesso")
+                </td>
+              </tr>
+              <tr>
+                <td>$I.I("Stai utilizzando un certificato digitale per l'accesso all'applicazione.")</td>
+                <td>$I.I("Per aumentare la sicurezza puoi disattivare il tradizionale logon con password
+                  ed utilizzare esclusivamente l'accesso con certificato digitale; in questo modo non dovrai
+                  più preoccuparti se altre persone possano o meno conoscere la tua password.<br>
+                  ATTENZIONE: se abiliti questa funzione dovrai sempre utilizzare il certificato (smartcard)
+                  per l'accesso; comunque l'utente amministratore può riabilitarti all'uso del logon classico.")</td>
+                #if($enabledNormalLogon == true)
+                <td>
+                  <p>$I.I("L'uso della password in questo momento è attivo.")</p>
+                  <input type="button" value="$I.I('Disabilita uso password')" onclick="relCommand('disablepwd')">
+                </td>
+                #else
+                <td>
+                  <p>$I.I("L'uso della password in questo momento è disattivato.")</p>
+                  <input type="button" value="$I.I('Abilita nuovamente uso password')" onclick="relCommand('enablepwd')">
+                </td>
+                #end
+              </tr>
+            </table>
+            #end
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+    #end
+
+  </form>
+
+</div>
+
+<!-- FINE ProfiloUtente.vm -->
+

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+<title>Cut &amp; Paste Dbmenu (CSS drop down menu)</title>
+	<script src="dbMenu.js" type="text/javascript">
+	
+	/***********************************************
+	* DbMenu script- by David Boggus: http://www.boggusweb.com/
+	* Please keep this notice intact
+	* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and more
+	***********************************************/
+	
+	</script>
+	<link href="collapse.css" type="text/css" rel="stylesheet" media="screen">
+	<link href="dropdown.css" type="text/css" rel="stylesheet" media="screen">
+	<link href="side.css" type="text/css" rel="stylesheet" media="screen">
+
+</head>
+<body>
+
+
+<p align="left"><strong>Example #1 (horizontal dropdown menu):</strong></p>
+<p align="left"><!--webbot bot="HTMLMarkup" startspan -->
+<ul id="dropDown" class="dbMenu">
+        <li><a href="index.html">Menu Examples</a>
+		<li><a href="menus.html">Menu Types</a>
+		<ul>
+			<li><a href="collapse/index.html">Collapse Menu</a></li>
+			<li><a href="dropDown/index.html">Drop Down Menu</a></li>
+
+			<li><a href="side/index.html">Side Menu</a>
+
+            <ul>
+                <li><a href="collapse/common.html">Common Styles</a></li>
+                <li><a href="collapse/collapse.html">Collapse Styles</a></li>
+                <li><a href="collapse/dropDown.html">Drop Down Styles</a>
+                <ul>
+
+                    <li><a href="collapse/common.html">Common Styles</a></li>
+                    <li><a href="collapse/collapse.html">Collapse Styles</a></li>
+
+                    <li><a href="collapse/dropDown.html">Drop Down Styles</a>
+                    <ul>
+                        <li><a href="collapse/common.html">Common Styles</a></li>
+                        <li><a href="collapse/collapse.html">Collapse Styles</a></li>
+
+                        <li><a href="collapse/dropDown.html">Drop Down Styles</a></li>
+                        <li><a href="collapse/side.html">Side Styles</a></li>
+
+                    </ul>
+                    </li>
+                    <li><a href="collapse/side.html">Side Styles</a></li>
+                </ul>
+                </li>
+
+                <li><a href="collapse/side.html">Side Styles</a></li>
+            </ul>
+            </li>
+
+		</ul>
+		</li>
+		<li><a href="side/index.html">The HTML</a></li>
+		<li><a href="side/script.html">The Script</a></li>
+
+		<li><a href="css.html">The CSS</a>
+		<ul>
+			<li><a href="side/common.html">Common Styles</a></li>
+
+			<li><a href="side/collapse.html">Collapse Styles</a></li>
+			<li><a href="side/dropDown.html">Drop Down Styles</a></li>
+			<li><a href="side/side.html">Side Styles</a></li>
+
+		</ul>
+		</li>
+	</ul>
+
+<br /><br /><!--webbot bot="HTMLMarkup" endspan i-checksum="64274" --></p>
+
+</body>
+</html>

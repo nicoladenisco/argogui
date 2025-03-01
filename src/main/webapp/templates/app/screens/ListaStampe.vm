@@ -1,0 +1,85 @@
+$page.setTitle($I.I("Dettagli stampa"))
+
+<script language="javascript">
+
+  var myUrl = "$link.setPage('ListaStampe.vm')";
+
+  function goStampa(codice)
+  {
+    openPrintWindow("$link.setPage('FormStatistica.vm')?codice="+codice, "Stampe");
+  }
+
+  function ricarica()
+  {
+    goPage(myUrl);
+  }
+
+</script>
+
+<form action="$link.setPage('ListaStampe.vm')" method="post" name="fo">
+
+  <table width=100%>
+    <tr>
+      <td width=50% bgcolor="$ui.topbarbgcolor" class="big_title">
+        &nbsp; $I.I("Stampe")
+      </td>
+      #menuCellScript ("Aggiorna" "ricarica()" $ui.menuFieldTextStyle)
+      #menuCell ("Abbandona" $data.homeLink $ui.menuFieldTextStyle)
+    </tr>
+  </table>
+
+   <div id="rigel_ssearch">
+     <div class="rigel_simple_search">
+        <b>Codice</b><input type=hidden name=OPcodice value=1><input type=text name=VLcodice value='' size=20>&nbsp;
+        <b>Descrizione</b><input type=hidden name=OPdescrizione value=1><input type=text name=VLdescrizione value='' size=20>&nbsp;
+
+        <input type=hidden name='SSORT' value='0'/>
+        <input type=submit name='SimpleSearch' value="$I.I('Cerca')"/>
+     </div>
+   </div>
+
+  <TABLE width="100%">
+    <TR>
+      <TD bgcolor="navy">
+        <TABLE WIDTH=100% BORDER=0 CELLSPACING=0>
+          <TR BGCOLOR="navy">
+            <TD class="rigel_table_header" WIDTH="5%" >$I.I("ID")</TD>
+            <TD class="rigel_table_header" WIDTH="8%" >$I.I("Codice")</TD>
+            <TD class="rigel_table_header" >$I.I("Descrizione")</TD>
+            <TD class="rigel_table_header" WIDTH="50" >$I.I("Zoom")</TD>
+          </TR>
+
+          #set ($idxStampa = 0)
+          #foreach($stampa in $lstampe)
+          #set ($id = $stampa.stampeId)
+          #set ($codice = $stampa.codice)
+
+          #if($idxStampa == 0)
+          <TR BGCOLOR="#F0F0F0" CLASS="rowmenu1">
+            #set ($idxStampa = 1)
+            #else
+          <TR BGCOLOR="#CCCCCC" CLASS="rowmenu2">
+            #set ($idxStampa = 0)
+            #end
+
+            <TD valign="middle" ONCLICK="goStampa('$codice')">$codice</TD>
+            <TD valign="middle" ONCLICK="goStampa('$codice')">$stampa.getCodice()</TD>
+            <TD valign="middle" ONCLICK="goStampa('$codice')">$stampa.getDescrizione()</TD>
+            <TD valign="middle" align="center" >
+              <a href="$link.setPage('Stampa.vm')?idstatistiche=$id">
+                <img border=0 src="$ui.image('note.gif')" alt="$I.I('Modifica record')" width=16 height=16>
+              </a>
+              <a href="javascript:cancellaElemento('$id')">
+                <img border=0 src="$ui.image('cancella.gif')" alt="$I.I('Cancella record')" width=16 height=16>
+              </a>
+            </TD>
+          </TR>
+          #end
+
+        </TABLE>
+      </TD>
+    </TR>
+  </TABLE>
+
+</form>
+

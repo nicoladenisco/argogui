@@ -1,0 +1,330 @@
+$page.setTitle($I.I("Validazione risultati"))
+$data.getTemplateInfo().setLayoutTemplate("Default.vm")
+
+<script type="text/javascript">
+
+  var myUrl = "$link.setPage('ValidaRisultati.vm')";
+
+  function salvaRes()
+  {
+    if (confirm("$I.I('Sei sicuro di convalidare i risultati visualizzati?')"))
+    {
+      relCommand("salva");
+      showLoading();
+    }
+  }
+
+  function addRes()
+  {
+    var uri = "$link.setPage('ImmettiRisultato.vm')";
+    openDettaglioDialog(uri + "?idesa=0");
+  }
+
+  function addResEsa(idEsa)
+  {
+    var uri = "$link.setPage('ImmettiRisultato.vm')";
+    openDettaglioDialog(uri + "?idesa=" + idEsa);
+  }
+
+  function apriGraph(idRes)
+  {
+    var uri = "$link.setPage('VisGrafici.vm')";
+    openGraphDialog(uri + "?idres=" + idRes);
+  }
+
+  function openGraphDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 100, 10, 300, 600);
+  }
+
+  function impostaAccettazione(idAcc)
+  {
+    goPage(myUrl + "?ID=" + idAcc);
+  }
+
+  function apriNodo(idEsa)
+  {
+    var uri = "$link.setPage('ValidaRisultati.vm').addPathInfo('action', 'ModificaNodi')";
+    goPage(uri + "?OPER=apri&IDESA=" + idEsa + "#" + idEsa);
+  }
+
+  function chiudiNodo(idEsa)
+  {
+    var uri = "$link.setPage('ValidaRisultati.vm').addPathInfo('action', 'ModificaNodi')";
+    goPage(uri + "?OPER=chiudi&IDESA=" + idEsa + "#" + idEsa);
+  }
+
+  function refresh()
+  {
+    relCommandGet("ricarica");
+  }
+
+  function inviahl7()
+  {
+    relCommandGet("inviahl7");
+  }
+
+  function ricarica()
+  {
+    goPage(myUrl);
+  }
+
+  function apriRisultatoEstesoReale(id)
+  {
+    var url = "$link.setPage('ImmettiDettagliRisultati.vm').addPathInfo('type', 'reale')";
+    openDettaglioDialog(url + "?id=" + id);
+  }
+
+  function apriRisultatoEstesoManuale(id)
+  {
+    var url = "$link.setPage('ImmettiDettagliRisultati.vm').addPathInfo('type', 'manuale')";
+    openDettaglioDialog(url + "?id=" + id);
+  }
+
+  function precedentiEsame(id)
+  {
+    var url = "$link.setPage('VisualizzaPrecedenti.vm').addPathInfo('type', 'esame')";
+    openDettaglioDialog(url + "?id=" + id);
+  }
+
+  function precedentiAnagrafica()
+  {
+    var url = "$link.setPage('VisualizzaPrecedenti.vm').addPathInfo('type', 'anagrafica')";
+    openDettaglioDialog(url + "?id=1");
+  }
+
+  function relCommand(comando)
+  {
+    document.fo.command.value = comando;
+    document.fo.submit();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/SalvaConvalidaRisultati?command=" + encodeURIComponent(comando));
+  }
+
+</script>
+
+<div id="innerbody">
+  <div class="row">
+    <h3>
+      <span class="label label-primary">$I.I("Validazione risultati")</span>
+
+      #menuCellScript ("Ricarica" "refresh()" $ui.menuFieldTextStyle)
+      #menuCellScript ("Invia HL7" "inviahl7()" $ui.menuFieldTextStyle)
+      #menuCellScript ("Salva risultati" "salvaRes()" $ui.menuFieldTextStyle)
+      #menuCellScript ("Aggiungi risultato" "addRes()" $ui.menuFieldTextStyle)
+      #menuCell ("Abbandona" "$data.homeLink" $ui.menuFieldTextStyle)
+    </h3>
+
+    #if($acc)
+    <div class="accettazione">
+      <span style="font-size: 22px; font-weight: bold;">$!ana.cognome $!ana.nome</span><br>
+      #if($ana.sesso == 'f' || $ana.sesso == 'F')
+      FEMMINA. Nata il $data.formatData($ana.dataNascita) ($ana.eta anni) <br>
+      #else
+      MASCHIO. Nato il $data.formatData($ana.dataNascita) ($ana.eta anni) <br>
+      #end
+      <b>Codice interno:</b> $!ana.codiceAlternativo <br>
+      <b>Codice fiscale:</b> $!ana.codiceFiscale &nbsp;
+      <b>Codice sanitario:</b> $!ana.codiceSanitario <br>
+      <b>Gruppo sanguigno:</b> $!ana.gruppoSanguigno &nbsp;
+      <b>Fattore RH:</b> $!ana.fattoreRh &nbsp;
+      <b>DCE:</b> $!ana.dce
+      <hr>
+      <table width="100%">
+        <tr>
+          <td>
+            <b>Codice accettazione:</b> $!acc.codice &nbsp;
+            <b>Data accettazione:</b> $data.formatDataFull($acc.dataAccettazione) <br>
+            <b>Note:</b> $!acc.note <br>
+            <b>Sito:</b> $!acc.infStpSiti.descrizione &nbsp;
+            <b>Reparto:</b> $!acc.infStpReparti.descrizione &nbsp;
+            <b>Zona:</b> $!acc.infStpZone.descrizione <br>
+          </td>
+          <td valign="bottom" align="right">
+            <a href="javascript:precedentiAnagrafica()"><img
+                src="$ui.image('nwscheda.gif')" title="Tutti i precedenti per $!ana.cognome $!ana.nome" border="0"></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    #end
+
+    #if($lsEsa)
+
+    <form action="$link.setPage('ValidaRisultati.vm')" method="post" name="fo">
+      <input type="hidden" name="action" value="SalvaConvalidaRisultati"/>
+      <input type="hidden" name="command" value=""/>
+
+      <div id="risultati" class="rigel_htable">
+        <table width="100%">
+          <tr class="rigel_table_header_row">
+            <td align="center">S</td>
+            <td colspan="2">STRUMENTO</td>
+            <td>PARAMETRO</td>
+            <td align="center">T</td>
+            <td>RISULTATO</td>
+            #if($cfg.getBoolean("validazione.visualizza.precedenti", true))
+            <td>PRECEDENTE</td>
+            <td>UNITA'</td>
+            #else
+            <td colspan="2">UNITA'</td>
+            #end
+            <td align="center">FE</td>
+          </tr>
+
+          #foreach($e in $lsEsa)
+
+          <a name="$e.codice">
+
+            #if($e.opened)
+
+            <tr class="header-esame">
+              <td align="left" colspan="6">
+                <a href="javascript:chiudiNodo('$e.codice')"><img
+                    src="$ui.image('folder-open.gif')" border="0"></a> $!e.descrizione &nbsp;</div>
+              </td>
+              <td><a href="javascript:precedentiEsame($e.id)"><img
+                    src="$ui.image('nwscheda.gif')" title="Tutti i precedenti per $!e.descrizione" border="0"></a></td>
+              <td>&nbsp;</td>
+              <td align="center">
+                <input class="edit-validazione" type="button" onclick="addResEsa('$e.id')" value="+">
+              </td>
+            </tr>
+
+            #foreach($p in $e)
+            #if($p.isEmpty())
+            <tr class="rec-stato-$p.stato">
+              <td align="center">$p.stato &nbsp;</td>
+              <td colspan="2">$!p.strumento &nbsp;</td>
+              <td>$!p.codice &nbsp;</td>
+              <td align="center"> &nbsp;</td>
+              <td valign="middle">$p.htmlCampo</td>
+              #if($cfg.getBoolean("validazione.visualizza.precedenti", true))
+              <td>$!p.precFormat</td>
+              <td>&nbsp;</td>
+              #else
+              <td colspan="2">&nbsp;</td>
+              #end
+              <td align="center">$!p.ferrore &nbsp;</td>
+            </tr>
+            #else
+
+            #if($p.size() == 1)
+
+            #set($r = $p.first)
+            <tr class="rec-stato-$r.stato">
+              <td align="center">$r.stato &nbsp;</td>
+              <td colspan="2">$!r.strumento &nbsp;</td>
+              <td>$!r.codice &nbsp;</td>
+              <td align="center">
+                $modsta.getImmagineRisulato($r.test)
+                &nbsp;
+              </td>
+              <td>
+                $r.htmlCampo &nbsp;
+                #if($r.haveGraph())
+                <a href="javascript:apriGraph('$r.id')"><img src="$ui.image('file.gif')" border="0"></a>
+                #end
+              </td>
+              #if($cfg.getBoolean("validazione.visualizza.precedenti", true))
+              <td>$!p.precFormat</td>
+              <td>$!r.unita &nbsp;</td>
+              #else
+              <td colspan="2">$!r.unita &nbsp;</td>
+              #end
+              <td align="center">$!r.ferrore &nbsp;</td>
+            </tr>
+
+            #else ## -- if($p.size() == 1) --
+
+            #if($p.numerico)
+            #set( $n = $p.size() + 2 )
+            #else
+            #set( $n = $p.size() + 1 )
+            #end
+
+            <tr class="rec-stato-$p.stato">
+              <td align="center" rowspan="$n">$p.stato &nbsp;</td>
+              <td colspan="2">$!p.strumento &nbsp;</td>
+              <td>$!p.codice &nbsp;</td>
+              <td align="center"> &nbsp;</td>
+              <td colspan="4">&nbsp;</td>
+            </tr>
+
+            #foreach($r in $p)
+            <tr class="rec-stato-$r.stato">
+              <td width="30" align="center"><input type="radio" name="RA_$p.id" value="$r.id"></td>
+              <td>$!r.strumento &nbsp;</td>
+              <td>$!r.codice &nbsp;</td>
+              <td align="center">
+                $modsta.getImmagineRisulato($r.test)
+                &nbsp;
+              </td>
+              <td>
+                $r.htmlCampo &nbsp;
+                #if($r.haveGraph())
+                <a href="javascript:apriGraph('$r.id')"><img src="$ui.image('file.gif')" border="0"></a>
+                #end
+              </td>
+              #if($cfg.getBoolean("validazione.visualizza.precedenti", true))
+              <td>$!p.precFormat</td>
+              <td>$!r.unita &nbsp;</td>
+              #else
+              <td colspan="2">$!r.unita &nbsp;</td>
+              #end
+              <td align="center">$!r.ferrore &nbsp;</td>
+            </tr>
+            #end ## -- for($r in $p) --
+
+            #if($p.numerico)
+            <tr class="rec-stato-$p.stato">
+              <td width="30" align="center"><input type="radio" name="RA_$p.id" value="media" checked></td>
+              <td colspan="3">Media dei risultati precedenti</td>
+              <td>$p.media &nbsp;</td>
+              #if($cfg.getBoolean("validazione.visualizza.precedenti", true))
+              <td>$!p.precFormat</td>
+              <td>&nbsp;</td>
+              #else
+              <td colspan="2">&nbsp;</td>
+              #end
+              <td align="center">&nbsp;</td>
+            </tr>
+            #end
+
+            #end ## -- if($p.size() == 1) --
+
+            #end ## -- if($p.isEmpty()) --
+            #end ## -- for($p) --
+
+            #else ## -- opened --
+
+            <tr class="header-esame">
+              <td align="left" colspan="9"><a href="javascript:apriNodo('$e.codice')"><img
+                    src="$ui.image('folder-closed.gif')" border="0"></a> $!e.descrizione &nbsp;</td>
+            </tr>
+
+            #end ## -- opened --
+            #end ## -- for($e) --
+
+        </table>
+        #if($acc.statoRec <= 3)
+        <div style="background: white; text-align: center">
+          <br/>
+          <input type="checkbox" name="CHK_CLOSE" value="1" #if($bean.completa) checked #end >Chiudi accettazione
+                 <input type="button" onclick="salvaRes()" value="Salva e convalida risultati">
+          <input type="button" onclick="addRes()" value="Aggiungi risultato">
+        </div>
+        #end
+      </div>
+
+    </form>
+
+    #end
+
+  </div>
+</div>
+
+

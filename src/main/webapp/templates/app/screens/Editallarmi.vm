@@ -1,0 +1,117 @@
+$page.setTitle($I.I("Visualizza allarme"))
+
+<!-- INIZIO editallarm.vm -->
+
+<script type="text/javascript">
+
+  function disattiva()
+  {
+  if (!testCampoNull(document.fo.descnote, $I.IA('Note di Disabilitazione')))
+          return;
+          document.fo.command.value = "uno";
+          document.fo.submit();
+  }
+
+  function disattivaTutti()
+  {
+  #if (!$perm.isAdmin($data))
+          if (testCampoNull(document.fo.descnote, $I.IA('Note di Disabilitazione')))
+          return;
+          #end
+
+          document.fo.command.value = "tutti";
+          document.fo.submit();
+  }
+
+  function abbandona()
+  {
+  document.fo.command.value = "abbandona";
+          document.fo.submit();
+  }
+
+</script>
+
+<h3>
+  <span class="label label-primary">$I.I("Disinnesco Allarme")</span>
+  #menuCellScript ("Disabilita Allarme" "document.fo.submit()" $ui.menuFieldTextStyle)
+  #menuCellScript ("Abbandona" "abbandona()" $ui.menuFieldTextStyle)
+</h3>
+
+<form action="$link.setPage('Editallarmi.vm')" method="post" name="fo" >
+  <input type="hidden" name="action" value="Editallarmi">
+  <input type="hidden" name="id" value="$al.allarmiId">
+  <input type="hidden" name="command" value="">
+
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">$I.I("Dati allarme")</h3>
+        </div>
+        <div class="panel-body">
+          <table width="100%">
+            <tr><td width="150">Id</td><td width="800">$al.allarmiId</td></tr>
+            <tr><td width="150">Severita</td><td width="800">$al.getDescSeverity()</td></tr>
+            <tr><td width="150">Servizio</td><td width="800">$al.servizio</td></tr>
+            <tr><td width="150">Componente</td><td width="800">$al.componente</td></tr>
+            <tr><td width="150">Messaggio</td><td width="800">$al.messaggio</td></tr>
+            <tr><td width="150">Stato</td><td width="800">$al.getDescStato()</td></tr>
+            <tr><td width="150">Utente</td><td width="800">$utente.getLoginName()</td></tr>
+            <tr><td width="150">Generato il </td><td width="800">$al.creazione</td></tr>
+            <tr><td width="150">Modificato il </td><td width="800">$al.ultModif</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6 col-md-6">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">$I.I("Note di disattivazione")</h3>
+        </div>
+        <div class="panel-body">
+          #if($al.stato == "A")
+
+          <textarea cols="60" rows="10" name="descnote">$!al.noteDisabilitazione</textarea>
+
+          <br><br>
+          <button type="button" class="btn btn-primary" onclick="disattiva()">$I.I("Disabilita")</button>
+
+          #else
+
+          <pre>
+            $al.noteDisabilitazione
+          </pre>
+
+          #end
+        </div>
+      </div>
+    </div>
+
+
+    #if($al.stato == "A")
+    #if($perm.isAuthorizedAll($data, 'disinnesco_multiplo_allarmi'))
+    <div class="col-sm-6 col-md-6">
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <h3 class="panel-title">$I.I("Disattivazione multipla")</h3>
+        </div>
+        <div class="panel-body">
+
+          $I.I("<p><b>ATTENZIONE. Questa funzione disinnesca tutti gli allarmi attivi.</b></p>
+          <p>Utilizzare questa funzione con estrema cautela: tutti gli allarmi attivi
+            verranno disinnescati in una unica operazione.</p>")
+
+          <button type="button" class="btn btn-primary" onclick="disattivaTutti()">$I.I("Disabilita tutti gli allarmi attivi")</button>
+
+        </div>
+      </div>
+    </div>
+    #end
+    #end
+
+  </div>
+
+</form>

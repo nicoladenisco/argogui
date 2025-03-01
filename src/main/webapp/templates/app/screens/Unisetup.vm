@@ -1,0 +1,189 @@
+<!-- INIZIO Unisetup.vm -->
+
+$page.setTitle("$titolo")
+$data.getTemplateInfo().setLayoutTemplate("Dashboard.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function cancellaElemento(codice)
+  {
+    if (confirm("$I.I('Sei sicuro di voler cancellare') '" + codice + "' ?")) {
+      goPage("$baseUri?command=cancella&key=" + encodeURIComponent(codice));
+    }
+  }
+
+  function stampa()
+  {
+    openPrintWindow("${prstampe}?type=${type}&xsl=data2fop.xsl", "stampa");
+  }
+
+  function stampaLand()
+  {
+    openPrintWindow("${prstampe}?type=${type}&xsl=data2fopLand.xsl", "stampa");
+  }
+
+
+  function ricarica()
+  {
+    goPage("$baseUri");
+  }
+
+  function ricaricaSetupServer()
+  {
+    goPage("$baseUri/action/RicaricaSetupServer");
+    showLoading();
+  }
+
+</SCRIPT>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 sidebar">
+
+    <h4><span class="label label-info">$I.I("SERVERS")</span></h4>
+    <ul class="nav nav-sidebar">
+      #uniSetupCellPerm( "Nodi DICOM", "LsStpNodiDicom", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Storage", "LsStpStorage", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Entità HL7", "LsHl7entity", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Log invio HL7", "LsHl7log", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Buffer messaggi HL7", "LsHl7route", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Applicativi esterni", "LsGenApplicativiesterni", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Worklist", "LsRisWorklist", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Workrule", "LsRisWorkrule", "visualizza_impostazioni" )
+      <li><a href="javascript:ricaricaSetupServer()">Ricarica conf. server</a></li>
+      <li><a href="$baseUri/action/FlushGlobalCache">Flush cache</a></li>
+    </ul>
+    <h4><span class="label label-info">$I.I("TABELLE VARIE")</span></h4>
+    <ul class="nav nav-sidebar">
+      #uniSetupCellPerm( "Allarmi", "maint-allarmi", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Giornale di login", "LsGenLoginjour", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Setup override", "LsGenSetupOverride", "visualizza_impostazioni" )
+      #uniSetupCellPerm( "Contatori", "LsGenGiotab", "visualizza_impostazioni" )
+    </ul>
+
+    <div class="dropdown">
+      <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Altro
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        #uniSetupCellPerm( "Esami", "LsStpEsami", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Branche", "LsStpBranche", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Categorie", "LsStpCategorie", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Stampe", "LsGenStampe", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Parametri delle stampe", "LsGenParstampe", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Stampanti etichette", "LsStpStampanti", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Tipi etichetta", "LsStpTipietichette", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Modelli etichette", "LsStpTemplateetichette", "visualizza_impostazioni" )
+      </ul>
+    </div>
+    <br>
+    <div class="dropdown">
+      <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Istat
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        #uniSetupCellPerm( "Comuni", "LsAnaComuni", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Province", "LsAnaProvince", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Nazioni", "LsAnaNazioni", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Regioni", "LsAnaRegioni", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Razze", "LsAnaRazze", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Religioni", "LsAnaReligioni", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Asl", "LsAnaAsl", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Circoscrizioni", "LsAnaCircoscrizioni", "visualizza_impostazioni" )
+        #uniSetupCellPerm( "Distretti", "LsAnaDistretti", "visualizza_impostazioni" )
+      </ul>
+    </div>
+
+  </div>
+  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    #if($allarme)
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div id="allarme" class="alert alert-info alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+            <tr>
+              <td class="main-alert alert-info" align="center" valign="middle" width="130">
+                <a href="$link.setPage('Unisetup.vm')?type=maint-allarmi">
+                  <img src="$ui.image('error.png')" border="0">
+                </a>
+              </td>
+              <td class="main-alert alert-info" align="left" valign="top">
+                $allarme
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    #end
+
+    #if($data.getMessage())
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div id="messaggio" class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+            <tr>
+              <td class="main-alert alert-danger" align="center" valign="middle" width="130">
+                <img src="$ui.image('alert.png')" border="0">
+              </td>
+              <td class="main-alert alert-danger" align="left" valign="top">
+                $data.getMessage()
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    #end
+
+    <div id="innerbody">
+
+      #set ( $filtro = $data.getParameters().getInt("filtro", 0) )
+
+      #if ($filtro == 0 || $filtro == 2 || $filtro == 3)
+
+      <h3>
+        <span class="label label-primary">$header</span>
+        #if($hbuts)
+        #foreach($hb in $hbuts)
+        #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+        #end
+        #end
+
+        #if($newEnabled)
+        #menuCell ("Nuovo" $urlNuovo $ui.menuFieldTextStyle)
+        #end
+        #menuCell ("Ricerca avanzata" "$baseUri/filtro/1" $ui.menuFieldTextStyle)
+        #menuCellScript ("Stampa verticale" "stampa();" $ui.menuFieldTextStyle)
+        #menuCellScript ("Stampa orizzontale" "stampaLand();" $ui.menuFieldTextStyle)
+      </h3>
+
+      #else
+
+      <h3>
+        <span class="label label-primary">$header</span>
+        #menuCell ("Annulla" "$baseUri" $ui.menuFieldTextStyle)
+        #menuCellScript ("Applica" "document.fo.submit()" $ui.menuFieldTextStyle)
+        #menuCell ("Pulisci filtro" "$baseUri/filtro/3" $ui.menuFieldTextStyle)
+      </h3>
+
+      #end
+
+      <form name="fo" method="post" action="$baseUri">
+
+        $!cscript
+
+        <div class="table-responsive">
+          $phtml
+        </div>
+      </form>
+
+    </div>
+  </div>
+</DIV>
+
+<!-- FINE Unisetup.vm -->

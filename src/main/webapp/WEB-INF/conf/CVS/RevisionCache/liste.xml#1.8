@@ -1,0 +1,5758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Costanti per l'allineamento delle celle
+  HTML_ALIGN_DEFAULT
+  HTML_ALIGN_LEFT
+  HTML_ALIGN_CENTER
+  HTML_ALIGN_RIGHT
+
+  Costanti per la definizione del tipo dati
+  PDT_UNDEFINED
+  PDT_STRING
+  PDT_BOOLEAN
+  PDT_INTEGER
+  PDT_FLOAT
+  PDT_DOUBLE
+  PDT_DATE
+  PDT_STRINGKEY
+  PDT_NUMBERKEY
+  PDT_MONEY
+  PDT_TIMESTAMP_CMPDATEONLY
+  PDT_TIMESTAMP_CMPHOURONLY
+  PDT_TIMESTAMP_CMPTOSEC
+  PDT_TIMESTAMP_CMPTOMIN
+  PDT_TIMESTAMP
+  PDT_TIME
+  PDT_FILE
+
+  Costanti per le funzionalita' foreign
+  DISP_FLD_ONLY - solo visualizzazione (liste/liste-sql): visualizza il campo (default)
+  DISP_DESCR_ONLY - solo visualizzazione (liste/liste-sql): visualizza solo descrizione di tabella esterna
+  DISP_FLD_DESCR - solo visualizzazione (liste/liste-sql): visualizza codice e descrizione di tabella esterna
+  DISP_FLD_DESCR_ALTERNATE - solo visualizzazione (liste/liste-sql): visualizza codice alternativo e descrizione
+
+  DISP_FLD_EDIT - solo edit (form/liste-edit): modifica solo il campo (default)
+  DISP_DESCR_EDIT - solo edit (form/liste-edit): modifica il campo (codice) e visualizza descrizione tabella esterna
+  DISP_DESCR_EDIT_ALTERNATE - solo edit (form/liste-edit): modifica il campo (codice alternativo) e visualizza descrizione
+
+  /* TIPI DI FILTRAGGIO: vedi dichiarazione di getTipiConfronto()
+  in SqlBuilderRicercaGenerica e/o PeerBuilderRicercaGenerica */
+  ALL
+  LIKE
+  EQUAL
+  LESS_THAN
+  GREATER_THAN
+  NOT_EQUAL
+  LESS_EQUAL
+  GREATER_EQUAL
+  BETWEEN
+  ISNULL
+  ISNOTNULL
+
+  NOTA: in realta' quelli interessanti sono
+  IDX_CRITERIA_LIKE (abbreviabile in LIKE) per le descrizioni
+  IDX_CRITERIA_GREATER_EQUAL (abbreviabile in GREATER_EQUAL) per i codici
+
+  Tag per disabilitare i tasti default delle schermate
+  <disableEdit/>
+  <disableNew/>
+  <disableSave/>
+  <disableRicercaAvanzata/>
+  <disableAbbandona/>
+-->
+
+<root>
+  <forms>
+    <utenti>
+      <object>TurbineUser</object>
+      <peer>TurbineUserPeer</peer>
+      <header>UTENTI</header>
+      <titolo>Modifica dati utente</titolo>
+      <numcolonne>1</numcolonne>
+      <permessi>admin_users</permessi>
+
+      <post-parse-validator>
+        <class>SaveUserValidator</class>
+      </post-parse-validator>
+
+      <edit-info>
+        <param nome="userid">@USERID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false">
+        <campo>USERID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Nome di login">
+        <campo>loginName</campo>
+        <size>60</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="Password">
+        <campo>passwordValue</campo>
+        <size>60</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="Nome">
+        <campo>firstName</campo>
+        <size>60</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="Cognome">
+        <campo>lastName</campo>
+        <size>60</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="EMail">
+        <campo>email</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+
+      <colonna editable="false" nome="Data creazione">
+        <campo>created</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data ultimo logon">
+        <campo>lastLogin</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </utenti>
+
+    <ruoli>
+      <object>TurbineRole</object>
+      <peer>TurbineRolePeer</peer>
+      <header>Ruolo</header>
+      <titolo>Modifica informazioni ruoli</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="roleid">@ROLEID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false">
+        <campo>ROLEID</campo>
+        <size>10</size>
+        <testtipo/>
+        <testnull/>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>ROLENAME</campo>
+        <size>32</size>
+        <testtipo/>
+        <testnull/>
+      </colonna>
+    </ruoli>
+
+    <permessi>
+      <object>TurbinePermission</object>
+      <peer>TurbinePermissionPeer</peer>
+      <header>Permesso</header>
+      <titolo>Modifica informazioni permessi</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="permissionid">@PERMISSIONID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false">
+        <campo>PERMISSIONID</campo>
+        <size>10</size>
+        <testtipo/>
+        <testnull/>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>PERMISSIONNAME</campo>
+        <size>32</size>
+        <testtipo/>
+        <testnull/>
+      </colonna>
+    </permessi>
+
+    <FormInfInCampioni>
+      <object>InfInCampioni</object>
+      <peer>InfInCampioniPeer</peer>
+      <header>CAMPIONI</header>
+      <titolo>InfInCampioni</titolo>
+      <numcolonne>1</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@INCAMPIONIID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>INCAMPIONIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="ACCETTAZIONI">
+        <campo>IDACCETTAZIONI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <display>CODICE</display>
+          <url>@list?type=LsInfInAccettazioniSel</url>
+          <form>
+            <url>@form?type=FormInfInAccettazioni</url>
+            <param name="ID">@IDACCETTAZIONI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="ETICHETTE">
+        <campo>IDETICHETTE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpTipietichetteSel</url>
+          <form>
+            <url>@form?type=FormStpTipietichette</url>
+            <param name="ID">@IDETICHETTE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="NUM ETICHETTE">
+        <campo>NUMETICHETTE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="TIPOCAMPIONE">
+        <campo>IDTIPOCAMPIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpTipicampioniSel</url>
+          <form>
+            <url>@form?type=FormStpTipicampioni</url>
+            <param name="ID">@IDTIPOCAMPIONE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="PROGRESSIVO">
+        <campo>PROGRESSIVO</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="SID">
+        <campo>SID</campo>
+        <size>20</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="DATA PRELIEVO">
+        <campo>DATAPRELIEVO</campo>
+        <size>20</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>480</size>
+        <testtipo />
+      </colonna>
+
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormInfInCampioni>
+
+    <FormInfInEsami>
+      <object>InfInEsami</object>
+      <peer>InfInEsamiPeer</peer>
+      <header>ESAMI</header>
+      <titolo>InfInEsami</titolo>
+      <numcolonne>1</numcolonne>
+
+      <post-parse-validator>
+        <class>FormInfInEsamiValidator</class>
+      </post-parse-validator>
+
+      <edit-info>
+        <param nome="ID">@INESAMIID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false">
+        <campo>INESAMIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+
+      <colonna nome="ACCETTAZIONI">
+        <campo>IDACCETTAZIONI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <display>CODICE</display>
+          <url>@list?type=LsInfInAccettazioniSel</url>
+          <form>
+            <url>@form?type=FormInfInAccettazioni</url>
+            <param name="ID">@IDACCETTAZIONI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit>
+          <mode>DISP_DESCR_EDIT</mode>
+          <tabella>STP.ESAMI</tabella>
+          <link>CODICE</link>
+          <display>DESCRIZIONE</display>
+          <url>@list?type=LsStpEsamiSel2</url>
+          <form>
+            <url>@form?type=FormStpEsami2</url>
+            <param name="CODICE">@CODICE</param>
+          </form>
+        </foreign-edit>
+      </colonna>
+
+      <colonna nome="DESCRIZIONE (0=Auto)">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+      </colonna>
+
+      <colonna nome="ACCESSION NUMBER">
+        <campo>ACCESSIONNUMBER</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NUM IMMAGINI" editable="false">
+        <campo>NUMIMMAGINI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="QTY">
+        <campo>QTY</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>480</size>
+        <testtipo />
+      </colonna>
+
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormInfInEsami>
+
+    <FormInfInAccettazioni>
+      <object>InfInAccettazioni</object>
+      <peer>InfInAccettazioniPeer</peer>
+      <header>ACCETTAZIONI</header>
+      <titolo>InfInAccettazioni</titolo>
+      <numcolonne>1</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@INACCETTAZIONIID</param>
+      </edit-info>
+
+      <post-parse-validator>
+        <class>SaveInfInAccettazioni</class>
+      </post-parse-validator>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>INACCETTAZIONIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>20</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ACCESSION NUMBER">
+        <campo>ACCESSIONNUMBER</campo>
+        <size>20</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATAACCETTAZIONE</campo>
+        <size>20</size>
+        <testtipo />
+        <def-val>@today</def-val>
+      </colonna>
+      <colonna nome="ANAGRAFICHE">
+        <campo>IDANAGRAFICHE</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <display>COGNOME, NOME</display>
+          <url>@list?type=LsInfInAnagraficheSel</url>
+          <form>
+            <url>@form?type=FormInfInAnagrafiche</url>
+            <param name="ID">@IDANAGRAFICHE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="SITI">
+        <campo>IDSITI</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpSitiSel</url>
+          <form>
+            <url>@form?type=FormStpSiti</url>
+            <param name="ID">@IDSITI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="REPARTI">
+        <campo>IDREPARTI</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpRepartiSel</url>
+          <form>
+            <url>@form?type=FormStpReparti</url>
+            <param name="ID">@IDREPARTI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="ZONE">
+        <campo>IDZONE</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpZoneSel</url>
+          <form>
+            <url>@form?type=FormStpZone</url>
+            <param name="ID">@IDZONE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="TIP ACC">
+        <campo>TIPACC</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PESO">
+        <campo>PESO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ALTEZZA">
+        <campo>ALTEZZA</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="FUMATORE">
+        <campo>FUMATORE</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DIURESI">
+        <campo>DIURESI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DATA ULT MEST">
+        <campo>DATAULTMEST</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="LETTO">
+        <campo>LETTO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="COD ICD9CM">
+        <campo>CODICD9CM</campo>
+        <size>20</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="QUESITO">
+        <campo>QUESITO</campo>
+        <size>480</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>480</size>
+        <testtipo />
+      </colonna>
+
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormInfInAccettazioni>
+
+    <FormInfInParametri>
+      <object>InfInParametri</object>
+      <peer>InfInParametriPeer</peer>
+      <header>PARAMETRI</header>
+      <titolo>InfInParametri</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@INPARAMETRIID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>INPARAMETRIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="ESAMI">
+        <campo>IDESAMI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsInfInEsamiSel</url>
+          <form>
+            <url>@form?type=FormInfInEsami</url>
+            <param name="ID">@IDESAMI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CAMPIONI">
+        <campo>IDCAMPIONI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <display>SID</display>
+          <url>@list?type=LsInfInCampioniSel</url>
+          <form>
+            <url>@form?type=FormInfInCampioni</url>
+            <param name="ID">@IDCAMPIONI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="ULTIMO RISULTATO">
+        <campo>ULTIMORISULTATO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DATA ULTIMO RISULTATO">
+        <campo>DATAULTIMORISULTATO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormInfInParametri>
+
+    <FormInfOutRisultati>
+      <object>InfOutRisultati</object>
+      <peer>InfOutRisultatiPeer</peer>
+      <header>RISULTATI</header>
+      <titolo>InfOutRisultati</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@OUTRISULTATIID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>OUTRISULTATIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="STRUMENTI">
+        <campo>IDSTRUMENTI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpStrumentiSel</url>
+          <form>
+            <url>@form?type=FormStpStrumenti</url>
+            <param name="ID">@IDSTRUMENTI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="CODICE ESAME">
+        <campo>CODICEESAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="PID">
+        <campo>PID</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="SID">
+        <campo>SID</campo>
+        <size>50</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="PROG">
+        <campo>PROG</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="RACK">
+        <campo>RACK</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="CUVETTA">
+        <campo>CUVETTA</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="RISULTATO">
+        <campo>RISULTATO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="UNITA">
+        <campo>UNITA</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="FLAG ERRORE">
+        <campo>FLAGERRORE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DATA ESECUZIONE">
+        <campo>DATAESECUZIONE</campo>
+        <tipo>PDT_TIMESTAMP</tipo>
+        <size>30</size>
+      </colonna>
+      <colonna nome="DATA RICEZIONE">
+        <campo>DATARICEZIONE</campo>
+        <tipo>PDT_TIMESTAMP</tipo>
+        <size>30</size>
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormInfOutRisultati>
+
+    <FormStpSetupStrumenti>
+      <object>StpSetupStrumenti</object>
+      <peer>StpSetupStrumentiPeer</peer>
+      <header>SETUP STRUMENTI</header>
+      <titolo>StpSetupStrumenti</titolo>
+      <numcolonne>1</numcolonne>
+
+      <post-parse-validator>
+        <class>SaveSetupStrumenti</class>
+      </post-parse-validator>
+
+      <edit-info>
+        <param nome="ID">@SETUPSTRUMENTIID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>SETUPSTRUMENTIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="STRUMENTI">
+        <campo>IDSTRUMENTI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpStrumentiSel</url>
+          <form>
+            <url>@form?type=FormStpStrumenti</url>
+            <param name="ID">@IDSTRUMENTI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="SIGLA">
+        <campo>SIGLA</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="BARCODE">
+        <campo>BARCODE</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+
+      <colonna nome="PLUGIN">
+        <campo>PLUGIN</campo>
+        <size>80</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaPluginStrumenti</class>
+        </custom-edit>
+      </colonna>
+
+      <colonna nome="CONNESSIONE">
+        <campo>CONNESSIONE</campo>
+        <size>10</size>
+        <foreign-edit>
+          <mode>DISP_DESCR_EDIT</mode>
+          <tabella>GEN.TIPCONNESSIONE</tabella>
+          <link>TIPCONNESSIONE_ID</link>
+          <display>DESCRIZIONE</display>
+        </foreign-edit>
+      </colonna>
+
+      <colonna nome="MODALITA TXRX">
+        <campo>MODALITATXRX</campo>
+        <size>10</size>
+        <foreign-edit>
+          <mode>DISP_DESCR_EDIT</mode>
+          <tabella>GEN.TIPMODALITA</tabella>
+          <link>TIPMODALITA_ID</link>
+          <display>DESCRIZIONE</display>
+        </foreign-edit>
+      </colonna>
+
+      <colonna nome="PORTA SERIALE">
+        <campo>PORTASERIALE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="BAUD (0=Unix domain socket)">
+        <campo>BAUD</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="PARITA">
+        <campo>PARITA</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="N">Nessuna</value>
+          <value key="P">Pari(even)</value>
+          <value key="D">Dispari(odd)</value>
+          <value key="M">Mark</value>
+          <value key="S">Space</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="PAROLA">
+        <campo>PAROLA</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="5">5</value>
+          <value key="6">6</value>
+          <value key="7">7</value>
+          <value key="8">8</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="STOPBIT">
+        <campo>STOPBIT</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="1">1</value>
+          <value key="2">2</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="HANDSHAKE">
+        <campo>HANDSHAKE</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="N">Nessuno</value>
+          <value key="R">RTS/CTS</value>
+          <value key="X">XON/XOFF</value>
+        </foreign-edit-values>
+      </colonna>
+
+      <colonna nome="TIMING">
+        <campo>TIMING</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TENTATIVI">
+        <campo>TENTATIVI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIMEOUT (secondi)">
+        <campo>TIMEOUT</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="SOCKET TIPO">
+        <campo>SOCKETTIPO</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">Client</value>
+          <value key="1">Server</value>
+          <value key="2">Client+Server</value>
+        </foreign-edit-values>
+      </colonna>
+
+      <colonna nome="SOCKET LOCAL PORT">
+        <campo>SOCKETPORT</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="SOCKET REMOTE SERVER">
+        <campo>SOCKETSERVER</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PATH TX">
+        <campo>PATHTX</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PATH RX">
+        <campo>PATHRX</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="GRAFICI">
+        <campo>GRAFICI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIPO CESTINO">
+        <campo>TIPOCESTINO</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="RICOPRI VALIDATI">
+        <campo>RICOPRIVALIDATI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CQ TIPO">
+        <campo>CQTIPO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="CQ CONVALIDA">
+        <campo>CQCONVALIDA</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="CQ PATH">
+        <campo>CQPATH</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MACHINE NAME">
+        <campo>MACHINENAME</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MACHINE DESCRIPTION">
+        <campo>MACHINEDESCRIPTION</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MACHINE ENCODING">
+        <campo>MACHINEENCODING</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DISEGNO">
+        <campo>DISEGNO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MICROBIOLOGIA">
+        <campo>MICROBIOLOGIA</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="SEP. COGNNOME">
+        <campo>SEPCOGNNOM</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="RIS NUMERICI">
+        <campo>RISNUMERICI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="COD ESAMI NUMERICI">
+        <campo>CODESAMINUMERICI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MULTIESAME">
+        <campo>MULTIESAME</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="LABEL GRUPPO">
+        <campo>LABELGRUPPO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PARAMETRI">
+        <campo>PARAMETRI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PARAMETRI DES">
+        <campo>PARAMETRIDES</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="METODICHE">
+        <campo>METODICHE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NCUVERACK">
+        <campo>NCUVERACK</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NVIDEARACK">
+        <campo>NVIDEARACK</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NPRIMORACK">
+        <campo>NPRIMORACK</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIPO GRAFICI">
+        <campo>TIPOGRAFICI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIPO RACK">
+        <campo>TIPORACK</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MODALITA PREVISTE">
+        <campo>MODALITAPREVISTE</campo>
+        <size>480</size>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="SOLO OPERATORE">
+        <campo>SOLOOPERATOREBOOL</campo>
+        <size>4</size>
+      </colonna>
+      <colonna nome="SCREEN PERSONALIZZATO">
+        <campo>SCREENPERSONALIZZATO</campo>
+        <size>20</size>
+        <testtipo />
+      </colonna>
+
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormStpSetupStrumenti>
+
+    <FormStpEsami>
+      <object>StpEsami</object>
+      <peer>StpEsamiPeer</peer>
+      <header>ESAMI</header>
+      <titolo>StpEsami</titolo>
+      <numcolonne>1</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@ESAMIID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>ESAMIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+        <testcodice />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="BRANCA">
+        <campo>IDBRANCA</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpBrancheSel</url>
+          <form>
+            <url>@form?type=FormStpBranche</url>
+            <param name="ID">@IDBRANCA</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="CATEGORIA">
+        <campo>IDCATEGORIA</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpCategorieSel</url>
+          <form>
+            <url>@form?type=FormStpCategorie</url>
+            <param name="ID">@IDCATEGORIA</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="SCHED STATION NAME">
+        <campo>SCHEDSTATIONNAME</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MASCHERA ORDINI">
+        <campo>TIPORECORD</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">No</value>
+          <value key="1">Si</value>
+          <value key="2">Si, selezione parametri</value>
+        </foreign-edit-values>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormStpEsami>
+
+    <FormStpEsami2 extend="FormStpEsami">
+      <edit-info>
+        <param nome="CODICE">@CODICE</param>
+      </edit-info>
+    </FormStpEsami2>
+
+    <FormStpEsamiMD extend="FormStpEsami">
+      <header>ESAMI</header>
+      <titolo>Esami applicabili</titolo>
+
+      <edit-info>
+        <param nome="ID">@ESAMIID</param>
+      </edit-info>
+
+      <master-detail>
+        <role-master/>
+        <edit-list>StpParametriDetail</edit-list>
+        <view-list>StpParametriDetail</view-list>
+        <link>
+          <param nome="ESAMIID">@ESAMIID</param>
+        </link>
+      </master-detail>
+    </FormStpEsamiMD>
+
+    <FormStpStorage>
+      <object>StpStorage</object>
+      <peer>StpStoragePeer</peer>
+      <header>STORAGE</header>
+      <titolo>StpStorage</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@STORAGEID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>STORAGEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>64</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="TIPO">
+        <campo>TIPO</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <value key="0">LETTURA/SCRITTURA</value>
+          <value key="1">SOLA LETTURA</value>
+          <value key="2">LOCALI</value>
+          <value key="3">DISTRIBUITO</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="PATH">
+        <campo>PATH</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="INFO">
+        <campo>INFO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormStpStorage>
+
+    <FormStpStrumentiMD extend="FormStpStrumenti">
+      <master-detail>
+        <role-master/>
+        <edit-list>StpMetodicheDetail</edit-list>
+        <view-list>StpMetodicheDetail</view-list>
+        <link>
+          <param nome="STRUMENTIID">@STRUMENTIID</param>
+        </link>
+      </master-detail>
+    </FormStpStrumentiMD>
+
+    <FormStpStrumenti>
+      <object>StpStrumenti</object>
+      <peer>StpStrumentiPeer</peer>
+      <header>STRUMENTO</header>
+      <titolo>Setup dello strumento indicato</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@STRUMENTIID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>STRUMENTIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="MODELLI STRUMENTI">
+        <campo>IDMODELLISTRUMENTI</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpModelliStrumentiSel</url>
+          <form>
+            <url>@form?type=FormStpModelliStrumenti</url>
+            <param name="ID">@IDMODELLISTRUMENTI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormStpStrumenti>
+
+    <FormHl7entity>
+      <object>GenHl7entity</object>
+      <peer>GenHl7entityPeer</peer>
+      <header>DETTAGLIO HL7</header>
+      <titolo>Impostazioni di un host destinazione per messaggi HL7</titolo>
+      <numcolonne>3</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@HL7ENTITYID</param>
+      </edit-info>
+
+      <master-detail>
+        <role-master/>
+        <edit-list>LpHl7detail-edit</edit-list>
+        <view-list>LpHl7detail-edit</view-list>
+        <link>
+          <param nome="ID">@HL7ENTITYID</param>
+        </link>
+        <post-save-validator>
+            <class>HL7verificaBuilders</class>
+        </post-save-validator>
+      </master-detail>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7ENTITYID</campo>
+        <size>10</size>
+        <style>cell_form_cod</style>
+      </colonna>
+      <colonna nome="NOME HOST">
+        <campo>NOMEHOST</campo>
+        <style>cell_form_des</style>
+        <size>60</size>
+        <span>2</span>
+        <testtipo />
+        <testnull />
+      </colonna>
+
+      <colonna nome="PORTA">
+        <campo>PORT</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="INDIRIZZO">
+        <campo>INDIRIZZO</campo>
+        <size>20</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="BUILDER">
+        <campo>BUILDER</campo>
+        <size>20</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaBuilderHL7</class>
+        </custom-edit>
+      </colonna>
+
+      <colonna nome="RECEIVING APPLICATION">
+        <campo>APPLICATION</campo>
+        <size>20</size>
+      </colonna>
+      <colonna nome="RECEIVING FACILITY">
+        <campo>FACILITY</campo>
+        <size>20</size>
+      </colonna>
+      <colonna nome="SENDING FACILITY">
+        <campo>SENDINGFACILITY</campo>
+        <size>20</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaSendingFacilityHL7</class>
+        </custom-edit>
+      </colonna>
+
+      <colonna nome="BUILDER INFO">
+        <campo>INFO</campo>
+        <style>cell_form_min</style>
+        <size>90</size>
+        <span>3</span>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="TLS">
+        <campo>TLS</campo>
+        <style>cell_form_min</style>
+        <size>3</size>
+        <tipo>PDT_BOOLEAN</tipo>
+      </colonna>
+      <colonna nome="TLS KEYSTORE">
+        <campo>TLSKEYSTORE</campo>
+        <style>cell_form_min</style>
+        <size>40</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ATTORE IHE">
+        <campo>ACTOR</campo>
+        <style>cell_form_min</style>
+        <size>20</size>
+      </colonna>
+
+    </FormHl7entity>
+
+    <FormHl7detail>
+      <object>GenHl7detail</object>
+      <peer>GenHl7detailPeer</peer>
+      <header>HL7DETAIL</header>
+      <titolo>Dettaglio di una regola di invio HL7</titolo>
+      <numcolonne>1</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@HL7DETAILID</param>
+      </edit-info>
+
+      <post-parse-validator>
+        <class>HL7detailValidator</class>
+      </post-parse-validator>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7DETAILID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="HL7ENTITY">
+        <campo>IDHL7ENTITY</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsHl7entitySel</url>
+          <form>
+            <url>@form?type=FormHl7entity</url>
+            <param name="ID">@IDHL7ENTITY</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="MESSAGGIO">
+        <campo>MESSAGE</campo>
+        <size>10</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaMessaggiHL7</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="EVENTO">
+        <campo>TIPOEVENTO</campo>
+        <size>10</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaEventiHL7</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="TIPO INVIO">
+        <campo>TIPOINVIO</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">Asincrono</value>
+          <value key="1">Asincrono permanente</value>
+          <value key="2">Sincrono</value>
+          <value key="3">Sincrono bloccante</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="TIPO LOG">
+        <campo>TIPOLOG</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">Nessuno</value>
+          <value key="1">Solo errori</value>
+          <value key="2">Sempre</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="BUILDER">
+        <campo>BUILDER</campo>
+        <size>80</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaBuilderHL7</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="INFO">
+        <campo>INFO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+      </colonna>
+    </FormHl7detail>
+
+    <FormStpStampanti>
+      <object>StpStampanti</object>
+      <peer>StpStampantiPeer</peer>
+      <header>STAMPANTE</header>
+      <titolo>Parametri per stampante di etichette</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@STAMPANTIID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>STAMPANTIID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIPO">
+        <campo>TIPO</campo>
+        <size>50</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="IPCLIENT">
+        <campo>IPCLIENT</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOMECLIENT">
+        <campo>NOMECLIENT</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PERCORSOSTAMPANTE">
+        <campo>PERCORSOSTAMPANTE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TEMPLATE1">
+        <campo>TEMPLATE1</campo>
+        <size>580</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TEMPLATE2">
+        <campo>TEMPLATE2</campo>
+        <size>580</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ORDINESTAMPA">
+        <campo>ORDINESTAMPA</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ESAMIPERETIC">
+        <campo>ESAMIPERETIC</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormStpStampanti>
+
+    <FormStpTemplateetichette>
+      <object>StpTemplateetichette</object>
+      <peer>StpTemplateetichettePeer</peer>
+      <header>MODELLO ETICHETTA</header>
+      <titolo>Modello di etichetta per provette.</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@TEMPLATEETICHETTEID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>TEMPLATEETICHETTEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="STAMPANTE">
+        <campo>IDSTAMPANTE</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpStampantiSel</url>
+          <form>
+            <url>@form?type=FormStpStampanti</url>
+            <param name="ID">@IDSTAMPANTE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="TIPIETICHETTE">
+        <campo>IDTIPIETICHETTE</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpTipietichetteSel</url>
+          <form>
+            <url>@form?type=FormStpTipietichette</url>
+            <param name="ID">@IDTIPIETICHETTE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="TEMPLATE">
+        <campo>TEMPLATE</campo>
+        <size>580</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormStpTemplateetichette>
+
+    <FormInfInAnagrafiche>
+      <object>InfInAnagrafiche</object>
+      <peer>InfInAnagrafichePeer</peer>
+      <header>ANAGRAFICHE</header>
+      <titolo>InfInAnagrafiche</titolo>
+      <numcolonne>1</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@INANAGRAFICHEID</param>
+      </edit-info>
+
+      <post-parse-validator>
+        <class>FormAnagraficaValidator</class>
+      </post-parse-validator>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>INANAGRAFICHEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICEALTERNATIVO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="COGNOME">
+        <campo>COGNOME</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DATA NASCITA">
+        <campo>DATANASCITA</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="COMUNE NASCITA">
+        <campo>IDCOMUNENASCITA</campo>
+        <size>10</size>
+        <testtipo />
+        <testzero />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsAnaComuniSel</url>
+          <form>
+            <url>@form?type=FormAnaComuni</url>
+            <param name="ID">@IDCOMUNENASCITA</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="PESO">
+        <campo>PESO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ALTEZZA">
+        <campo>ALTEZZA</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="FUMATORE">
+        <campo>FUMATORE</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DIURESI">
+        <campo>DIURESI</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="ANAMNESI">
+        <campo>ANAMNESI</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="SESSO">
+        <campo>SESSO</campo>
+        <size>80</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="?">Sconosciuto</value>
+          <value key="M">Maschio</value>
+          <value key="F">Femmina</value>
+          <value key="A">Altro</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="CODICE FISCALE (0=AUTO)">
+        <campo>CODICEFISCALE</campo>
+        <size>80</size>
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE SANITARIO">
+        <campo>CODICESANITARIO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="GRUPPO SANGUIGNO">
+        <campo>GRUPPOSANGUIGNO</campo>
+        <size>80</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">0</value>
+          <value key="A">A</value>
+          <value key="B">B</value>
+          <value key="AB">AB</value>
+          <value key="?">Sconosciuto</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="FATTORE RH">
+        <campo>FATTORERH</campo>
+        <size>80</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="+">+</value>
+          <value key="-">-</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="DCE">
+        <campo>DCE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="RAZZA">
+        <campo>IDRAZZA</campo>
+        <size>10</size>
+        <testtipo />
+        <testzero />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsAnaRazzeSel</url>
+          <form>
+            <url>@form?type=FormAnaRazze</url>
+            <param name="ID">@IDRAZZA</param>
+          </form>
+        </foreign-edit-auto>
+        <def-val>1</def-val>
+      </colonna>
+      <colonna nome="RELIGIONE">
+        <campo>IDRELIGIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsAnaReligioniSel</url>
+          <form>
+            <url>@form?type=FormAnaReligioni</url>
+            <param name="ID">@IDRELIGIONE</param>
+          </form>
+        </foreign-edit-auto>
+        <def-val>1</def-val>
+      </colonna>
+      <colonna nome="TELEFONO">
+        <campo>TELEFONO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="CELLULARE">
+        <campo>CELLULARE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>480</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormInfInAnagrafiche>
+
+    <FormStpCategorie>
+      <object>StpCategorie</object>
+      <peer>StpCategoriePeer</peer>
+      <header>CATEGORIE</header>
+      <titolo>StpCategorie</titolo>
+      <numcolonne>1</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@CATEGORIEID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>CATEGORIEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="DESCRIZIONE">
+        <campo>DESCRIZIONE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="BRANCA">
+        <campo>IDBRANCA</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpBrancheSel</url>
+          <form>
+            <url>@form?type=FormStpBranche</url>
+            <param name="ID">@IDBRANCA</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="ACCORPAMENTO VIS.">
+        <campo>ACCORPAMENTOVISBOOL</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIPO VISUALIZZAZIONE">
+        <campo>CODVISUALIZZAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <custom-edit>
+          <class>CodVisualizzazione</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="STATION NAME">
+        <campo>SCHEDSTATIONNAME</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Utente creazione">
+        <campo>IDUCREA</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </FormStpCategorie>
+
+    <EditAnagrafica>
+      <object>InfInAnagrafiche</object>
+      <peer>InfInAnagrafichePeer</peer>
+      <header>ANAGRAFICHE</header>
+      <titolo>InfInAnagrafiche</titolo>
+      <numcolonne>2</numcolonne>
+
+      <edit-info>
+        <param nome="ID">@INANAGRAFICHEID</param>
+      </edit-info>
+
+      <post-parse-validator>
+        <class>FormAnagraficaValidator</class>
+      </post-parse-validator>
+
+      <colonna nome="ID" primary="true" editable="false" visible="false">
+        <campo>INANAGRAFICHEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+
+      <!--
+      <colonna nome="CODICE">
+        <campo>CODICEALTERNATIVO</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      -->
+
+      <colonna nome="COGNOME">
+        <campo>COGNOME</campo>
+        <size>60</size>
+        <testnull />
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>60</size>
+        <testnull />
+      </colonna>
+
+      <colonna nome="DATA NASCITA">
+        <campo>DATANASCITA</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="COMUNE NASCITA">
+        <campo>IDCOMUNENASCITA</campo>
+        <size>10</size>
+        <testtipo />
+        <testzero />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=SelComuni</url>
+          <form>
+            <url>@form?type=FormAnaComuni</url>
+            <param name="ID">@IDCOMUNENASCITA</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+
+      <colonna nome="CODICE FISCALE (0=AUTO)">
+        <campo>CODICEFISCALE</campo>
+        <size>30</size>
+        <testnull />
+      </colonna>
+      <colonna nome="CODICE SANITARIO">
+        <campo>CODICESANITARIO</campo>
+        <size>30</size>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="SESSO">
+        <campo>SESSO</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="?">Sconosciuto</value>
+          <value key="M">Maschio</value>
+          <value key="F">Femmina</value>
+          <value key="A">Altro</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="RAZZA">
+        <campo>IDRAZZA</campo>
+        <size>10</size>
+        <testtipo />
+        <testzero />
+        <foreign-edit-auto/>
+        <def-val>1</def-val>
+      </colonna>
+
+      <colonna nome="CELLULARE">
+        <campo>CELLULARE</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TELEFONO">
+        <campo>TELEFONO</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="FUMATORE">
+        <campo>FUMATORE</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+
+      <colonna nome="PESO (kg)">
+        <campo>PESO</campo>
+        <size>10</size>
+        <testtipo />
+        <testrange min="0" max="150" />
+      </colonna>
+      <colonna nome="ALTEZZA (cm)">
+        <campo>ALTEZZA</campo>
+        <size>10</size>
+        <testtipo />
+        <testrange min="0" max="250" />
+      </colonna>
+
+      <colonna nome="ANAMNESI">
+        <campo>ANAMNESI</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="RELIGIONE">
+        <campo>IDRELIGIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-edit-auto/>
+        <def-val>1</def-val>
+      </colonna>
+
+      <colonna nome="GRUPPO SANGUIGNO">
+        <campo>GRUPPOSANGUIGNO</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">0</value>
+          <value key="A">A</value>
+          <value key="B">B</value>
+          <value key="AB">AB</value>
+          <value key="?">Sconosciuto</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="FATTORE RH">
+        <campo>FATTORERH</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="+">+</value>
+          <value key="-">-</value>
+        </foreign-edit-values>
+      </colonna>
+
+      <!--
+      <colonna nome="DCE">
+        <campo>DCE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      -->
+
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>480</size>
+        <testtipo />
+        <span>2</span>
+      </colonna>
+    </EditAnagrafica>
+
+    <DispGenHl7log>
+      <object>GenHl7log</object>
+      <peer>GenHl7logPeer</peer>
+      <header>HL7LOG</header>
+      <titolo>GenHl7log</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@HL7LOGID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7LOGID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="NOME HOST">
+        <campo>NOMEHOST</campo>
+        <size>60</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="APPLICATION">
+        <campo>APPLICATION</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="FACILITY">
+        <campo>FACILITY</campo>
+        <size>60</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="TIPO MESSAGGIO">
+        <campo>TIPOMESSAGGIO</campo>
+        <size>60</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="RISULTATO">
+        <campo>RISULTATO</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MESSAGE">
+        <campo>MESSAGE</campo>
+        <size>880</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="ERROR">
+        <campo>ERROR</campo>
+        <size>380</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </DispGenHl7log>
+
+    <DispGenHl7route>
+      <object>GenHl7route</object>
+      <peer>GenHl7routePeer</peer>
+      <header>HL7ROUTE</header>
+      <titolo>GenHl7route</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@HL7ROUTEID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7ROUTEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="MESSAGE">
+        <campo>MESSAGE</campo>
+        <size>880</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="PRIORITY">
+        <campo>PRIORITY</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna editable="false" nome="Utente ultima modifica">
+        <campo>IDUSER</campo>
+        <size>10</size>
+        <testtipo />
+        <foreign-display>
+          <tabella>turbine_user</tabella>
+          <link>user_id</link>
+          <display>first_name, last_name</display>
+        </foreign-display>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data ultima modifica">
+        <campo>ULTMODIF</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+      <colonna editable="false" nome="Data creazione">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <style>cell_form_tech</style>
+      </colonna>
+    </DispGenHl7route>
+
+  </forms>
+
+  <listeEdit>
+
+    <StpParametriDetail>
+      <object>StpParametri</object>
+      <peer>StpParametriPeer</peer>
+      <header>PARAMETRI</header>
+      <titolo>Parametri relativi alle prestazioni di una accettazione</titolo>
+      <numppage>2000</numppage>
+      <menu>StpParametri</menu>
+      <nosize/>
+
+      <edit-info>
+        <url>@form?type=FormStpParametri</url>
+        <param nome="ID">@PARAMETRIID</param>
+      </edit-info>
+
+      <master-detail>
+        <role-detail/>
+        <link>
+          <param nome="ESAMIID">@IDESAMI</param>
+        </link>
+      </master-detail>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>PARAMETRIID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="ESAMI" visible="false">
+        <campo>IDESAMI</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>20</size>
+        <testnull/>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <testnull/>
+      </colonna>
+      <colonna nome="TIPOCAMPIONE">
+        <campo>IDTIPOCAMPIONE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpTipicampioniSel</url>
+          <form>
+            <url>@form?type=FormStpTipicampioni</url>
+            <param name="ID">@IDTIPOCAMPIONE</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </StpParametriDetail>
+
+    <StpMetodicheDetail>
+      <object>StpMetodiche</object>
+      <peer>StpMetodichePeer</peer>
+      <header>METODICHE</header>
+      <titolo>Il modo con cui uno strumento nomina i tipi di esame che esegue</titolo>
+      <numppage>2000</numppage>
+      <menu>StpMetodiche</menu>
+
+      <edit-info>
+        <url>@form?type=FormStpMetodiche</url>
+        <param nome="ID">@METODICHEID</param>
+      </edit-info>
+
+      <master-detail>
+        <role-detail/>
+        <link>
+          <param nome="STRUMENTIID">@IDSTRUMENTI</param>
+        </link>
+      </master-detail>
+
+      <pre-parse-validator>
+        <class>StpMetodicheDetailValidator</class>
+      </pre-parse-validator>
+
+      <!--
+        Questo custom button visualizza la lista esami; alla selezione
+        viene chiamata la funzione javascript in custom-script che cambia
+        l'action di default in una action apposita per recuperare il valore
+        di idesametoadd e inserire quindi tutti i parametri come metodiche.
+      -->
+      <hbutton>
+        <url popup="1">@list?type=LsStpEsamiSel3</url>
+        <param nome="func">caricaEsame</param>
+        <text>Carica intero esame</text>
+      </hbutton>
+
+      <!--
+        Questo custom button visualizza la lista strumenti; alla selezione
+        viene chiamata la funzione javascript in custom-script che cambia
+        l'action di default in una action apposita per recuperare il valore
+        di idstrumentodup e duplicare tutti i parametri di quello strumento.
+      -->
+      <hbutton>
+        <url popup="1">@list?type=LsStpStrumentiSel2</url>
+        <param nome="func">caricaStrumento</param>
+        <text>Importa da altro strumento</text>
+      </hbutton>
+
+      <custom-script>
+        <![CDATA[
+          <input type="hidden" name="idesametoadd" value="">
+          <input type="hidden" name="idstrumentodup" value="">
+
+          <SCRIPT LANGUAGE="JavaScript">
+            function caricaEsame(codice, descrizione)
+            {
+              document.fo.action.value = "EditStrumento";
+              document.fo.idesametoadd.value = codice;
+              relCommand("salva");
+            }
+            function caricaStrumento(codice, descrizione)
+            {
+              document.fo.action.value = "EditStrumento";
+              document.fo.idstrumentodup.value = codice;
+              relCommand("salva");
+            }
+          </SCRIPT>
+        ]]>
+      </custom-script>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>METODICHEID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="STRUMENTI" visible="false">
+        <campo>IDSTRUMENTI</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="GRUPPI STRUMENTI" visible="false">
+        <campo>IDGRUPPISTRUMENTI</campo>
+        <size>10</size>
+        <def-val>0</def-val>
+      </colonna>
+      <colonna nome="PARAMETRI">
+        <campo>IDPARAMETRI</campo>
+        <size>6</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsStpParametriSel</url>
+          <form>
+            <url>@form?type=FormStpParametri</url>
+            <param name="ID">@IDPARAMETRI</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="CODICE TX">
+        <campo>CODICETX</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="CODICE RX">
+        <campo>CODICERX</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="FORMULA">
+        <campo>FORMULA</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="MIN ACC.">
+        <campo>MINIMOACCETTABILE</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="MIN PAT.">
+        <campo>MINIMOPATOLOGICO</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="MIN NOR.">
+        <campo>MINIMONORMALE</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="MAX NOR.">
+        <campo>MASSIMONORMALE</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="MAX PAT.">
+        <campo>MASSIMOPATOLOGICO</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="MAX ACC.">
+        <campo>MASSIMOACCETTABILE</campo>
+        <size>5</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </StpMetodicheDetail>
+
+    <LpHl7detail-edit>
+      <object>GenHl7detail</object>
+      <peer>GenHl7detailPeer</peer>
+      <header>MESSAGGI DA INVIARE</header>
+      <titolo>Hl7detail</titolo>
+      <numppage>15</numppage>
+      <menu>Hl7detail</menu>
+
+      <master-detail>
+        <role-detail/>
+        <link>
+          <param nome="ID">@IDHL7ENTITY</param>
+        </link>
+      </master-detail>
+
+      <!--
+      <post-parse-validator>
+        <class>HL7detailValidator</class>
+      </post-parse-validator>
+      -->
+
+      <edit-info>
+        <url>@form?type=FormHl7detail</url>
+        <param nome="ID">@HL7DETAILID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7DETAILID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="HL7ENTITY" visible="false">
+        <campo>IDHL7ENTITY</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="MESSAGGIO">
+        <campo>MESSAGE</campo>
+        <size>10</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaMessaggiHL7</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="EVENTO">
+        <campo>TIPOEVENTO</campo>
+        <size>10</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaEventiHL7</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="TIPO INVIO">
+        <campo>TIPOINVIO</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">Asincrono</value>
+          <value key="1">Asincrono permanente</value>
+          <value key="2">Sincrono</value>
+          <value key="3">Sincrono bloccante</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="TIPO LOG">
+        <campo>TIPOLOG</campo>
+        <size>10</size>
+        <foreign-edit-values>
+          <mode>DISP_DESCR_EDIT</mode>
+          <value key="0">Nessuno</value>
+          <value key="1">Solo errori</value>
+          <value key="2">Sempre</value>
+        </foreign-edit-values>
+      </colonna>
+      <colonna nome="BUILDER">
+        <campo>BUILDER</campo>
+        <size>20</size>
+        <custom-edit>
+          <class>it.radimage.argo.rigel.customedit.ListaBuilderHL7</class>
+        </custom-edit>
+      </colonna>
+      <colonna nome="BUILDER INFO">
+        <campo>INFO</campo>
+        <size>20</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpHl7detail-edit>
+
+  </listeEdit>
+
+  <liste-sql>
+
+    <parametri-campione>
+      <header>PARAMETRI DEL CAMPIONE</header>
+      <titolo>Lista dei test da eseguire sul campione selezionato</titolo>
+      <numppage>15</numppage>
+      <menu>inf.run_parametri</menu>
+
+      <disableNew/>
+
+      <parametro nome="idcamp">
+        <descr>ID del campione</descr>
+        <campo cmp="EQ">ID_CAMPIONI</campo>
+        <defval>0</defval>
+        <tipo>PDT_INTEGER</tipo>
+      </parametro>
+
+      <edit-info>
+        <url>@form?type=FormInfRunParametri</url>
+        <param nome="ID">@RUN_PARAMETRI_ID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false">
+        <campo>RUN_PARAMETRI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ESAME">
+        <campo>DESCESA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PARAMETRO">
+        <campo>DESCPARAM</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE ESAME">
+        <campo>CODICE_ESAME</campo>
+        <size>15</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ESAMETX">
+        <campo>ESAMETX</campo>
+        <size>15</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="FLAGTX">
+        <campo>FLAGTX</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="DATATX">
+        <campo>DATATX</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <select>
+        T.RUN_PARAMETRI_ID, T.ID_CAMPIONI, T.ID_PARAMETRI, T.CODICE_ESAME, T.ESAMETX, T.FLAGTX, T.DATATX,
+        P.PARAMETRI_ID, P.ID_ESAMI, P.CODICE, P.DESCRIZIONE AS DESCPARAM,
+        E.CODICE AS CODESA, E.DESCRIZIONE AS DESCESA
+      </select>
+      <from>
+        ((INF.RUN_PARAMETRI AS T
+        INNER JOIN STP.PARAMETRI AS P ON T.ID_PARAMETRI=P.PARAMETRI_ID)
+        INNER JOIN STP.ESAMI AS E ON P.ID_ESAMI=E.ESAMI_ID)
+      </from>
+      <delete-from>INF.RUN_PARAMETRI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>RUN_PARAMETRI_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </parametri-campione>
+
+    <maint-allarmi>
+      <select>a.allarmi_id,t.descrizione AS severity, a.servizio, a.componente, a.messaggio,a.creazione,s.descrizione as stato</select>
+      <from>((gen.allarmi AS a LEFT JOIN gen.tipallarmi AS t ON a.severity=t.tipall_id) LEFT JOIN gen.statallarmi AS s ON a.STATO=s.statall_id)</from>
+      <where><![CDATA[(a.stato_rec is null or a.stato_rec < 10)]]>
+      </where>
+      <delete-from>allarmi</delete-from>
+      <orderby>ALLARMI_ID DESC</orderby>
+
+      <disableNew/>
+
+      <header>ALLARMI</header>
+      <titolo>Gestione Allarmi</titolo>
+      <numppage>15</numppage>
+      <menu>Allarmi</menu>
+      <edit-info>
+        <url>Editallarmi.vm?</url>
+        <param nome="Id">@ALLARMI_ID</param>
+      </edit-info>
+      <colonna nome="ID" visible="false" primary="true">
+        <campo>ALLARMI_ID</campo>
+        <tipo>PDT_INTEGER</tipo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Severita'">
+        <campo>severity</campo>
+        <tipo>PDT_STRING</tipo>
+        <size>15</size>
+      </colonna>
+      <colonna nome="Servizio">
+        <campo>servizio</campo>
+        <tipo>PDT_STRING</tipo>
+        <size>15</size>
+      </colonna>
+      <colonna nome="Componente">
+        <campo>componente</campo>
+        <tipo>PDT_STRING</tipo>
+        <size>15</size>
+      </colonna>
+      <colonna nome="Messaggio" ricerca-semplice="true">
+        <campo>messaggio</campo>
+        <tipo>PDT_STRING</tipo>
+        <size>100</size>
+      </colonna>
+      <colonna nome="Stato">
+        <campo>stato</campo>
+        <tipo>PDT_STRING</tipo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Data">
+        <campo>creazione</campo>
+        <tipo>PDT_DATE</tipo>
+        <formatter>it.radimage.argo.utils.format.DateTimeFormat</formatter>
+        <size>25</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit/>
+        </caratteristiche>
+      </colonna>
+    </maint-allarmi>
+
+    <campioniRack>
+      <header>CAMPIONI DEL RACK</header>
+      <titolo>Elenco provette presenti nel rack selezionato</titolo>
+      <numppage>15</numppage>
+      <menu>inf.run_campioni</menu>
+
+      <disableNew/>
+
+      <parametro nome="idrack">
+        <descr>ID del campione</descr>
+        <campo cmp="EQ">ID_RACK</campo>
+        <defval>0</defval>
+        <tipo>PDT_INTEGER</tipo>
+      </parametro>
+
+      <edit-info>
+        <url>@list?type=parametri-campione</url>
+        <param nome="idcamp">@RUN_CAMPIONI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false">
+        <campo>RUN_CAMPIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="SID">
+        <campo>SID</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PROG">
+        <campo>PROG</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="RACK">
+        <campo>RACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CUVETTA">
+        <campo>CUVETTA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="TC">
+        <campo>TCDESC</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MB">
+        <campo>MBDESC</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TRASMISSIONE">
+        <campo>DATA_QUERY</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="URGENZA">
+        <campo>URGENZA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.RUN_CAMPIONI_ID, T.ID_STRUMENTI, T.ID_CAMPIONI, T.ID_RACK, T.SID,
+        T.PROG, T.RACK, T.CUVETTA, T.DATA_QUERY, T.NUM_ESAMI, T.URGENZA,
+        TC.DESCRIZIONE AS TCDESC,
+        MB.DESCRIZIONE AS MBDESC
+      </select>
+      <from>
+        ((INF.RUN_CAMPIONI AS T
+        INNER JOIN STP.TIPICAMPIONI AS TC ON T.ID_TIPOCAMPIONE=TIPICAMPIONI_ID)
+        INNER JOIN STP.MATERIALI_BIO AS MB ON TC.ID_MATERIALIBIOLOGICI=MATERIALI_BIO_ID)
+      </from>
+      <delete-from>INF.RUN_CAMPIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>RUN_CAMPIONI_ID</orderby>
+
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </campioniRack>
+
+    <accRisultati>
+      <header>ACCETTAZIONI</header>
+      <titolo>Accettazioni di pazienti ed esami</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_accettazioni</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.AccettazioneListTable</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>ValidaRisultati.vm</url>
+        <param nome="ID">@IN_ACCETTAZIONI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true" visible="false">
+        <campo>IN_ACCETTAZIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="D.ACC." ricerca-semplice="true">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP_CMPDATEONLY</tipo>
+      </colonna>
+      <colonna nome="S.">
+        <campo>SESSO</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ETA">
+        <campo>DATA_NASCITA</campo>
+        <size>10</size>
+        <tipo>PDT_DATE</tipo>
+        <formatter>it.radimage.argo.utils.format.NumYearsColumnFormat</formatter>
+      </colonna>
+      <colonna nome="SITO">
+        <campo>SDESC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="REPARTO">
+        <campo>RDESC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="Fun." align="center" visible="false">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+        </caratteristiche>
+      </colonna>
+
+      <select>
+        T.IN_ACCETTAZIONI_ID, T.ID_ANAGRAFICHE, T.ID_SITI, T.CODICE, T.DATA_ACCETTAZIONE,
+        T.ID_REPARTI, T.LETTO, T.STATO_REC,
+        A.COGNOME, A.NOME, A.SESSO, A.DATA_NASCITA,
+        R.DESCRIZIONE AS RDESC, S.DESCRIZIONE AS SDESC
+      </select>
+      <from>
+        (((INF.IN_ACCETTAZIONI AS T
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON T.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+        INNER JOIN STP.REPARTI AS R ON T.ID_REPARTI=R.REPARTI_ID)
+        INNER JOIN STP.SITI AS S ON T.ID_SITI=S.SITI_ID)
+      </from>
+      <delete-from>INF.IN_ACCETTAZIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_ACCETTAZIONI_ID</orderby>
+    </accRisultati>
+
+    <LsInfInAccettazioni>
+      <header>ACCETTAZIONI</header>
+      <titolo>Accettazioni di pazienti ed esami</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_accettazioni</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.AccettazioneListTable</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfInAccettazioni</url>
+        <param nome="ID">@IN_ACCETTAZIONI_ID</param>
+      </edit-info>
+
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>COGNOME</descrizione>
+      </foreign-server>
+
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>IN_ACCETTAZIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SITI">
+        <campo>ID_SITI</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="REPARTI">
+        <campo>ID_REPARTI</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="LETTO">
+        <campo>LETTO</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.IN_ACCETTAZIONI_ID, T.ID_ANAGRAFICHE, T.ID_SITI, T.CODICE, T.DATA_ACCETTAZIONE,
+        T.ID_REPARTI, T.LETTO, T.STATO_REC,
+        A.COGNOME, A.NOME
+      </select>
+      <from>
+        INF.IN_ACCETTAZIONI AS T
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON T.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID
+      </from>
+      <delete-from>INF.IN_ACCETTAZIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_ACCETTAZIONI_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+          <custom>
+            <icon>glyphicon: trash</icon>
+            <text>Cancella tutti gli intermedi.</text>
+            <confirm>Sei sicuro di voler rigenerare i dati dell\'accettazione @CODICE?</confirm>
+            <url>Uniana.vm</url>
+            <param nome="type">LsInfInAccettazioni</param>
+            <param nome="action">PulisciAccettazione</param>
+            <param nome="idacc">@IN_ACCETTAZIONI_ID</param>
+          </custom>
+          <custom>
+            <class>it.radimage.argo.rigel.custombuttons.AccettazioneCustomButtonSchedula</class>
+            <icon>glyphicon: refresh</icon>
+            <text>Rigenera i dati relativi a questa accettazione cancellando tutti gli intermedi.</text>
+            <confirm>Sei sicuro di voler rigenerare i dati dell\'accettazione @CODICE?</confirm>
+            <url>Uniana.vm</url>
+            <param nome="type">LsInfInAccettazioni</param>
+            <param nome="action">SchedulaAccettazione</param>
+            <param nome="idacc">@IN_ACCETTAZIONI_ID</param>
+          </custom>
+        </caratteristiche>
+      </colonna>
+    </LsInfInAccettazioni>
+
+    <LsInfInAnagrafiche>
+      <header>ANAGRAFICHE</header>
+      <titolo>Elenco pazienti</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_anagrafiche</menu>
+      <edit-info>
+        <url>@form?type=FormInfInAnagrafiche</url>
+        <param nome="ID">@IN_ANAGRAFICHE_ID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>IN_ANAGRAFICHE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE_ALTERNATIVO</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME" ricerca-semplice="true">
+        <campo>NOME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA NASCITA">
+        <campo>DATA_NASCITA</campo>
+        <size>10</size>
+        <tipo>PDT_DATE</tipo>
+      </colonna>
+      <colonna nome="SESSO">
+        <campo>SESSO</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="CODICE FISCALE">
+        <campo>CODICE_FISCALE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE SANITARIO">
+        <campo>CODICE_SANITARIO</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>
+        T.IN_ANAGRAFICHE_ID, T.CODICE_ALTERNATIVO, T.ID_APPLICATIVI, T.COGNOME, T.NOME, T.DATA_NASCITA, T.SESSO,
+        T.CODICE_FISCALE, T.CODICE_SANITARIO, T.GRUPPO_SANGUIGNO, T.FATTORE_RH, T.DCE, T.ID_RAZZA
+      </select>
+      <from>INF.IN_ANAGRAFICHE AS T</from>
+      <delete-from>INF.IN_ANAGRAFICHE</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_ANAGRAFICHE_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfInAnagrafiche>
+
+    <LsInfInCampioni>
+      <header>CAMPIONI</header>
+      <titolo>Elenco dei campioni da analizzare</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_campioni</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfInCampioni</url>
+        <param nome="ID">@IN_CAMPIONI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>IN_CAMPIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCETTAZIONE" ricerca-semplice="true">
+        <campo>CODICE</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="NUM ETICHETTE">
+        <campo>NUM_ETICHETTE</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="T.CAMP.">
+        <campo>J1_DESCRIZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="MAT.BIO.">
+        <campo>MBDESC</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="PROGRESSIVO">
+        <campo>PROGRESSIVO</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="SID" ricerca-semplice="true">
+        <campo>SID</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA PRELIEVO">
+        <campo>DATA_PRELIEVO</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.IN_CAMPIONI_ID, T.ID_ACCETTAZIONI, T.ID_ETICHETTE, T.NUM_ETICHETTE,
+        T.PROGRESSIVO, T.SID, T.DATA_PRELIEVO, T.NOTE, T.STATO_REC,
+        C.IN_ACCETTAZIONI_ID, C.ID_ANAGRAFICHE, C.ID_SITI, C.CODICE, C.DATA_ACCETTAZIONE, C.ID_REPARTI, C.LETTO,
+        J1.DESCRIZIONE AS J1_DESCRIZIONE,
+        A.COGNOME, A.NOME, MB.DESCRIZIONE AS MBDESC
+      </select>
+      <from>
+        ((((INF.IN_CAMPIONI AS T
+        INNER JOIN INF.IN_ACCETTAZIONI AS C ON T.ID_ACCETTAZIONI=C.IN_ACCETTAZIONI_ID)
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON C.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+        INNER JOIN STP.TIPICAMPIONI AS J1 ON T.ID_TIPOCAMPIONE=J1.TIPICAMPIONI_ID)
+        INNER JOIN STP.MATERIALI_BIO AS MB ON J1.ID_MATERIALIBIOLOGICI=MB.MATERIALI_BIO_ID)
+      </from>
+      <delete-from>INF.IN_CAMPIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_CAMPIONI_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfInCampioni>
+
+    <LsInfInEsami>
+      <header>ESAMI</header>
+      <titolo>Esami richiesti per accettazione</titolo>
+      <numppage>10</numppage>
+      <menu>inf.in_esami</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfInEsami</url>
+        <param nome="ID">@IN_ESAMI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>IN_ESAMI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCETTAZIONE" ricerca-semplice="true">
+        <campo>CODICEACC</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="ACCNO">
+        <campo>ACCESSION_NUMBER</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="IMG">
+        <campo>NUM_IMMAGINI</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="QTA">
+        <campo>QTY</campo>
+        <size>10</size>
+        <tipo>PDT_DOUBLE</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.IN_ESAMI_ID, T.ID_ACCETTAZIONI, T.CODICE, T.DESCRIZIONE, T.STATO_REC,
+        T.NUM_IMMAGINI, T.QTY, T.ACCESSION_NUMBER,
+        C.IN_ACCETTAZIONI_ID, C.ID_ANAGRAFICHE, C.ID_SITI, C.CODICE AS CODICEACC, C.DATA_ACCETTAZIONE,
+        A.COGNOME, A.NOME
+      </select>
+      <from>
+        ((INF.IN_ESAMI AS T
+        INNER JOIN INF.IN_ACCETTAZIONI AS C ON T.ID_ACCETTAZIONI=C.IN_ACCETTAZIONI_ID)
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON C.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+      </from>
+      <delete-from>INF.IN_ESAMI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_ESAMI_ID DESC</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfInEsami>
+
+    <LsInfInParametri>
+      <header>PARAMETRI</header>
+      <titolo>Parametri relativi alle prestazioni di una accettazione</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_parametri</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfInParametri</url>
+        <param nome="ID">@IN_PARAMETRI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>IN_PARAMETRI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCETTAZIONE" ricerca-semplice="true">
+        <campo>CODICEACC</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="SID">
+        <campo>SID</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COD ESAMI">
+        <campo>CODICEESA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ESAMI">
+        <campo>DESCESA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.IN_PARAMETRI_ID, T.ID_ESAMI, T.CODICE, T.DESCRIZIONE, T.STATO_REC,
+        E.IN_ESAMI_ID, E.ID_ACCETTAZIONI, E.CODICE AS CODICEESA, E.DESCRIZIONE AS DESCESA,
+        C.IN_ACCETTAZIONI_ID, C.ID_ANAGRAFICHE, C.ID_SITI, C.CODICE AS CODICEACC, C.DATA_ACCETTAZIONE,
+        A.COGNOME, A.NOME, CA.SID
+      </select>
+      <from>
+        ((((INF.IN_PARAMETRI AS T
+        INNER JOIN INF.IN_ESAMI AS E ON T.ID_ESAMI=E.IN_ESAMI_ID)
+        INNER JOIN INF.IN_ACCETTAZIONI AS C ON E.ID_ACCETTAZIONI=C.IN_ACCETTAZIONI_ID)
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON C.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+        INNER JOIN INF.IN_CAMPIONI AS CA ON T.ID_CAMPIONI=CA.IN_CAMPIONI_ID)
+      </from>
+      <delete-from>INF.IN_PARAMETRI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_PARAMETRI_ID DESC</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfInParametri>
+
+    <LsInfOutRisultati>
+      <header>RISULTATI</header>
+      <titolo>I risultati di un esame (ogni esame può avere più risultati)</titolo>
+      <numppage>15</numppage>
+      <menu>inf.out_risultati</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfOutRisultati</url>
+        <param nome="ID">@OUT_RISULTATI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>OUT_RISULTATI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCETTAZIONE" ricerca-semplice="true">
+        <campo>CODICE</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STRUMENTI" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SID">
+        <campo>SID</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PARAMETRO">
+        <campo>CODICE_ESAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="RISULTATO" align="right">
+        <campo>RISULTATO</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="U">
+        <campo>UNITA</campo>
+        <size>6</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="E">
+        <campo>FLAG_ERRORE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA RICEZIONE">
+        <campo>DATA_RICEZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOTE" visible="false">
+        <campo>NOTE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+
+      <select>
+        T.OUT_RISULTATI_ID, T.ID_STRUMENTI, T.CODICE_ESAME, T.PID, T.SID,
+        T.PROG, T.RACK, T.CUVETTA, T.RISULTATO, T.FLAG_ERRORE, T.DATA_ESECUZIONE,
+        T.DATA_RICEZIONE, T.NOTE, T.STATO_REC, T.UNITA,
+        S.STRUMENTI_ID, S.ID_MODELLI_STRUMENTI, S.DESCRIZIONE, S.NOTE AS NOTE_STRUMENTO,
+        C.IN_ACCETTAZIONI_ID, C.ID_ANAGRAFICHE, C.ID_SITI, C.CODICE, C.DATA_ACCETTAZIONE, C.ID_REPARTI, C.LETTO,
+        A.COGNOME, A.NOME
+      </select>
+      <from>
+        ((((INF.OUT_RISULTATI AS T
+        INNER JOIN STP.STRUMENTI AS S ON T.ID_STRUMENTI=S.STRUMENTI_ID)
+        LEFT JOIN INF.IN_CAMPIONI AS I ON T.SID=I.SID)
+        LEFT JOIN INF.IN_ACCETTAZIONI AS C ON I.ID_ACCETTAZIONI=C.IN_ACCETTAZIONI_ID)
+        LEFT JOIN INF.IN_ANAGRAFICHE AS A ON C.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+      </from>
+      <delete-from>INF.OUT_RISULTATI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>OUT_RISULTATI_ID DESC</orderby>
+
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <custom>
+            <class>it.radimage.argo.rigel.custombuttons.RisultatiCustomButtonNote</class>
+            <icon>glyphicon: comment</icon>
+            <text>Ci sono note associate a questo risultato.</text>
+            <url popup="1">showNoteRes.jsp</url>
+            <param nome="idres">@OUT_RISULTATI_ID</param>
+          </custom>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfOutRisultati>
+
+    <LsInfRunCampioni>
+      <header>CAMPIONI</header>
+      <titolo>Elenco campioni per gli strumenti</titolo>
+      <numppage>10</numppage>
+      <menu>inf.run_campioni</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfRunCampioni</url>
+        <param nome="ID">@RUN_CAMPIONI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>RUN_CAMPIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCETTAZIONE" ricerca-semplice="true">
+        <campo>CODICE</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STRUMENTI" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SID">
+        <campo>SID</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PROG">
+        <campo>PROG</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="RACK">
+        <campo>RACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CUVETTA">
+        <campo>CUVETTA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="T.CAMP.">
+        <campo>J1_DESCRIZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="MAT. BIO.">
+        <campo>MBDESC</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="DATA QUERY">
+        <campo>DATA_QUERY</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="NUM ESAMI">
+        <campo>NUM_ESAMI</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="URGENZA">
+        <campo>URGENZA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+
+      <select>
+        T.RUN_CAMPIONI_ID, T.ID_STRUMENTI, T.ID_CAMPIONI, T.ID_RACK, T.SID, T.PROG, T.RACK, T.CUVETTA,
+        T.DATA_QUERY, T.NUM_ESAMI, T.URGENZA, T.STATO_REC,
+        S.STRUMENTI_ID, S.ID_MODELLI_STRUMENTI, S.DESCRIZIONE, S.NOTE,
+        C.IN_ACCETTAZIONI_ID, C.ID_ANAGRAFICHE, C.ID_SITI, C.CODICE, C.DATA_ACCETTAZIONE, C.ID_REPARTI, C.LETTO,
+        J1.DESCRIZIONE AS J1_DESCRIZIONE,
+        A.COGNOME, A.NOME, MB.DESCRIZIONE AS MBDESC
+      </select>
+      <from>
+        ((((((INF.RUN_CAMPIONI AS T
+        INNER JOIN STP.STRUMENTI AS S ON T.ID_STRUMENTI=S.STRUMENTI_ID)
+        INNER JOIN INF.IN_CAMPIONI AS I ON T.ID_CAMPIONI=I.IN_CAMPIONI_ID)
+        INNER JOIN INF.IN_ACCETTAZIONI AS C ON I.ID_ACCETTAZIONI=C.IN_ACCETTAZIONI_ID)
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON C.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+        INNER JOIN STP.TIPICAMPIONI AS J1 ON T.ID_TIPOCAMPIONE=J1.TIPICAMPIONI_ID)
+        INNER JOIN STP.MATERIALI_BIO AS MB ON J1.ID_MATERIALIBIOLOGICI=MB.MATERIALI_BIO_ID)
+      </from>
+      <delete-from>INF.RUN_CAMPIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>RUN_CAMPIONI_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfRunCampioni>
+
+    <LsInfRunParametri>
+      <header>PARAMETRI</header>
+      <titolo>Elenco parametri da acquisire</titolo>
+      <numppage>10</numppage>
+      <menu>inf.run_parametri</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfRunParametri</url>
+        <param nome="ID">@RUN_PARAMETRI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>RUN_PARAMETRI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCETTAZIONE" ricerca-semplice="true">
+        <campo>CODICE</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="D.ACC.">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>20</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STRUMENTO" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SID" ricerca-semplice="true">
+        <campo>SID</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PROG">
+        <campo>PROG</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="RACK">
+        <campo>RACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CUVETTA">
+        <campo>CUVETTA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE_ESAME</campo>
+        <size>15</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ESAMETX">
+        <campo>ESAMETX</campo>
+        <size>15</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="F">
+        <campo>FLAGTX</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="DATATX">
+        <campo>DATATX</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+
+      <select>
+        T.RUN_PARAMETRI_ID, T.ID_CAMPIONI, T.ID_PARAMETRI, T.CODICE_ESAME, T.ESAMETX, T.FLAGTX, T.DATATX, T.STATO_REC,
+        C.RUN_CAMPIONI_ID, C.ID_STRUMENTI, C.ID_RACK, C.SID, C.PROG, C.RACK, C.CUVETTA,
+        C.DATA_QUERY, C.NUM_ESAMI, C.URGENZA,
+        S.STRUMENTI_ID, S.ID_MODELLI_STRUMENTI, S.DESCRIZIONE, S.NOTE,
+        N.IN_ACCETTAZIONI_ID, N.ID_ANAGRAFICHE, N.ID_SITI, N.CODICE, N.DATA_ACCETTAZIONE, N.ID_REPARTI, N.LETTO,
+        A.COGNOME, A.NOME
+      </select>
+      <from>
+        (((((INF.RUN_PARAMETRI AS T
+        INNER JOIN INF.RUN_CAMPIONI AS C ON T.ID_CAMPIONI=C.RUN_CAMPIONI_ID)
+        INNER JOIN STP.STRUMENTI AS S ON C.ID_STRUMENTI=S.STRUMENTI_ID)
+        INNER JOIN INF.IN_CAMPIONI AS I ON C.ID_CAMPIONI=I.IN_CAMPIONI_ID)
+        INNER JOIN INF.IN_ACCETTAZIONI AS N ON I.ID_ACCETTAZIONI=N.IN_ACCETTAZIONI_ID)
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON N.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+      </from>
+      <delete-from>INF.RUN_PARAMETRI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>RUN_PARAMETRI_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfRunParametri>
+
+    <LsInfRunRacks>
+      <header>RACKS</header>
+      <titolo>Descrittore del rack di provette da inserire nello strumento</titolo>
+      <numppage>15</numppage>
+      <menu>inf.run_racks</menu>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.CustomTableStatoRecColor</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=FormInfRunRacks</url>
+        <param nome="ID">@RUN_RACKS_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>RUN_RACKS_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="STRUMENTI">
+        <campo>DESCRIZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NCUVERACK">
+        <campo>NCUVERACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="NVIDEARACK">
+        <campo>NVIDEARACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="NPRIMORACK">
+        <campo>NPRIMORACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="TIPORACK">
+        <campo>TIPORACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="RACK">
+        <campo>RACK</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="COMPLETO">
+        <campo>COMPLETO</campo>
+        <size>1</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.RUN_RACKS_ID, T.ID_STRUMENTI, T.NCUVERACK, T.NVIDEARACK, T.NPRIMORACK, T.TIPORACK, T.RACK, T.COMPLETO, T.STATO_REC,
+        S.STRUMENTI_ID, S.ID_MODELLI_STRUMENTI, S.DESCRIZIONE, S.NOTE
+      </select>
+      <from>
+        INF.RUN_RACKS AS T
+        INNER JOIN STP.STRUMENTI AS S ON T.ID_STRUMENTI=S.STRUMENTI_ID
+      </from>
+      <delete-from>INF.RUN_RACKS</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>RUN_RACKS_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsInfRunRacks>
+
+    <LsStpEsami>
+      <header>ESAMI</header>
+      <titolo>Esami richiesti per accettazione</titolo>
+      <numppage>15</numppage>
+      <menu>stp.esami</menu>
+      <nosize/>
+
+      <edit-info>
+        <url>@form?type=FormStpEsami</url>
+        <param nome="ID">@ESAMI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>ESAMI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="BRANCA" ricerca-semplice="true">
+        <campo>J1_descrizione</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="CATEGORIA" ricerca-semplice="true">
+        <campo>J0_descrizione</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="M.O.">
+        <campo>TIPORECORD</campo>
+        <tipo>PDT_INTEGER</tipo>
+        <size>10</size>
+      </colonna>
+      <select>T.ESAMI_ID, T.CODICE, T.DESCRIZIONE, T.TIPORECORD, J0_descrizione, J1_descrizione</select>
+      <from>STP.ESAMI_VIEW AS T</from>
+      <delete-from>STP.ESAMI</delete-from>
+      <orderby>ESAMI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpEsami>
+
+    <LsStpEsamiSel2 extend="LsStpEsami">
+      <foreign-server>
+        <codice>CODICE</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsStpEsamiSel2>
+
+    <LsStpEsamiSel3 extend="LsStpEsami">
+      <titolo>Seleziona esame per importarne tutti i parametri come metodiche</titolo>
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsStpEsamiSel3>
+
+    <LsStpMetodiche>
+      <header>METODICHE</header>
+      <titolo>Il modo con cui uno strumento nomina i tipi di esame che esegue</titolo>
+      <numppage>15</numppage>
+      <menu>stp.metodiche</menu>
+      <edit-info>
+        <url>@form?type=FormStpMetodiche</url>
+        <param nome="ID">@METODICHE_ID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>METODICHE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="STRUMENTO" ricerca-semplice="true">
+        <campo>STRDESC</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="GRUPPO STRUMENTI" ricerca-semplice="true">
+        <campo>GRPDESC</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PARAMETRO" ricerca-semplice="true">
+        <campo>PARDESC</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE TX">
+        <campo>CODICE_TX</campo>
+        <size>15</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE RX">
+        <campo>CODICE_RX</campo>
+        <size>15</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TIPO">
+        <campo>TIPO</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.METODICHE_ID, T.ID_STRUMENTI, T.ID_GRUPPI_STRUMENTI, T.ID_PARAMETRI, T.CODICE_TX, T.CODICE_RX, T.TIPO,
+        S.DESCRIZIONE AS STRDESC,
+        G.DESCRIZIONE AS GRPDESC,
+        P.DESCRIZIONE AS PARDESC
+      </select>
+      <from>
+        (((STP.METODICHE AS T
+        INNER JOIN STP.STRUMENTI AS S ON T.ID_STRUMENTI=S.STRUMENTI_ID)
+        INNER JOIN STP.GRUPPI_STRUMENTI AS G ON T.ID_GRUPPI_STRUMENTI=G.GRUPPI_STRUMENTI_ID)
+        INNER JOIN STP.PARAMETRI AS P ON T.ID_PARAMETRI=P.PARAMETRI_ID)
+      </from>
+      <delete-from>STP.METODICHE</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>METODICHE_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpMetodiche>
+
+    <LsStpParametri>
+      <header>PARAMETRI</header>
+      <titolo>Parametri relativi alle prestazioni di una accettazione</titolo>
+      <numppage>15</numppage>
+      <menu>stp.parametri</menu>
+      <edit-info>
+        <url>@form?type=FormStpParametri</url>
+        <param nome="ID">@PARAMETRI_ID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>PARAMETRI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODESAME">
+        <campo>CODESA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ESAME" ricerca-semplice="true">
+        <campo>DESCESA</campo>
+        <size>40</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MAT.BIO.">
+        <campo>DESMB</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <select>
+        T.PARAMETRI_ID, T.ID_ESAMI, T.CODICE, T.DESCRIZIONE,
+        E.CODICE AS CODESA, E.DESCRIZIONE AS DESCESA,
+        MB.DESCRIZIONE AS DESMB
+      </select>
+      <from>
+        ((STP.PARAMETRI AS T
+        INNER JOIN STP.ESAMI AS E ON T.ID_ESAMI=E.ESAMI_ID)
+        INNER JOIN STP.MATERIALI_BIO AS MB ON T.ID_MATERIALI_BIOLOGICI=MB.MATERIALI_BIO_ID)
+      </from>
+      <delete-from>STP.PARAMETRI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>PARAMETRI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpParametri>
+
+    <LsStpStrumenti>
+      <header>STRUMENTI</header>
+      <titolo>Strumenti installati</titolo>
+      <numppage>15</numppage>
+      <menu>stp.strumenti</menu>
+
+      <edit-info>
+        <url>@form?type=FormStpStrumentiMD</url>
+        <param nome="ID">@STRUMENTI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>STRUMENTI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="MODELLO">
+        <campo>MDESC</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOTE">
+        <campo>NOTE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>
+        T.STRUMENTI_ID, T.ID_MODELLI_STRUMENTI, T.DESCRIZIONE, T.NOTE,
+        M.DESCRIZIONE AS MDESC
+      </select>
+      <from>
+        STP.STRUMENTI AS T
+        INNER JOIN STP.MODELLI_STRUMENTI AS M ON T.ID_MODELLI_STRUMENTI=M.MODELLI_STRUMENTI_ID
+      </from>
+      <delete-from>STP.STRUMENTI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>STRUMENTI_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpStrumenti>
+
+    <LsStpStrumentiSel2 extend="LsStpStrumenti">
+      <titolo>Seleziona uno strumento per importarne tutte le metodiche</titolo>
+
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsStpStrumentiSel2>
+
+    <LsStpSetupStrumenti>
+      <header>SETUP STRUMENTI</header>
+      <titolo>Parametri di funzionamento dello strumento</titolo>
+      <numppage>15</numppage>
+      <menu>stp.setup_strumenti</menu>
+      <edit-info>
+        <url>@form?type=FormStpSetupStrumenti</url>
+        <param nome="ID">@SETUP_STRUMENTI_ID</param>
+      </edit-info>
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>SETUP_STRUMENTI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="MODELLO">
+        <campo>MODDESC</campo>
+        <size>40</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STRUMENTO" ricerca-semplice="true" >
+        <campo>STRDESC</campo>
+        <size>40</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SIGLA">
+        <campo>SIGLA</campo>
+        <size>20</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true" >
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MODALITA">
+        <campo>AAADESC</campo>
+        <size>40</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="CONNESSIONE">
+        <campo>CONDESC</campo>
+        <size>40</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <select>
+        T.SETUP_STRUMENTI_ID, T.ID_STRUMENTI, T.SIGLA, T.DESCRIZIONE,
+        T.MODALITA_TXRX, T.BARCODE, T.CONNESSIONE,
+        S.DESCRIZIONE AS STRDESC,
+        M.DESCRIZIONE AS MODDESC,
+        C.DESCRIZIONE AS CONDESC,
+        A.DESCRIZIONE AS AAADESC
+      </select>
+      <from>
+        ((((STP.SETUP_STRUMENTI AS T
+        INNER JOIN STP.STRUMENTI AS S ON T.ID_STRUMENTI=S.STRUMENTI_ID)
+        INNER JOIN STP.MODELLI_STRUMENTI AS M ON S.ID_MODELLI_STRUMENTI=M.MODELLI_STRUMENTI_ID)
+        INNER JOIN GEN.TIPCONNESSIONE AS C ON T.CONNESSIONE=C.TIPCONNESSIONE_ID)
+        INNER JOIN GEN.TIPMODALITA AS A ON T.MODALITA_TXRX=A.TIPMODALITA_ID)
+      </from>
+      <delete-from>STP.SETUP_STRUMENTI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>SETUP_STRUMENTI_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpSetupStrumenti>
+
+    <LsHl7log>
+      <header>HL7LOG</header>
+      <titolo>log di invio dei messaggi HL7</titolo>
+      <numppage>15</numppage>
+      <menu>hl7log</menu>
+
+      <custom-classes>
+        <table>Hl7ListTable</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=DispGenHl7log</url>
+        <param nome="ID">@HL7LOG_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7LOG_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="NOME HOST" ricerca-semplice="true" >
+        <campo>NOME_HOST</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="APPLICATION">
+        <campo>APPLICATION</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="FACILITY">
+        <campo>FACILITY</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TIP.MSG." ricerca-semplice="true" >
+        <campo>TIPO_MESSAGGIO</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="R.">
+        <campo>RISULTATO</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="RISPOSTA">
+        <campo>ERROR</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <select>T.HL7LOG_ID, T.ID_HL7ENTITY, T.NOME_HOST, T.APPLICATION, T.FACILITY, T.TIPO_MESSAGGIO,
+        T.RISULTATO, T.MESSAGE, T.ERROR, T.CREAZIONE</select>
+      <from>GEN.HL7LOG AS T</from>
+      <delete-from>HL7LOG</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>HL7LOG_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsHl7log>
+
+    <LsHl7route>
+      <header>HL7ROUTE</header>
+      <titolo>Messaggi HL7 in attesa di spedizione</titolo>
+      <numppage>15</numppage>
+      <menu>hl7route</menu>
+      <nosize/>
+
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.Hl7ListTable</table>
+      </custom-classes>
+
+      <edit-info>
+        <url>@form?type=DispGenHl7route</url>
+        <param nome="ID">@HL7ROUTE_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7ROUTE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="HOST" ricerca-semplice="true" >
+        <campo>nome_host</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="INDIRIZZO" ricerca-semplice="true" >
+        <campo>indirizzo</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PORTA">
+        <campo>PORT</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="MESSAGGIO">
+        <campo>MESSAGE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="Ultimo INVIO">
+        <campo>ULT_MODIF</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="Primo INVIO">
+        <campo>CREAZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <select>
+        T.HL7ROUTE_ID, T.MESSAGE, T.ID_HL7DETAIL, T.PRIORITY, T.ULT_MODIF, T.CREAZIONE,
+        A.message AS descmsg,
+        B.nome_host, B.indirizzo, B.application, B.facility, B.port
+      </select>
+      <from>
+        ((GEN.HL7ROUTE AS T
+        INNER JOIN GEN.hl7detail AS A ON T.id_hl7detail=A.hl7detail_id)
+        INNER JOIN GEN.hl7entity AS B ON A.id_hl7entity=B.hl7entity_id)
+      </from>
+      <delete-from>HL7ROUTE</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>HL7ROUTE_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsHl7route>
+
+    <LsHl7entity>
+      <header>HL7ENTITY</header>
+      <titolo>destinazione  dei messaggi HL7</titolo>
+      <numppage>15</numppage>
+      <menu>gen.hl7entity</menu>
+
+      <edit-info>
+        <url>@form?type=FormHl7entity</url>
+        <param nome="ID">@HL7ENTITY_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>HL7ENTITY_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="NOME HOST" ricerca-semplice="true" >
+        <campo>NOME_HOST</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="RECEIVING APPLICATION">
+        <campo>APPLICATION</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="RECEIVING FACILITY">
+        <campo>FACILITY</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SENDING FACILITY">
+        <campo>SENDING_FACILITY</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="INDIRIZZO">
+        <campo>INDIRIZZO</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PORT">
+        <campo>PORT</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACTOR">
+        <campo>ACTOR</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>
+        T.HL7ENTITY_ID, T.NOME_HOST, T.INDIRIZZO, T.APPLICATION, T.FACILITY, T.PORT, T.ACTOR,
+        T.TLS, T.TLS_KEYSTORE, T.BUILDER, T.INFO, T.SENDING_FACILITY
+      </select>
+      <from>GEN.HL7ENTITY AS T</from>
+      <delete-from>GEN.HL7ENTITY</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>HL7ENTITY_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsHl7entity>
+
+    <LsGenLoginjour>
+      <header>Giornale logon</header>
+      <titolo>Giornale di logon.</titolo>
+      <numppage>15</numppage>
+      <menu>gen.loginjour</menu>
+      <disableNew/>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>LOGINJOUR_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="LOGIN" ricerca-semplice="true">
+        <campo>LOGIN_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MODE">
+        <campo>MODE</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>FIRST_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>LAST_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TLOGIN">
+        <campo>TLOGIN</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="TLOGOUT">
+        <campo>TLOGOUT</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STATION NAME">
+        <campo>STATION_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.LOGINJOUR_ID, T.SESSIONID, T.LOGIN_NAME, T.MODE, T.FIRST_NAME, T.LAST_NAME, T.TLOGIN, T.TLOGOUT, T.STATION_NAME</select>
+      <from>GEN.LOGINJOUR AS T</from>
+      <delete-from>GEN.LOGINJOUR</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>LOGINJOUR_ID</orderby>
+    </LsGenLoginjour>
+
+    <LsStpTipicampioni>
+      <header>TIPICAMPIONI</header>
+      <titolo>Tabella dei Tipi Campioni</titolo>
+      <numppage>15</numppage>
+      <menu>stp.tipicampioni</menu>
+      <edit-info>
+        <url>@form?type=FormStpTipicampioni</url>
+        <param nome="ID">@TIPICAMPIONI_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>TIPICAMPIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MAT.BIO.">
+        <campo>J0_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="T.ETI.">
+        <campo>J1_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <select>
+        T.tipicampioni_id, T.codice, T.descrizione, T.id_materialibiologici, T.id_tipietichette, T.cod_location, T.plugin_name,
+        J0.materiali_bio_id AS J0_materiali_bio_id, J0.codice AS J0_codice, J0.descrizione AS J0_descrizione, J0.desinenza AS J0_desinenza, J0.note AS J0_note,
+        J1.tipietichette_id AS J1_tipietichette_id, J1.codice AS J1_codice, J1.descrizione AS J1_descrizione, J1.id_stampante_default AS J1_id_stampante_default, J1.capacita AS J1_capacita, J1.colore AS J1_colore
+      </select>
+      <from>
+        ((STP.TIPICAMPIONI AS T
+        INNER JOIN stp.materiali_bio AS J0 ON T.id_materialibiologici=J0.materiali_bio_id)
+        INNER JOIN stp.tipietichette AS J1 ON T.id_tipietichette=J1.tipietichette_id)
+      </from>
+      <delete-from>STP.TIPICAMPIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>TIPICAMPIONI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpTipicampioni>
+
+    <SelComuni>
+      <header>COMUNI</header>
+      <titolo>Tabella dei Comuni</titolo>
+      <numppage>15</numppage>
+
+      <colonna nome="Sel." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>COMUNI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>6</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CAP">
+        <campo>CAP</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PROVINCIA" ricerca-semplice="true">
+        <campo>J0_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SIGLA">
+        <campo>J0_sigla</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.COMUNI_ID, T.CODICE, T.DESCRIZIONE, T.CAP, T.ID_PROVINCE, T.BELFIORE, T.OLDISTAT, T.OLDIDPROVINCE,
+        J0_descrizione, J0_sigla</select>
+      <from>ANA.COMUNI_VIEW AS T</from>
+      <delete-from>ANA.COMUNI</delete-from>
+      <orderby>COMUNI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+    </SelComuni>
+
+
+    <LsAnaComuni>
+      <header>COMUNI</header>
+      <titolo>Tabella dei Comuni</titolo>
+      <numppage>15</numppage>
+      <menu>ana.comuni</menu>
+
+      <edit-info>
+        <url>@form?type=FormAnaComuni</url>
+        <param nome="ID">@COMUNI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>COMUNI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>6</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CAP">
+        <campo>CAP</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PROVINCE" ricerca-semplice="true">
+        <campo>J0_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="BELFIORE">
+        <campo>BELFIORE</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.COMUNI_ID, T.CODICE, T.DESCRIZIONE, T.CAP, T.ID_PROVINCE, T.BELFIORE, T.OLDISTAT, T.OLDIDPROVINCE, J0_descrizione</select>
+      <from>ANA.COMUNI_VIEW AS T</from>
+      <delete-from>ANA.COMUNI</delete-from>
+      <orderby>COMUNI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsAnaComuni>
+
+    <LsStpTipietichette>
+      <header>TIPI ETICHETTE</header>
+      <titolo>Tipi di etichetta LIS</titolo>
+      <numppage>15</numppage>
+      <menu>stp.tipietichette</menu>
+      <edit-info>
+        <url>@form?type=FormStpTipietichette</url>
+        <param nome="ID">@TIPIETICHETTE_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>TIPIETICHETTE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STAMPANTE DEFAULT">
+        <campo>J0_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CAPACITA">
+        <campo>CAPACITA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COLORE">
+        <campo>COLORE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.TIPIETICHETTE_ID, T.CODICE, T.DESCRIZIONE, T.ID_STAMPANTE_DEFAULT, T.CAPACITA, T.COLORE, J0_descrizione</select>
+      <from>STP.TIPIETICHETTE_VIEW AS T</from>
+      <delete-from>STP.TIPIETICHETTE</delete-from>
+      <orderby>TIPIETICHETTE_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpTipietichette>
+
+    <LsStpStampanti>
+      <header>STAMPANTI</header>
+      <titolo>Tabella delle Stampanti etichette</titolo>
+      <numppage>15</numppage>
+      <menu>stp.stampanti</menu>
+      <edit-info>
+        <url>@form?type=FormStpStampanti</url>
+        <param nome="ID">@STAMPANTI_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>STAMPANTI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TIPO">
+        <campo>TIPO</campo>
+        <size>50</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.STAMPANTI_ID, T.CODICE, T.DESCRIZIONE, T.TIPO, T.IPCLIENT, T.NOMECLIENT, T.PERCORSOSTAMPANTE, T.TEMPLATE1, T.TEMPLATE2, T.ORDINESTAMPA, T.ESAMIPERETIC</select>
+      <from>STP.STAMPANTI AS T</from>
+      <delete-from>STP.STAMPANTI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>STAMPANTI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpStampanti>
+
+    <LsStpTemplateetichette>
+      <header>MODELLI ETICHETTE</header>
+      <titolo>Modelli di etichette per campioni.</titolo>
+      <numppage>15</numppage>
+      <menu>stp.templateetichette</menu>
+      <edit-info>
+        <url>@form?type=FormStpTemplateetichette</url>
+        <param nome="ID">@TEMPLATEETICHETTE_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>TEMPLATEETICHETTE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TIPO">
+        <campo>J1_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="STAMPANTE">
+        <campo>J0_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.TEMPLATEETICHETTE_ID, T.CODICE, T.DESCRIZIONE, T.ID_STAMPANTE, T.ID_TIPIETICHETTE, T.TEMPLATE,
+        J0_descrizione, J1_descrizione
+      </select>
+      <from>STP.TEMPLATEETICHETTE_VIEW AS T</from>
+      <delete-from>STP.TEMPLATEETICHETTE</delete-from>
+      <orderby>TEMPLATEETICHETTE_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpTemplateetichette>
+
+    <LsStpCategorie>
+      <header>CATEGORIE</header>
+      <titolo>Tabella delle categorie prestazioni</titolo>
+      <numppage>15</numppage>
+      <menu>stp.categorie</menu>
+      <nosize/>
+
+      <edit-info>
+        <url>@form?type=FormStpCategorie</url>
+        <param nome="ID">@CATEGORIE_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>CATEGORIE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="BRANCA" ricerca-semplice="true">
+        <campo>J0_descrizione</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="ACC">
+        <campo>ACCORPAMENTO_VIS</campo>
+        <size>1</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="VIS">
+        <campo>COD_VISUALIZZAZIONE</campo>
+        <size>1</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ST.NAME">
+        <campo>SCHED_STATION_NAME</campo>
+        <size>1</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>
+        T.CATEGORIE_ID, T.CODICE, T.DESCRIZIONE, T.ID_BRANCA, T.ACCORPAMENTO_VIS, T.COD_VISUALIZZAZIONE,
+        SCHED_STATION_NAME,
+        J0_descrizione
+      </select>
+      <from>STP.CATEGORIE_VIEW AS T</from>
+      <delete-from>STP.CATEGORIE</delete-from>
+      <orderby>CATEGORIE_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpCategorie>
+
+    <LsStpNodiDicom>
+      <header>NODI DICOM</header>
+      <titolo>Nodi DICOM</titolo>
+      <numppage>15</numppage>
+      <menu>stp.nodi_dicom</menu>
+
+      <edit-info>
+        <url>@form?type=FormStpNodiDicom</url>
+        <param nome="ID">@NODI_DICOM_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>NODI_DICOM_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="AETITLE">
+        <campo>AETITLE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MODALITY">
+        <campo>MODALITY</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="INDIRIZZO">
+        <campo>INDIRIZZO</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PORTA">
+        <campo>PORTA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>T.NODI_DICOM_ID, T.AETITLE, T.MODALITY, T.DESCRIZIONE, T.INDIRIZZO, T.PORTA, T.PREF_TRANSFER_SYNTAX</select>
+      <from>STP.NODI_DICOM AS T</from>
+      <delete-from>STP.NODI_DICOM</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>NODI_DICOM_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <custom>
+            <icon>glyphicon: transfer</icon>
+            <text>Effettua un test della comunicazione (ping TCP/IP).</text>
+            <confirm>Avvio ping TCP/IP test per #ID?</confirm>
+            <url>Unisetup.vm</url>
+            <param nome="type">LsStpNodiDicom</param>
+            <param nome="action">NodoDicomAction</param>
+            <param nome="command">ping</param>
+            <param nome="id">#ID</param>
+          </custom>
+          <custom>
+            <icon>glyphicon: link</icon>
+            <text>Effettua un test della comunicazione (ECHO-SCU).</text>
+            <confirm>Avvio ECHO-SCU test per #ID?</confirm>
+            <url>Unisetup.vm</url>
+            <param nome="type">LsStpNodiDicom</param>
+            <param nome="action">NodoDicomAction</param>
+            <param nome="command">echoscu</param>
+            <param nome="id">#ID</param>
+          </custom>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpNodiDicom>
+
+    <coda-checkin>
+      <header>CHECKIN</header>
+      <titolo>Coda delle richieste di checkin</titolo>
+      <numppage>15</numppage>
+      <menu>inf.checkin</menu>
+      <nosize/>
+
+      <edit-info>
+        <url>@form?type=FormInfCheckin</url>
+        <param nome="ID">@CHECKIN_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>CHECKIN_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE" ricerca-semplice="true" >
+        <campo>CODICE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="SERVER" ricerca-semplice="true" >
+        <campo>NOME_HOST</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA RICHIESTA">
+        <campo>DATA_RICHIESTA</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="DATA ARRIVO">
+        <campo>DATA_ARRIVO</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+
+      <select>
+        T.CHECKIN_ID, T.CODICE, T.ID_HL7ENTITY, T.ID_CAMPIONI, T.DATA_RICHIESTA, T.DATA_ARRIVO,
+        H.NOME_HOST
+      </select>
+      <from>
+        INF.CHECKIN AS T
+        INNER JOIN GEN.HL7ENTITY AS H ON T.ID_HL7ENTITY=H.HL7ENTITY_ID
+      </from>
+      <delete-from>INF.CHECKIN</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>CHECKIN_ID</orderby>
+
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+          <custom>
+            <icon>glyphicon: retweet</icon>
+            <text>Invia nuovamente la richiesta al server.</text>
+            <confirm>Sei sicuro di voler inviare la richiesta per @CODICE?</confirm>
+            <url>CheckIn.vm</url>
+            <param nome="action">CheckInAction</param>
+            <param nome="command">ripeti</param>
+            <param nome="codicein">@CODICE</param>
+          </custom>
+        </caratteristiche>
+      </colonna>
+    </coda-checkin>
+
+    <IndexAccettazioni>
+      <header>ACCETTAZIONI</header>
+      <titolo>Accettazioni di pazienti ed esami</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_accettazioni</menu>
+
+      <!--
+      <custom-classes>
+        <table>it.radimage.argo.rigel.table.AccettazioneListTable</table>
+      </custom-classes>
+      -->
+
+      <edit-info>
+        <url>closeme.vm</url>
+        <param nome="action">VisRisultatiIndex</param>
+        <param nome="ID">@IN_ACCETTAZIONI_ID</param>
+        <param nome="autoclose">false</param>
+      </edit-info>
+
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>COGNOME</descrizione>
+      </foreign-server>
+
+      <colonna nome="ID" editable="false" primary="true">
+        <campo>IN_ACCETTAZIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA ACCETTAZIONE">
+        <campo>DATA_ACCETTAZIONE</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>
+        T.IN_ACCETTAZIONI_ID, T.ID_ANAGRAFICHE, T.ID_SITI, T.CODICE, T.DATA_ACCETTAZIONE,
+        T.ID_REPARTI, T.LETTO, T.STATO_REC,
+        A.COGNOME, A.NOME
+      </select>
+      <from>
+        INF.IN_ACCETTAZIONI AS T
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON T.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID
+      </from>
+      <delete-from>INF.IN_ACCETTAZIONI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>IN_ACCETTAZIONI_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+          <custom>
+            <icon>glyphicon: trash</icon>
+            <text>Cancella tutti gli intermedi.</text>
+            <confirm>Sei sicuro di voler rigenerare i dati dell\'accettazione @CODICE?</confirm>
+            <url>Index.vm</url>
+            <param nome="action">PulisciAccettazione</param>
+            <param nome="idacc">@IN_ACCETTAZIONI_ID</param>
+          </custom>
+          <custom>
+            <class>it.radimage.argo.rigel.custombuttons.AccettazioneCustomButtonSchedula</class>
+            <icon>glyphicon: refresh</icon>
+            <text>Rigenera i dati relativi a questa accettazione cancellando tutti gli intermedi.</text>
+            <confirm>Sei sicuro di voler rigenerare i dati dell\'accettazione @CODICE?</confirm>
+            <url>Index.vm</url>
+            <param nome="action">SchedulaAccettazione</param>
+            <param nome="idacc">@IN_ACCETTAZIONI_ID</param>
+          </custom>
+        </caratteristiche>
+      </colonna>
+    </IndexAccettazioni>
+
+    <IndexPrestazioni>
+      <header>PRESTAZIONI</header>
+      <titolo>Prestazioni erogate e da erogare</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_accettazioni</menu>
+
+      <custom-classes>
+        <table>CustomTableStatoRec</table>
+      </custom-classes>
+
+      <foreign-server>
+        <codice>IDACC</codice>
+        <descrizione>COGNOME</descrizione>
+      </foreign-server>
+
+      <edit-info>
+        <url>Ordine.vm</url>
+        <param nome="idacc">@IN_ACCETTAZIONI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true" visible="false">
+        <campo>in_esami_id</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="IDACC" editable="false" visible="false">
+        <campo>IN_ACCETTAZIONI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="EPISODIO">
+        <campo>J0_codice</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA">
+        <campo>J0_data_accettazione</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+        <formatter>it.radimage.argo.utils.format.DateTimeFormatMinuti</formatter>
+      </colonna>
+      <colonna nome="COGNOME" ricerca-semplice="true">
+        <campo>COGNOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ESAME">
+        <campo>descrizione</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STATO">
+        <campo>STATO_REC</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ORDINE">
+        <campo>accession_number</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ETA" align="center">
+        <campo>DATA_NASCITA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+        <formatter>it.radimage.argo.utils.format.NumYearsColumnFormat</formatter>
+      </colonna>
+      <colonna nome="SESSO" align="center">
+        <campo>SESSO</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NASCITA">
+        <campo>DATA_NASCITA</campo>
+        <size>10</size>
+        <tipo>PDT_DATE</tipo>
+      </colonna>
+
+      <select>
+        T.in_esami_id, T.id_accettazioni, T.codice, T.descrizione, T.accession_number, T.num_immagini, T.qty, T.note, T.STATO_REC,
+        J0.in_accettazioni_id, J0.id_anagrafiche AS J0_id_anagrafiche, J0.id_siti AS J0_id_siti, J0.id_reparti AS J0_id_reparti, J0.id_zone AS J0_id_zone, J0.tip_acc AS J0_tip_acc, J0.codice AS J0_codice, J0.accession_number AS J0_accession_number, J0.num_immagini AS J0_num_immagini, J0.data_accettazione AS J0_data_accettazione, J0.peso AS J0_peso, J0.altezza AS J0_altezza, J0.fumatore AS J0_fumatore, J0.diuresi AS J0_diuresi, J0.data_ult_mest AS J0_data_ult_mest, J0.letto AS J0_letto, J0.cod_icd9cm AS J0_cod_icd9cm, J0.quesito AS J0_quesito, J0.note AS J0_note,
+        A.COGNOME, A.NOME, A.SESSO, A.DATA_NASCITA, J0.STATO_REC AS J0_STATO_REC
+      </select>
+      <from>
+        ((INF.IN_ESAMI AS T
+        INNER JOIN inf.in_accettazioni AS J0 ON T.id_accettazioni=J0.in_accettazioni_id)
+        INNER JOIN INF.IN_ANAGRAFICHE AS A ON J0.ID_ANAGRAFICHE=A.IN_ANAGRAFICHE_ID)
+      </from>
+      <delete-from>INF.IN_ESAMI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>J0_data_accettazione DESC, cognome, nome, in_esami_id DESC</orderby>
+      <colonna nome="Azioni" align="left">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <custom>
+            <line-edit/>
+            <icon>glyphicon: search</icon>
+            <text>Visualizza risultati.</text>
+            <url>Index.vm</url>
+            <param nome="action">VisRisultatiIndex</param>
+            <param nome="ID">@IN_ACCETTAZIONI_ID</param>
+            <param nome="idesa">@in_esami_id</param>
+          </custom>
+          <custom>
+            <class>EsecuzioneAssistitaPrestazioneButton</class>
+            <icon>glyphicon: cog</icon>
+            <text>Avvia esecuzione assistita da operatore di questa prestazione.</text>
+            <url>Index.vm</url>
+            <param nome="action">EsecuzioneAssistitaPrestazioneAction</param>
+            <param nome="idesa">@in_esami_id</param>
+          </custom>
+        </caratteristiche>
+      </colonna>
+    </IndexPrestazioni>
+
+    <LsRisWorklist>
+      <header>WORKLIST</header>
+      <titolo>Dati temporanei per le worklist.</titolo>
+      <numppage>15</numppage>
+      <menu>ris.worklist</menu>
+
+      <edit-info>
+        <url>@form?type=FormRisWorklist</url>
+        <param nome="ID">@WORKLIST_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>WORKLIST_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ACCESSION NUMBER">
+        <campo>ACCESSION_NUMBER</campo>
+        <size>19</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PAT NASCITA">
+        <campo>PAT_NASCITA</campo>
+        <size>10</size>
+        <tipo>PDT_DATE</tipo>
+      </colonna>
+      <colonna nome="ETHNIC GROUP">
+        <campo>ETHNIC_GROUP</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PAT ID">
+        <campo>PAT_ID</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PAT NAME">
+        <campo>PAT_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PAT SEX">
+        <campo>PAT_SEX</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PREGNANCY">
+        <campo>PREGNANCY_STATUS</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PRIORITY">
+        <campo>EXAMPRIORITY</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STATION AE TITLE">
+        <campo>SCHED_STATION_AE_TITLE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MODALITY">
+        <campo>MODALITY</campo>
+        <size>19</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="STATION NAME">
+        <campo>SCHED_STATION_NAME</campo>
+        <size>19</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="REQ PROC DESC">
+        <campo>REQ_PROC_DESC</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.WORKLIST_ID, T.ID_PRESTAZIONE, T.CHAR_SET, T.ACCESSION_NUMBER, T.ADMISSION_ID, T.ISSUER_ADMISSION_ID, T.PAT_NASCITA, T.ETHNIC_GROUP, T.REGION_OF_RESIDENCE, T.MILITARY_RANK, T.CONTRASTALLERGIES, T.CURRPATLOC, T.CONF_CONST_ONPAT_DATA, T.MEDICALALERTS, T.PAT_ID, T.ISSUER_PAT_ID, T.PAT_NAME, T.PAT_SEX, T.REFERENCEPHYSICIAN, T.REFER_PHYSICIAN, T.REQ_PHYSICIAN, T.PREGNANCY_STATUS, T.EXAMPRIORITY, T.PAT_STATUS, T.PLACER_NUM, T.FILLER_NUM, T.ENTEREDBY, T.ORDER_ENT_LOCAT, T.ORDER_CALLBACK, T.SCHED_STATION_AE_TITLE, T.SCHED_PROC_STEP_START_DATE_TIME, T.MODALITY, T.SCHED_PROC_STEP_DESC, T.SCHED_STATION_NAME, T.SCHED_PROC_STEP_LOCATION, T.SCHED_PROC_STEP_ID, T.SCHED_PROT_CODE_VALUE, T.SCHED_PROT_CODE_SCHEME, T.SCHED_PROT_CODE_MEANING, T.REQ_PROC_ID, T.REQ_PROC_CODE_VALUE, T.REQ_PROC_CODE_SCHEME, T.REQ_PROC_CODE_MEANING, T.PAT_TRANSPORT, T.REASON, T.STUDY_INSTANCE_UID, T.REQ_PROC_DESC</select>
+      <from>RIS.WORKLIST AS T</from>
+      <delete-from>RIS.WORKLIST</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>WORKLIST_ID DESC</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsRisWorklist>
+
+    <RicercaAnagrafica>
+      <header>ANAGRAFICHE</header>
+      <titolo>Elenco pazienti</titolo>
+      <numppage>15</numppage>
+      <menu>inf.in_anagrafiche</menu>
+
+      <edit-info>
+        <url>@form?type=FormInfInAnagrafiche</url>
+        <param nome="ID">@IN_ANAGRAFICHE_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" editable="false" primary="true" visible="false">
+        <campo>IN_ANAGRAFICHE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="COGNOME">
+        <campo>COGNOME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NOME">
+        <campo>NOME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DATA NASCITA">
+        <campo>DATA_NASCITA</campo>
+        <size>10</size>
+        <tipo>PDT_DATE</tipo>
+      </colonna>
+      <colonna nome="SESSO">
+        <campo>SESSO</campo>
+        <size>5</size>
+        <tipo>PDT_STRING</tipo>
+        <combo-ricerca-self/>
+      </colonna>
+      <colonna nome="CODICE FISCALE">
+        <campo>CODICE_FISCALE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="COMUNE DI NASCITA">
+        <campo>DESCOMUNE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>
+        T.IN_ANAGRAFICHE_ID, T.CODICE_ALTERNATIVO, T.ID_APPLICATIVI, T.COGNOME, T.NOME, T.DATA_NASCITA, T.SESSO,
+        T.CODICE_FISCALE, T.CODICE_SANITARIO, T.GRUPPO_SANGUIGNO, T.FATTORE_RH, T.DCE, T.ID_RAZZA,
+        C.DESCRIZIONE AS DESCOMUNE
+      </select>
+      <from>
+        (INF.IN_ANAGRAFICHE AS T
+        INNER JOIN ANA.COMUNI AS C ON T.ID_COMUNE_NASCITA=C.COMUNI_ID)
+      </from>
+      <delete-from>INF.IN_ANAGRAFICHE</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]>
+      </where>
+      <orderby>COGNOME, NOME</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <custom>
+            <line-edit/>
+            <icon>glyphicon: forward</icon>
+            <text>Seleziona anagrafica.</text>
+            <url>Ordine.vm</url>
+            <param nome="action">OrdineAction</param>
+            <param nome="command">seleziona_anagrafica</param>
+            <param nome="ID">@IN_ANAGRAFICHE_ID</param>
+          </custom>
+        </caratteristiche>
+      </colonna>
+    </RicercaAnagrafica>
+
+    <LsGenApplicativiesterni>
+      <header>APPLICATIVI ESTERNI</header>
+      <titolo>Tabella applicativi esterni</titolo>
+      <numppage>15</numppage>
+      <menu>gen.applicativiesterni</menu>
+
+      <edit-info>
+        <url>@form?type=FormGenApplicativiesterni</url>
+        <param nome="ID">@APPLICATIVIESTERNI_ID</param>
+      </edit-info>
+
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>APPLICATIVIESTERNI_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE">
+        <campo>CODICE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="ATTIVO">
+        <campo>ATTIVO</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="PRIORITA">
+        <campo>PRIORITA</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="PLUGIN">
+        <campo>PLUGIN</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.APPLICATIVIESTERNI_ID, T.CODICE, T.DESCRIZIONE, T.ATTIVO, T.PRIORITA, T.PLUGIN, T.PARAMETRI</select>
+      <from>GEN.APPLICATIVIESTERNI AS T</from>
+      <delete-from>GEN.APPLICATIVIESTERNI</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>APPLICATIVIESTERNI_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsGenApplicativiesterni>
+
+    <LsStpStorage>
+      <header>STORAGE</header>
+      <titolo>Descrittori delle aree di storage</titolo>
+      <numppage>15</numppage>
+      <menu>stp.storage</menu>
+      <edit-info>
+        <url>@form?type=FormStpStorage</url>
+        <param nome="ID">@STORAGE_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>STORAGE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="CODICE (AETITLE)">
+        <campo>CODICE</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="DESCRIZIONE" ricerca-semplice="true">
+        <campo>DESCRIZIONE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="TIPO">
+        <campo>TIPO</campo>
+        <size>60</size>
+        <tipo>PDT_INTEGER</tipo>
+        <foreign-values>
+          <value key="0">LETTURA/SCRITTURA</value>
+          <value key="1">SOLA LETTURA</value>
+          <value key="2">LOCALI</value>
+          <value key="3">DISTRIBUITO</value>
+        </foreign-values>
+      </colonna>
+      <colonna nome="PATH">
+        <campo>PATH</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.STORAGE_ID, T.CODICE, T.DESCRIZIONE, T.PATH, T.INFO, T.TIPO</select>
+      <from>STP.STORAGE T</from>
+      <delete-from>STP.STORAGE</delete-from>
+      <where><![CDATA[(T.STATO_REC IS NULL OR T.STATO_REC < 10)]]></where>
+      <orderby>STORAGE_ID</orderby>
+      <foreign-server>
+        <codice>ID</codice>
+        <descrizione>DESCRIZIONE</descrizione>
+      </foreign-server>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsStpStorage>
+
+
+  </liste-sql>
+</root>

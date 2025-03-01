@@ -1,0 +1,33 @@
+<!-- INIZIO RigelLista.vm -->
+
+<script type="text/javascript">
+
+  function submit_$type() {
+
+    var url = "$baseUri";
+
+    jQuery.ajax({
+      type: "POST",
+      url: url,
+      data: $("#fo$type").serialize(), // serializes the form's elements.
+      success: function (data)
+      {
+        $("#rigel_dialog_body").html(data);
+      }
+    });
+
+    return false; // avoid to execute the actual submit of the form.
+  }
+
+  // this is the id of the form
+  $("#fo$type").submit(submit_$type);
+
+</script>
+
+<div id="rigel_dialog_body">
+  <form name="fo$type" id="fo$type" method="post" action="$baseUri">
+    $phtml
+  </form>
+</div>
+
+<!-- FINE RigelLista.vm -->

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    $navigation.setTemplate("CommonHead.vm")
+
+    <!-- Specifiche per Dashboard -->
+    <link rel="stylesheet" href="$ui.getScript('dashboard.css')">
+
+    <SCRIPT type="text/javascript">
+      $data.getFormScript()
+    </SCRIPT>
+  </head>
+
+  <body role="document">
+
+    $navigation.setTemplate("MenuNew.vm")
+
+    <div class="container-fluid" role="main">
+
+      $screen_placeholder
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          $navigation.setTemplate("DefaultBottom.vm")
+        </div>
+      </div>
+
+    </div>
+  </body>
+
+</html>
+
+

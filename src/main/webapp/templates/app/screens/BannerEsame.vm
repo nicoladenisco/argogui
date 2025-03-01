@@ -1,0 +1,36 @@
+<!--
+  BannerEsame.vm
+  Dati comuni esame e paziente per tutte le visualizzazioni risultati.
+-->
+
+<table width='100%' class="boxpaziente">
+  <thead>
+    <tr>
+      <td>$I.I("Episodio")</td>
+      <td>$I.I("Data Accettazione")</td>
+      <td>$I.I("Cognome e nome")</td>
+      <td>$I.I("Data di nascita")</td>
+      <td>$I.I("Eta")</td>
+      <td>$I.I("Sesso")</td>
+      <td>$I.I("Peso")</td>
+      <td>$I.I("Altezza")</td>
+      <td>$I.I("Fumatore")</td>
+      <td>$I.I("Etnia")</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$!acc.codice</td>
+      <td>$data.formatDataOra($acc.dataAccettazione)</td>
+      <td>$!ana.cognome $!ana.nome</td>
+      <td>$data.formatData($ana.dataNascita)</td>
+      <td>$!ana.eta</td>
+      <td>$!ana.sesso</td>
+      <td>$!acc.peso</td>
+      <td>$!acc.altezza</td>
+      <td>$data.formatSINO($acc.fumatore)</td>
+      <td>$!ana.anaRazze.descrizione</td>
+    </tr>
+  </tbody>
+</table>
+

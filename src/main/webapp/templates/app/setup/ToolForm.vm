@@ -1,0 +1,152 @@
+<!-- INIZIO ToolForm.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function showLoading_$type()
+  {
+    var html =
+          "<div align=\"center\">" +
+          "<table><tr>" +
+          "<td><img src=\"$ui.image('loading-red.gif')\" align=\"left\"></td>" +
+          "<td>&nbsp;&nbsp;&nbsp;</td>\n" +
+          "<td>Salvataggio in corso; attendere ... </td>" +
+          "</tr></table>" +
+          "</div>";
+    updateDiv("innerbody$type", html);
+  }
+
+  function salva_$type()
+  {
+    if (!testForm_$type())
+          return;
+
+    relCommand_$type('salva');
+    showLoading_$type();
+
+    if (!$data.hasMessage())
+      window.opener.ricarica();
+  }
+
+  function duplica_$type()
+  {
+    relCommand_$type('duplica');
+    showLoading_$type();
+  }
+
+  function salvanew_$type()
+  {
+    if (!testForm_$type())
+          return;
+
+    relCommand_$type('salvanew');
+    showLoading_$type();
+
+    if (!$data.hasMessage())
+      window.opener.ricarica();
+  }
+
+  function nuovodett_$type()
+  {
+    if (!testForm_$type())
+          return;
+    relCommand_$type('nuovodett');
+  }
+
+  function apriFinestraLista_$type(url, tipo)
+  {
+    apriFinestraLista(url, tipo);
+  }
+
+  function apriFinestraEdit_$type(url, tipo)
+  {
+    apriFinestraEdit(url, tipo);
+  }
+
+  function apriFinestraForm_$type(url, tipo)
+  {
+    apriFinestraForm(url, tipo);
+  }
+
+  function relCommand_$type(comando)
+  {
+    document.fo${type}.command.value = comando;
+    document.fo${type}.submit();
+  }
+
+  function relCommandGet_$type(comando)
+  {
+    goPage("$baseUri/action/FormSave?command=" + encodeURIComponent(comando));
+  }
+
+  function testForm_$type()
+  {
+    $!scTest ;
+    $!dettTest ;
+    return true;
+  }
+
+</SCRIPT>
+
+<div id="innerbody$type">
+
+  <h3>
+    <span class="label label-primary">$pwl.header</span>
+
+    #if($hbuts)
+    #foreach($hb in $hbuts)
+    #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+    #end
+    #end
+
+    #if($saveEnabled)
+    #menuCellScript ("Salva" "salva_$type()" $ui.menuFieldTextStyle)
+    #end
+    #if($saveEnabled && $newEnabled)
+    #menuCellScript ("Duplica" "duplica_$type()" $ui.menuFieldTextStyle)
+    #menuCellScript ("Salva e nuovo" "salvanew_$type()" $ui.menuFieldTextStyle)
+    #end
+  </h3>
+
+  <!-- form modifica dati -->
+  <form action="$baseUri" method="post" name="fo$type">
+    <input type="hidden" name="command" value="">
+    <input type="hidden" name="type" value="$type">
+    <input type="hidden" name="jlc" value="$jlc">
+    <input type="hidden" name="action" value="FormSave">
+
+    <table width=100% cellspacing=3 cellpadding=2><tr><td bgcolor="#CCCCCC">
+          $phtml
+        </td></tr></table>
+
+    #if($dettHtml)
+    <!-- inizio dettaglio -->
+
+    <h3>
+      <span class="label label-info">$edl.header</span>
+
+      #if($hbutd)
+      #foreach($hb in $hbutd)
+      #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+      #end
+      #end
+
+      #if($newEnabled)
+      #menuCellScript ("Nuovo" "nuovodett_$type()" $ui.menuFieldTextStyle)
+      #end
+      #if($saveEnabled)
+      #menuCellScript ("Salva" "salva_$type()" $ui.menuFieldTextStyle)
+      #end
+    </h3>
+
+    <table width=100% cellspacing=3 cellpadding=2><tr><td bgcolor="#CCCCCC">
+          $dettHtml
+        </td></tr></table>
+
+    <!-- fine dettaglio -->
+    #end
+
+  </form>
+
+</div>
+
+<!-- FINE ToolForm.vm -->

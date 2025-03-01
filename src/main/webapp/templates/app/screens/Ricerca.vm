@@ -1,0 +1,192 @@
+$page.setTitle($I.I("Indice"))
+
+<!-- Datatable -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+  function nuovoOrdine()
+  {
+    var url = "$link.setPage('OrdineSelezionaAnagrafica.vm')";
+    goLink(url + "?new=1");
+  }
+
+  function relCommand(command)
+  {
+    document.fo.command.value = command;
+    document.fo.submit();
+
+    showLoading();
+  }
+
+  function eseguiRicerca()
+  {
+    relCommand("ricerca");
+  }
+
+  function pulisciRicerca()
+  {
+    relCommand("pulisci");
+  }
+
+  /* #if($perm.isAuthorizedAll($data, "visualizza_immagini")) */
+
+  function apriVis1(suuid, aet)
+  {
+    var url = "$link.setPage('Visualizzatore.vm')";
+    openInNewTab(url + "?studyUID=" + suuid + "&aetitle=" + aet);
+  }
+
+  function apriVis2(suuid, aet)
+  {
+    var url = "${data.contextPath}/jnlp/weasis";
+    goPage(url + "?studyUID=" + suuid + "&aetitle=" + aet);
+  }
+
+  /* #else */
+
+  function apriVis1(suuid, aet)
+  {
+    alert($I.IA("Non hai i permessi per visualizzare le immagini."));
+  }
+
+  function apriVis2(suuid, aet)
+  {
+    apriVis1(ssuid, aet);
+  }
+
+  /* #end */
+
+  /* #if($perm.isAuthorizedAll($data, "modifica_dicom")) */
+
+  function editStudy(suuid, aet)
+  {
+    var url = "$link.setPage('EditStudy.vm')";
+    goPage(url + "?studyUID=" + suuid + "&aetitle=" + aet);
+  }
+
+  /* #end */
+
+  $("#dstart").change(function () {
+    alert("Handler for .change() called.");
+  });
+  $("#dstop").change(function () {
+    alert("Handler for .change() called.");
+  });
+
+  $(document).ready(function () {
+    oTable = $("#queryres").DataTable({
+      bAutoWidth: true,
+      sPaginationType: 'full_numbers',
+      bSortClasses: false,
+      oLanguage: {
+        "sLengthMenu": $I.IA("Mostra _MENU_ esami per pagina"),
+        "sZeroRecords": $I.IA("Nessuna esame trovato"),
+        "sInfo": $I.IA("Mostrati gli esami da _START_ a _END_ di _TOTAL_ esami totali"),
+        "sInfoEmpty": $I.IA("0 documenti totali"),
+        "sInfoFiltered": $I.IA("(filtrati da _MAX_ esami totali)"),
+        "sSearch": $I.IA("Cerca"),
+        "oPaginate": {
+          "sFirst": $I.IA("Prima"),
+          "sLast": $I.IA("Ultima"),
+          "sNext": $I.IA("Successiva"),
+          "sPrevious": $I.IA("Precedente")
+        }
+      }
+    });
+  });
+
+</script>
+
+#set($showSend = 0)
+
+<div id="innerbody">
+  <form name="fo" action="$link.setPage('Ricerca.vm')" method="post">
+    <input type="hidden" name="action" value="RicercaAction">
+    <input type="hidden" name="command" value="ricerca">
+
+    <br>
+
+    <div class="row">
+      <div class="col-sm-12">
+
+        <div class="panel panel-primary panel-ricercapaziente">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Parametri di ricerca")</h3>
+          </div>
+
+          <div class="panel-body">
+            <div style="float: left; width: 50%; padding-right: 10px;">
+              <span class="label-foto">$I.I("Dati del paziente")</span>
+              <div class="input-group">
+                <input type="text" class="form-control"
+                       placeholder="$I.I('cognome, nome, data di nascita')"
+                       name="ricval" value="$!bean.ricval" autofocus>
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-primary" onclick="eseguiRicerca();">$I.I("Cerca!")</button>
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">$I.I("Cerca paziente")</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" onclick="document.fo.ricval.value = '';">$I.I("Pulisci ricerca")</a></li>
+                    <li><a href="#" onclick="pulisciRicerca();">$I.I("Pulisci tutto")</a></li>
+                    <li class="divider"></li>
+                    <li><a href="$data.homeLink">$I.I("Ritorna a pagina principale")</a></li>
+                  </ul>
+                </div>
+              </div><!-- /input-group -->
+              <div style="padding-top: 5px;">
+                <span class="label-foto">$I.I("Date di ricerca")</span>
+                <div class="input-group">
+                  #if($cfg.getBoolean("abilitaQualsiasiData", true))
+                  $bean.getDttypeField(0) &nbsp;$I.I("Qualsiasi data")<br>
+                  #end
+                  $bean.getDttypeField(1) &nbsp;$I.I("Oggi")<br>
+                  $bean.getDttypeField(2) &nbsp;$I.I("Ieri")<br>
+                  $bean.getDttypeField(3) &nbsp;$I.I("Ultima settimana")<br>
+                  $bean.getDttypeField(4) &nbsp;$I.I("Ultimo mese")<br>
+                  $bean.getDttypeField(5) &nbsp;
+                  $I.I("Da")$data.getCampoDataIntervalloInizio("dstart", "dstop", "fo", $!bean.dstart, 10) &nbsp;
+                  $I.I("A")$data.getCampoDataIntervalloFine("dstart", "dstop", "fo", $!bean.dstop, 10)
+                  <br>
+                </div>
+              </div>
+            </div>
+            <div style="float: right; width: 50%; padding-left: 10px;">
+              <span class="label-foto">$I.I("Filtro per modalità")</span>
+              <table>
+                <tr>
+                  #set($c = 0)
+                  #set($modall = $bean.modalita)
+                  #foreach($m in $modall)
+                  <td class="checkModalita">$bean.getCbmodField($m) &nbsp; $m</td>
+                  #set($c = $c + 1)
+                  #if($c == 4)
+                </tr><tr>
+                  #set($c = 0)
+                  #end
+                  #end
+                </tr>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    $!htmlRicerca
+
+    #if($htmlRicerca)
+    <div style="float: right;">
+      <button type="button" class="btn btn-default" onclick="pulisciRicerca();">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> $I.I("Pulisci tutto")
+      </button>
+    </div>
+    #end
+
+  </form>
+</div>

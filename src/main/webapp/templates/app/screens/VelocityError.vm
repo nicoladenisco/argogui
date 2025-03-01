@@ -1,0 +1,16 @@
+$page.setTitle("Error")
+
+<font face="verdana,geneva,helvetica">
+
+<h2>Error</h2>
+
+$processingException
+
+<hr>
+<pre>
+$stackTrace
+</pre>
+</font>
+
+<br>
+

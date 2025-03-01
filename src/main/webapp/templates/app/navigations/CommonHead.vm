@@ -1,0 +1,355 @@
+<!--
+  tag <head> comune a tutti i layout
+-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>$ui.maintitle - $page.title</title>
+
+<link href="$ui.stylecss" type="text/css" rel="stylesheet">
+
+<SCRIPT type="text/javascript" src="$content.getURI('js/stdfunc.js')"></SCRIPT>
+<SCRIPT type="text/javascript" src="$content.getURI('js/calendario.js')"></SCRIPT>
+<SCRIPT type="text/javascript" src="$content.getURI('js/winboot.js')"></SCRIPT>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script type="text/javascript" src="$content.getURI('js/jquery.min.js')"></script>
+
+<!-- Bootstrap Latest compiled and minified CSS -->
+<link rel="stylesheet" href="$content.getURI('bootstrap/css/bootstrap.css')">
+
+<!-- Bootstrap Optional theme -->
+<link rel="stylesheet" href="$content.getURI('bootstrap/css/bootstrap-theme.min.css')">
+
+<!-- Bootstrap Latest compiled and minified JavaScript -->
+<script type="text/javascript" src="$content.getURI('bootstrap/js/bootstrap.min.js')"></script>
+
+<!-- Bootstrap dialog -->
+<link rel="stylesheet" href="$content.getURI('js/bootstrap-dialog.min.css')">
+<script type="text/javascript" src="$content.getURI('js/bootstrap-dialog.min.js')"></script>
+
+<!-- hoverIntent by Brian Cherne -->
+<script type="text/javascript" src="$content.getURI('js/hoverIntent.js')"></script>
+
+<!-- client XML-RPC javascript -->
+<script type="text/javascript" src="$content.getURI('js/mimic.js')"></script>
+
+<!-- FONTAWESOME - FONT PER ICONE -->
+<link href="$content.getURI('js/font-awesome.min.css')" rel="stylesheet">
+
+#if( $data.haveRefresh() )
+<meta http-equiv="refresh" content="$data.getRefresh()">
+#end
+
+<SCRIPT type="text/javascript">
+
+  function showLoading()
+  {
+    var html =
+            "<div align=\"center\">" +
+            "<table><tr>" +
+            "<td><img src=\"$ui.image('loading-red.gif')\" align=\"left\"></td>" +
+            "<td>&nbsp;&nbsp;&nbsp;</td>\n" +
+            "<td>$I.I('Operazione in corso; attendere ...')</td>" +
+            "</tr></table>" +
+            "</div>";
+    updateDiv("innerbody", html);
+  }
+
+  jQuery(function () {
+    // preload dell'immagine di occupato
+    var loadingImgDummy = new Image();
+    loadingImgDummy.src = "$ui.image('loading-red.gif')";
+    setUriCalendario("$content.getURI('ajax/calendario.jsp')");
+  });
+
+  function pcConfirm(msg)
+  {
+    return confirm(msg);
+
+//    BootstrapDialog.confirm({
+//      title: '$I.I("CONFERMA OPERAZIONE")',
+//      message: msg,
+//      //type: BootstrapDialog.TYPE_WARNING, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
+//      //closable: true, // <-- Default value is false
+//      //draggable: true, // <-- Default value is false
+//      btnCancelLabel: '$I.I("Annulla")', // <-- Default value is 'Cancel',
+//      btnOKLabel: '$I.I("Conferma")', // <-- Default value is 'OK',
+//      //btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
+//      callback: function(result) {
+//          // result will be true if button was click, while it will be false if users close the dialog directly.
+//          if(result) {
+//              retVal = 1;
+//          } else {
+//              retVal = 2;
+//          }
+//      }
+//    });
+  }
+
+  /* #if($data.haveDialog()) */
+
+//  function apriFinestraLista(url, tipo)
+//  {
+//    openStandardDialog(url);
+//  }
+
+  function apriFinestraEdit(url, tipo)
+  {
+    openEditDialog(url);
+  }
+
+//  function apriFinestraForm(url, tipo)
+//  {
+//    openEditDialog(url);
+//  }
+
+  function apriFinestraInfo(url, tipo)
+  {
+    openInfoDialog(url);
+  }
+
+  function apriFinestraDettaglio(url, tipo)
+  {
+    openDettaglioDialog(url);
+  }
+
+  function apriPopup1(urlwin, titolo)
+  {
+    openStandardDialog(urlwin);
+  }
+
+  function apriPopup2(urlwin, titolo)
+  {
+    openArticoliDialog(urlwin);
+  }
+
+  function apriPopup3(urlwin, titolo)
+  {
+    openDettaglioDialog(urlwin);
+  }
+
+  function apriPopup4(urlwin, titolo)
+  {
+    openInfoDialog(urlwin);
+  }
+
+  function apriPopup5(urlwin, titolo)
+  {
+    openEditDialog(urlwin);
+  }
+
+  function apriPopup6(urlwin, titolo)
+  {
+    openMaximizedWindow(urlwin, titolo);
+  }
+
+  function apriPopup7(urlwin, titolo)
+  {
+    openEditUserAppWindow(urlwin, titolo);
+  }
+
+  // apre una finestra cambiando la posizione e le dimensioni
+  // scalandole opportunamente considerando quelle originali
+  // riferite ad uno schermo 1024x768 pixels
+  function modalRelativeTo1024x768Window(urlwin, posx, posy, dimx, dimy)
+  {
+    var px = (posx * screen.width) / 1024;
+    var py = (posy * screen.height) / 768;
+    var dx = (dimx * screen.width) / 1024;
+    var dy = (dimy * screen.height) / 768;
+
+    return window.showModalDialog(urlwin, window,
+            "dialogTop:" + py + "px; dialogLeft:" + px + "px; " +
+            "dialogWidth:" + dx + "px; dialogHeight:" + dy + "px; resizable:yes");
+  }
+
+  function modalWindow(urlwin, px, py, width, height)
+  {
+    return window.showModalDialog(urlwin, window,
+            "dialogTop:" + py + "px; dialogLeft:" + px + "px; " +
+            "dialogWidth:" + width + "px; dialogHeight:" + height + "px; resizable:yes");
+  }
+
+  // apre una finestra cambiando la posizione e le dimensioni
+  // scalandole opportunamente considerando quelle originali
+  // riferite ad uno schermo 1024x768 pixels
+  function modalCenteredRelativeTo1024x768Window(urlwin, dimx, dimy)
+  {
+    var dx = (dimx * screen.width) / 1024;
+    var dy = (dimy * screen.height) / 768;
+
+    return window.showModalDialog(urlwin, window,
+            "dialogWidth:" + dx + "px; dialogHeight:" + dy + "px; resizable:yes; center:yes");
+  }
+
+  function modalCenteredWindow(urlwin, dx, dy)
+  {
+    return window.showModalDialog(urlwin, window,
+            "dialogWidth:" + dx + "px; dialogHeight:" + dy + "px; resizable:yes; center:yes");
+  }
+
+  function openStandardDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 300, 120, 800, 550);
+  }
+
+  function openArticoliDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 300, 120, 700, 500);
+  }
+
+  function openDettaglioDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 200, 220, 700, 400);
+  }
+
+  function openInfoDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 100, 320, 700, 400);
+  }
+
+  function openEditDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 50, 50, 900, 650);
+  }
+
+  function openPrintDialog(urlwin)
+  {
+    return modalRelativeTo1024x768Window(urlwin, 50, 50, 900, 650);
+  }
+
+  /* #else */
+
+//  function apriFinestraLista(url, tipo)
+//  {
+//    openStandardWindow(url, tipo);
+//  }
+
+  function apriFinestraEdit(url, tipo)
+  {
+    openEditWindow(url, tipo);
+  }
+
+//  function apriFinestraForm(url, tipo)
+//  {
+//    openEditWindow(url, tipo);
+//  }
+
+  function apriFinestraInfo(url, tipo)
+  {
+    openInfoWindow(url, tipo);
+  }
+
+  function apriFinestraDettaglio(url, tipo)
+  {
+    openDettaglioWindow(url, tipo);
+  }
+
+  function apriPopup1(urlwin, titolo)
+  {
+    openStandardWindow(urlwin, titolo);
+  }
+
+  function apriPopup2(urlwin, titolo)
+  {
+    openArticoliWindow(urlwin, titolo);
+  }
+
+  function apriPopup3(urlwin, titolo)
+  {
+    openDettaglioWindow(urlwin, titolo);
+  }
+
+  function apriPopup4(urlwin, titolo)
+  {
+    openInfoWindow(urlwin, titolo);
+  }
+
+  function apriPopup5(urlwin, titolo)
+  {
+    openEditWindow(urlwin, titolo);
+  }
+
+  function apriPopup6(urlwin, titolo)
+  {
+    openMaximizedWindow(urlwin, titolo);
+  }
+
+  function apriPopup7(urlwin, titolo)
+  {
+    openEditUserAppWindow(urlwin, titolo);
+  }
+
+  // apre una finestra cambiando la posizione e le dimensioni
+  // scalandole opportunamente considerando quelle originali
+  // riferite ad uno schermo 1024x768 pixels
+  function modalRelativeTo1024x768Window(urlwin, posx, posy, dimx, dimy)
+  {
+    nomodal();
+  }
+
+  function modalWindow(urlwin, px, py, width, height)
+  {
+    nomodal();
+  }
+
+  // apre una finestra cambiando la posizione e le dimensioni
+  // scalandole opportunamente considerando quelle originali
+  // riferite ad uno schermo 1024x768 pixels
+  function modalCenteredRelativeTo1024x768Window(urlwin, dimx, dimy)
+  {
+    nomodal();
+  }
+
+  function modalCenteredWindow(urlwin, dx, dy)
+  {
+    nomodal();
+  }
+
+  // finestra di popup standard
+  function openStandardDialog(urlwin)
+  {
+    nomodal();
+  }
+
+  // finestra ricerca articoli ec
+  function openArticoliDialog(urlwin)
+  {
+    nomodal();
+  }
+
+  // finestra di popup dettaglio
+  function openDettaglioDialog(urlwin)
+  {
+    nomodal();
+  }
+
+  // finestra di popup informazioni
+  function openInfoDialog(urlwin)
+  {
+    nomodal();
+  }
+
+  // finestra di edit informazioni
+  function openEditDialog(urlwin)
+  {
+    nomodal();
+  }
+
+  // finestra di edit informazioni
+  function openPrintDialog(urlwin)
+  {
+    nomodal();
+  }
+
+  function nomodal()
+  {
+    alert("Spiacente: le dialog modali non sono supportate su questo browser.");
+  }
+
+  /* #end */
+
+</SCRIPT>

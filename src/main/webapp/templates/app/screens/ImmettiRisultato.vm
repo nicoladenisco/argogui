@@ -1,0 +1,127 @@
+$page.setTitle($I.I("Immissione manuale di un risultato"))
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<script type="text/javascript">
+
+  var myUrl = "$link.setPage('ImmettiRisultato.vm')";
+
+  function salva()
+  {
+    relCommand("immetti");
+  }
+
+  function chiudi()
+  {
+    window.close();
+    window.opener.ricarica();
+  }
+
+  function populateParam(idesa)
+  {
+    jQuery.ajax({
+      url: "$data.getAbsoluteUrl('ajax/comboParams.jsp')?idesa="+idesa,
+      success: function(data){
+        updateDiv('params', data);
+      }
+    });
+  }
+
+  function relCommand(comando)
+  {
+    document.fo.command.value = comando;
+    document.fo.submit();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/SalvaConvalidaRisultati?command="+encodeURIComponent(comando));
+  }
+
+</script>
+
+<div id="innerbody">
+  <form action="$link.setPage('ImmettiRisultato.vm')" name="fo" method="post">
+
+    <input type="hidden" name="action" value="SalvaConvalidaRisultati"/>
+    <input type="hidden" name="command" value=""/>
+
+    <table width=100%>
+      <tr>
+        <td width=100% bgcolor="$ui.topbarbgcolor" class="big_title">
+          &nbsp; $I.I("Immissione manuale risultato")
+        </td>
+      </tr>
+    </table>
+
+    <div style="padding: 5px">
+      <table width=100%>
+        <tr>
+          <td>$I.I("Esame")</td>
+          <td>
+            #set($idEsa = $data.parameters.getString("idesa"))
+            <select name="esa" onchange="populateParam(this.value)">
+              <option value="0">$I.I("Selezionare un esame ...")</option>
+              #foreach($e in $esami)
+              #if($idEsa == $e.stpEsamiId)
+              <option value="$e.stpEsamiId" selected="">${e.descrizione} (${e.codice})</option>
+              #else
+              <option value="$e.stpEsamiId">${e.descrizione} (${e.codice})</option>
+              #end
+              #end
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td>$I.I("Parametro")</td>
+          <td>
+            <div id="params">
+              #if($parametri)
+              <select name="par">
+                <option value="0">$I.I("Selezionare un parametro ...")</option>
+                #foreach($p in $parametri)
+                <option value="$p.stpParametriId">${p.descrizione} (${p.codice})</option>
+                #end
+              </select>
+              #end
+              &nbsp;
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>$I.I("Provetta")</td>
+          <td>
+            <select name="cmp">
+              <option value="0">$I.I("Selezionare un campione ...")</option>
+              #foreach($c in $campioni)
+              <option value="$c.sid">$c.sid ($!c.infStpMaterialiBio.descrizione)</option>
+              #end
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td>$I.I("Risultato")</td>
+          <td><input type="text" size="40" value="" name="risultato"></td>
+        </tr>
+
+        <tr>
+          <td>$I.I("Note")</td>
+          <td><textarea rows="4" cols="60" name="note"></textarea></td>
+        </tr>
+
+        <tr>
+          <td>&nbsp;</td>
+          <td>
+            <input type="button" onclick="salva();" value="$I.I('Salva')">
+            <input type="button" onclick="chiudi();" value="$I.I('Chiudi')">
+          </td>
+        </tr>
+
+      </table>
+
+    </div>
+  </form>
+</div>
+

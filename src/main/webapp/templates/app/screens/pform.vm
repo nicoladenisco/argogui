@@ -1,0 +1,178 @@
+<!-- INIZIO popup (pform.vm) -->
+
+$page.setTitle("$pwl.titolo")
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  var myUrl = "$link.setPage('pform.vm').addPathInfo('type', $type)";
+
+  function cancellaElemento(codice)
+  {
+    if (confirm("Sei sicuro di voler cancellare '" + codice + "' ?")) {
+      document.fo.key.value = codice;
+      relCommand('cancella');
+      showLoading();
+    }
+  }
+
+  function salva()
+  {
+    if (!testForm())
+      return;
+
+    relCommand('salva');
+    showLoading();
+
+    if (!$data.hasMessage())
+      window.opener.ricarica();
+  }
+
+  function duplica()
+  {
+    relCommand('duplica');
+    showLoading();
+  }
+
+  function salvanew()
+  {
+    if (!testForm())
+      return;
+
+    relCommand('salvanew');
+    showLoading();
+
+    if (!$data.hasMessage())
+      window.opener.ricarica();
+  }
+
+  function salvaesci()
+  {
+    if (!testForm())
+      return;
+
+    // questa e' una pop-up quindi esci vuol dire chiudi
+    // relCommand('salvaesci');
+    relCommand('salva');
+    chiudi();
+  }
+
+  function nuovodett()
+  {
+    if (!testForm())
+      return;
+
+    relCommand('nuovodett');
+  }
+
+  function relCommand(comando)
+  {
+    document.fo.command.value = comando;
+    document.fo.submit();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/FormSave?command=" + encodeURIComponent(comando));
+  }
+
+  function chiudi()
+  {
+    try
+    {
+      window.opener.ricarica();
+      window.close();
+    }
+    catch (e)
+    {
+      // la funzione ricarica() potrebbe non esistere nel chiamante
+      window.close();
+    }
+  }
+
+  function testForm()
+  {
+    $scTest
+
+    #if ($dettTest)
+            $dettTest
+            #end
+
+            return true;
+  }
+
+</SCRIPT>
+
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div id="innerbody">
+
+      <h3>
+        <span class="label label-primary">$I.I($pwl.header)</span>
+
+        #if($hbuts)
+        #foreach($hb in $hbuts)
+        #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+        #end
+        #end
+
+        #if($isRemote)
+        #else
+        #if($saveEnabled)
+        #menuCellScript ("Salva" "salva()" $ui.menuFieldTextStyle)
+        #end
+        #if($saveEnabled && $newEnabled)
+        #menuCellScript ("Duplica" "duplica()" $ui.menuFieldTextStyle)
+        #menuCellScript ("Salva e nuovo" "salvanew()" $ui.menuFieldTextStyle)
+        #end
+        #end
+        #menuCellScript ("Chiudi" "chiudi()" $ui.menuFieldTextStyle)
+      </h3>
+
+      <!-- form modifica dati -->
+      <form action="$link.setPage('pform.vm').addPathInfo('type', $type)" method="post" name="fo">
+        <input type="hidden" name="command" value="">
+        <input type="hidden" name="key" value="">
+        <input type="hidden" name="type" value="$type">
+        <input type="hidden" name="jlc" value="$jlc">
+        <input type="hidden" name="action" value="FormSave">
+
+        $!cscriptm
+        $!cscriptd
+
+        <div id="rigel_body">
+          $phtml
+        </div>
+
+        #if($dettHtml)
+        <!-- inizio dettaglio -->
+        <h3>
+          <span class="label label-info">$I.I($edl.header)</span>
+
+          #if($hbutd)
+          #foreach($hb in $hbutd)
+          #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+          #end
+          #end
+
+          #if($newEnabled)
+          #menuCellScript ("Nuovo" "nuovodett()" $ui.menuFieldTextStyle)
+          #end
+          #if($saveEnabled)
+          #menuCellScript ("Salva" "salva()" $ui.menuFieldTextStyle)
+          #end
+          #menuCellScript ("Chiudi" "chiudi()" $ui.menuFieldTextStyle)
+        </h3>
+
+        <div id="rigel_body">
+          $dettHtml
+        </div>
+        <!-- fine dettaglio -->
+        #end
+
+      </form>
+
+    </div>
+  </div>
+</div>
+<!-- FINE popup (pform.vm) -->

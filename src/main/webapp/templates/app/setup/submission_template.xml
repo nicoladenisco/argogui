@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+<!--
+${SUBMISSIONSET_UUID} = UUID, identifies the submission set
+${SUBMISSION_TIME}= Document submission time  use this date format  [YYYYMMddhhmmss+0600]
+${DOCUMENT_ENTRY_UUID} = The globally unique identifier is intended for use as a document registry management identifier.
+${CREATION_TIME} = document creation time use this date format  [YYYYMMddhhmmss+0600]
+${PATIENT_ID}= patient id PATIENT_ID^^^&amp;ASSIGNING_AUTHORITY&amp;ISO (eg. CF_ASSISTITO^^^&amp;2.16.840.1.113883.2.9.4.3.2&amp;ISO)
+${SOURCE_PATIENT_ID} = patient Id local to the application(Document Source)
+${SUBMISSION_SET_OID} = Globally unique identifier for the submission-set instance assigned by the Document Source
+${PATIENT_NAME} = patient first name
+${PATIENT_FAMILY_NAME} = patient family name
+${PATIENT_BIRTH_DATE} = patient birth date
+${PATIENT_SEX}  = patient sex:  M|F
+${AUTHOR_ID}= Medical report author ID (XCN)
+${AUTHOR_NAME} =  Medical report author name
+${AUTHOR_FAMILY_NAME} = Medical report author family name
+${AUTHOR_INSTITUTION} = Represents a specific healthcare facility
+${AUTHOR_SPECIALTY} = Represents a specific specialty within a healthcare facility
+${CONFIDENTIALITY_CODE} = could be one of the following: N(normal) | R(restricted) | VR(very restricted)
+${CONFIDENTIALY_CODE_DESCRIPTION} = confidentialy code as description normal | restricted | very restricted
+${CONFIDENTIALY_CODE_CODING_SCHEMA} = Coding Scheme relative to CONFIDENTIALY_CODE
+${DOCUMENT_OID} =  this is OID representing the document serial number
+${TYPE_CODE}= The code specifying the precise kind of document
+${TYPE_CODE_DESCRIPTION}=Description/Display of the above code.
+${TYPE_CODE_CODING_SCHEMA}=Coding Scheme relative to TYPE_CODE
+${CONTENT_TYPE_CODE}=The code specifying the type of clinical activity that resulted in placing an XDS Document
+${CONTENT_TYPE_CODE_DESCRIPTION}=Description/Display of the above code.
+${CONTENT_TYPE_CODE_CODING_SCHEMA}=Coding Scheme relative to CONTENT_TYPE_CODE
+${CLASS_CODE}=The code specifying the particular kind of document
+${CLASS_CODE_DESCRIPTION}=Description/Display of the above code.
+${CLASS_CODE_CODING_SCHEMA}=Coding Scheme relative to CLASS_CODE
+${SOURCE_OID}=Globally unique identifier for the instance of the Document Source
+${MIME_TYPE}=MIME type of the document in the Repository
+${EVENT_CODE}=This list of codes represents the main clinical acts
+${EVENT_CODE_DESCRIPTION}=Description/Display of the above code.
+${EVENT_CODE_CODING_SCHEMA}=Coding Scheme relative to EVENT_CODE
+${FORMAT_CODE} = Code globally uniquely specifying the format of the document
+${FORMAT_CODE_DESCRIPTION}=Description/Display of the above code.
+${FORMAT_CODE_CODING_SCHEMA}=Coding Scheme relative to FORMAT_CODE
+${HEALTHCARE_FACILITY_TYPE_CODE_CODE} = This code represents the type of organizational setting of the clinical encounter
+${HEALTHCARE_FACILITY_TYPE_CODE_DESCRIPTION}=Description/Display of the above code.
+${HEALTHCARE_FACILITY_TYPE_CODE_CODING_SCHEMA}=Coding Scheme relative to HEALTHCARE_FACILITY_TYPE_CODE
+${PRACTICE_SETTING_CODES} = The code specifying the clinical specialty where the act that resulted in the document was performed
+${PRACTICE_SETTING_CODE_DESCRIPTION}=Description/Display of the above code.
+${PRACTICE_SETTING_CODE_CODING_SCHEMA}=Coding Scheme relative to PRACTICE_SETTING_CODE
+-->
+<lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0"
+	xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+	<rim:RegistryObjectList>
+		<rim:ObjectRef id="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>
+		<rim:ObjectRef id="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"/>
+		<rim:ObjectRef id="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"/>
+		<rim:ObjectRef id="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832"/>
+		<rim:ObjectRef id="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"/>
+		<rim:ObjectRef id="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"/>
+		<rim:ObjectRef id="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1"/>
+		<rim:ObjectRef id="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"/>
+		<rim:ObjectRef id="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"/>
+		<rim:ObjectRef id="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"/>
+		<rim:ObjectRef id="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"/>
+		<rim:ObjectRef id="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"/>
+		<rim:ObjectRef id="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"/>
+		<rim:ObjectRef id="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"/>
+		<rim:ObjectRef id="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"/>
+		<rim:ObjectRef id="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"/>
+                <rim:ObjectRef id="urn:uuid:52a28615-ed55-4fd9-a3a7-fccffc8d4fd3"/>
+		<rim:RegistryPackage id="urn:uuid:${SUBMISSIONSET_UUID}"
+			objectType="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd">
+			<rim:Slot name="submissionTime">
+				<rim:ValueList>
+					<rim:Value>${SUBMISSION_TIME}</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+			<rim:Name>
+				<rim:LocalizedString value="Name of the XDS Submission Set" charset="UTF-8"
+					xml:lang="en-us"/>
+			</rim:Name>
+			<rim:Description>
+				<rim:LocalizedString value="Description of the XDS Submission Set" charset="UTF-8"
+					xml:lang="en-us"/>
+			</rim:Description>
+			<rim:Classification classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
+				classifiedObject="urn:uuid:${SUBMISSIONSET_UUID}"
+				id="id0" nodeRepresentation="">
+				<rim:Slot name="authorPerson">
+					<rim:ValueList>
+						<rim:Value>${AUTHOR_ID}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+			</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"
+				classifiedObject="urn:uuid:${SUBMISSIONSET_UUID}"
+				id="id1" nodeRepresentation="${CONTENT_TYPE_CODE}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${CONTENT_TYPE_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${CONTENT_TYPE_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:ExternalIdentifier
+				identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"
+				registryObject="urn:uuid:${SUBMISSIONSET_UUID}"
+				id="id2"
+				value="${PATIENT_ID}">
+				<rim:Name>
+					<rim:LocalizedString value="XDSSubmissionSet.patientId"/>
+				</rim:Name>
+			</rim:ExternalIdentifier>
+			<rim:ExternalIdentifier
+				identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
+				registryObject="urn:uuid:${SUBMISSIONSET_UUID}"
+				id="id3" value="${SUBMISSION_SET_OID}">
+				<rim:Name>
+					<rim:LocalizedString value="XDSSubmissionSet.uniqueId"/>
+				</rim:Name>
+			</rim:ExternalIdentifier>
+			<rim:ExternalIdentifier
+				identificationScheme="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832"
+				registryObject="urn:uuid:${SUBMISSIONSET_UUID}"
+				id="id4" value="${SOURCE_OID}">
+				<rim:Name>
+					<rim:LocalizedString value="XDSSubmissionSet.sourceId"/>
+				</rim:Name>
+			</rim:ExternalIdentifier>
+		</rim:RegistryPackage>
+		<rim:ExtrinsicObject id="urn:uuid:${DOCUMENT_ENTRY_UUID}" mimeType="${MIME_TYPE}"
+			objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
+			<rim:Slot name="creationTime">
+				<rim:ValueList>
+					<rim:Value>${CREATION_TIME}</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+			<rim:Slot name="languageCode">
+				<rim:ValueList>
+					<rim:Value>IT-IT</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+			<rim:Slot name="sourcePatientId">
+				<rim:ValueList>
+					<rim:Value>${SOURCE_PATIENT_ID}</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+			<rim:Slot name="sourcePatientInfo">
+				<rim:ValueList>
+					<rim:Value>PID-3|${PATIENT_ID}</rim:Value>
+					<rim:Value>PID-5|${PATIENT_FAMILY_NAME}^${PATIENT_NAME}^^^</rim:Value>
+					<rim:Value>PID-7|${PATIENT_BIRTH_DATE}</rim:Value>
+					<rim:Value>PID-8|${PATIENT_SEX}</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+			<rim:Name>
+				<rim:LocalizedString value="Clinical Patient Record" />
+			</rim:Name>
+			<rim:Description>
+				<rim:LocalizedString value="Description of the XDS Document"/>
+			</rim:Description>
+			<rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id5"
+				nodeRepresentation="">
+				<rim:Slot name="authorPerson">
+					<rim:ValueList>
+						<rim:Value>${AUTHOR_ID}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="authorInstitution">
+					<rim:ValueList>
+						<rim:Value>${AUTHOR_INSTITUTION}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="authorSpecialty">
+					<!-- may be multivalued -->
+					<rim:ValueList>
+						<rim:Value>${AUTHOR_SPECIALTY}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+			</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id6"
+				nodeRepresentation="${CLASS_CODE}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${CLASS_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${CLASS_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}"
+				id="id7" nodeRepresentation="${TYPE_CODE}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${TYPE_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${TYPE_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id8"
+				nodeRepresentation="${CONFIDENTIALITY_CODE}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${CONFIDENTIALY_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${CONFIDENTIALY_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:Classification
+				classificationScheme= "urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id9"
+				nodeRepresentation="${EVENT_CODE}" >
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${EVENT_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${EVENT_CODE_DESCRIPTION}"/>
+				</rim:Name>
+				</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}"
+				id="id10" nodeRepresentation="${FORMAT_CODE}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${FORMAT_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${FORMAT_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id11"
+				nodeRepresentation="${HEALTHCARE_FACILITY_TYPE_CODE_CODE}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${HEALTHCARE_FACILITY_TYPE_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${HEALTHCARE_FACILITY_TYPE_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
+				classifiedObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id12"
+				nodeRepresentation="${PRACTICE_SETTING_CODES}">
+				<rim:Slot name="codingScheme">
+					<rim:ValueList>
+						<rim:Value>${PRACTICE_SETTING_CODE_CODING_SCHEMA}</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Name>
+					<rim:LocalizedString value="${PRACTICE_SETTING_CODE_DESCRIPTION}"/>
+				</rim:Name>
+			</rim:Classification>
+			<rim:ExternalIdentifier
+				identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"
+				id="i12299416270008259245093319040762" registryObject="urn:uuid:${DOCUMENT_ENTRY_UUID}"
+				value="${PATIENT_ID}">
+				<!-- 2.16.840.1.113883.2.9.2.130.4.1 -->
+				<rim:Name>
+					<rim:LocalizedString value="XDSDocumentEntry.patientId"/>
+				</rim:Name>
+			</rim:ExternalIdentifier>
+			<rim:ExternalIdentifier
+				identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"
+				registryObject="urn:uuid:${DOCUMENT_ENTRY_UUID}" id="id13"
+				value="urn:oid:${DOCUMENT_OID}">
+				<rim:Name>
+					<rim:LocalizedString value="XDSDocumentEntry.uniqueId"/>
+				</rim:Name>
+			</rim:ExternalIdentifier>
+                        <rim:ExternalIdentifier
+                                identificationScheme="urn:uuid:52a28615-ed55-4fd9-a3a7-fccffc8d4fd3"
+                                registryObject="urn:uuid:${DOCUMENT_ENTRY_UUID}"
+                                id="id14"
+                                value="${EPISODE}">
+                                <rim:Name>
+                                         <rim:LocalizedString charset="UTF-8" value="XDSDocumentEntry.nosologicalCode" xml:lang="en-us" />
+                                </rim:Name>
+                        </rim:ExternalIdentifier>
+		</rim:ExtrinsicObject>
+		<rim:Classification classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"
+			classifiedObject="urn:uuid:${SUBMISSIONSET_UUID}" id="id15"/>
+		<rim:Association associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"
+			id="id15" sourceObject="urn:uuid:${SUBMISSIONSET_UUID}"
+			targetObject="urn:uuid:${DOCUMENT_ENTRY_UUID}">
+			<rim:Slot name="SubmissionSetStatus">
+				<rim:ValueList>
+					<rim:Value>Original</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+		</rim:Association>
+	</rim:RegistryObjectList>
+</lcm:SubmitObjectsRequest>

@@ -1,0 +1,114 @@
+$page.setTitle($I.I("Account associazione singolo utente a ruoli"))
+
+<!-- INIZIO AccountURuoli.vm -->
+
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function ricarica()
+  {
+    var url = "$link.setPage('AccountURuoli.vm').addPathInfo('reload', '1')";
+    goPage(url);
+  }
+
+  function tuttiSI(idPerm)
+  {
+    var src = "RUGR_" + idPerm + "_";
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith(src))
+        this.checked = true;
+    });
+  }
+
+  function tuttiNO(idPerm)
+  {
+    var src = "RUGR_" + idPerm + "_";
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith(src))
+        this.checked = false;
+    });
+  }
+
+  function tuttiRoleSI(idRole)
+  {
+    var src = "_" + idRole;
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith("RUGR_") && this.name.endsWith(src))
+        this.checked = true;
+    });
+  }
+
+  function tuttiRoleNO(idRole)
+  {
+    var src = "_" + idRole;
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith("RUGR_") && this.name.endsWith(src))
+        this.checked = false;
+    });
+  }
+
+  // attiva il menu locale superfish
+  jQuery(function () {
+    jQuery('ul.lf-menu').superfish();
+  });
+
+</SCRIPT>
+
+<STYLE type="text/css">
+
+  .rigel_formtable a
+  {
+    font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; color: #990000; font-weight: bold;
+  }
+
+</STYLE>
+
+<div id="innerbody">
+  <h3>
+
+    #if($user)
+    <span class="label label-primary">$I.I("Associazione dei ruoli all'utente") $!user.loginName</span>
+    #else
+    <span class="label label-primary">$I.I("Associazione dei ruoli a utenti selezionati")</span>
+    #end
+
+    #menuCell ("Aggiorna" $link.setPage("AccountURuoli.vm").addPathInfo("reload", "1") $ui.menuFieldTextStyle)
+    #menuCellScript ("Salva" "document.fo.submit();" $ui.menuFieldTextStyle)
+    #menuCell ("Abbandona" $link.setPage('AccountUtentiRuoli.vm').addPathInfo('reload', '1')  $ui.menuFieldTextStyle)
+  </H3>
+
+  <form action="AccountURuoli.vm" method="post" name="fo">
+    <input type="hidden" name="action" value="SalvaUtentiRuoli">
+    <table width=100% cellspacing=3 cellpadding=2>
+      <tr>
+        <td bgcolor="#CCCCCC" valign="top">
+          $html
+        </td>
+        <td bgcolor="#CCCCCC" valign="top">
+          <label>Elenco utenti<br>
+            <select name="users_selected" size="25" multiple="multiple">
+              #foreach($u in $ulist)
+              #if($ab.isSelectedUser($u))
+              <option value="$u.userId" selected>$u.loginName ($u.lastName, $u.firstName)</option>
+              #else
+              <option value="$u.userId">$u.loginName ($u.lastName, $u.firstName)</option>
+              #end
+              #end
+            </select>
+          </label>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+</DIV>
+<!-- FINE AccountURuoli.vm -->
+

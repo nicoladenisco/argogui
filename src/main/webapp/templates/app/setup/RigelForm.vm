@@ -1,0 +1,24 @@
+<!-- INIZIO RigelForm.vm -->
+
+<div id="rigel_dialog_body">
+
+  <!-- form modifica dati -->
+  <form name="fo$type" id="fo$type" method="post" action="$baseUri">
+    <input type="hidden" name="command" value="">
+    <input type="hidden" name="type" value="$type">
+    <input type="hidden" name="jlc" value="$jlc">
+    <input type="hidden" name="action" value="FormSave">
+
+    $phtml
+
+    #if($dettHtml)
+    <!-- inizio dettaglio -->
+    $dettHtml
+    <!-- fine dettaglio -->
+    #end
+
+  </form>
+
+</div>
+
+<!-- FINE RigelForm.vm -->

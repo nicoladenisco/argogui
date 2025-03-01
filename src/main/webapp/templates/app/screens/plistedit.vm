@@ -1,0 +1,128 @@
+<!-- INIZIO liste-edit (plistedit.vm) -->
+
+$page.setTitle("$edl.titolo")
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  var myUrl = "$link.setPage('plistedit.vm').addPathInfo('type', $type)";
+
+  function cancellaElemento(codice)
+  {
+    if (confirm("Sei sicuro di voler cancellare '" + codice + "' ?")) {
+      document.fo.key.value = codice;
+      relCommand('cancella');
+      showLoading();
+    }
+  }
+
+  function salva()
+  {
+    if (!testForm())
+      return;
+
+    relCommand('salva');
+    showLoading();
+  }
+
+  function duplica()
+  {
+    relCommand('duplica');
+    showLoading();
+  }
+
+  function salvaesci()
+  {
+    if (!testForm())
+      return;
+
+    relCommand('salvaesci');
+    showLoading();
+  }
+
+  function nuovodett()
+  {
+    if (!testForm())
+      return;
+
+    relCommand('nuovodett');
+    showLoading();
+  }
+
+  function abbandona()
+  {
+    relCommand('abbandona');
+    showLoading();
+  }
+
+  function chiudi()
+  {
+    window.close();
+  }
+
+  function relCommand(comando)
+  {
+    document.fo.command.value = comando;
+    document.fo.submit();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/FormSave?command=" + encodeURIComponent(comando));
+  }
+
+  function testForm()
+  {
+    $scTest;
+
+    return true;
+  }
+
+  // attiva il menu locale superfish
+  jQuery(function () {
+    jQuery('ul.lf-menu').superfish();
+  });
+
+</SCRIPT>
+
+<div id="innerbody">
+
+  <h3>
+    <span class="label label-primary">$edl.header</span>
+    #if($hbuts)
+    #foreach($hb in $hbuts)
+    #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+    #end
+    #end
+
+    #if($saveEnabled)
+    #menuSFScript ("Salva" "salva()")
+    #end
+
+    #if($saveEnabled && $newEnabled)
+    #menuSFScript ("Nuovo" "nuovodett()")
+    #end
+
+    #menuSFScript ("Chiudi" "chiudi()")
+  </h3>
+
+  <!-- form modifica dati -->
+  <form action="$link.setPage('plistedit.vm').addPathInfo('type', $type)"
+        enctype="multipart/form-data" method="post" name="fo">
+
+    <input type="hidden" name="command" value="">
+    <input type="hidden" name="key" value="">
+    <input type="hidden" name="type" value="$type">
+    <input type="hidden" name="jlc" value="$jlc">
+    <input type="hidden" name="action" value="ListaEditSave">
+
+    $!cscriptm
+
+    <div id="rigel_body">
+      $phtml
+    </div>
+
+  </form>
+</div>
+
+<!-- FINE liste-edit (plistedit.vm) -->

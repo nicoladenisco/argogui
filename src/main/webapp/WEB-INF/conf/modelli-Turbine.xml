@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <liste>
+    <LpTurbinePermission>
+      <object>TurbinePermission</object>
+      <peer>TurbinePermissionPeer</peer>
+      <header>TURBINE PERMISSION</header>
+      <titolo>TurbinePermission</titolo>
+      <numppage>15</numppage>
+      <menu>TurbinePermission</menu>
+      <edit-info>
+        <url>@form?type=FormTurbinePermission</url>
+        <param nome="ID">@PERMISSIONID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>PERMISSIONID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="PERMISSION NAME">
+        <campo>PERMISSIONNAME</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbinePermission>
+    <LpTurbinePermissionSel extend="LpTurbinePermission">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbinePermissionSel>
+    <LpTurbineRole>
+      <object>TurbineRole</object>
+      <peer>TurbineRolePeer</peer>
+      <header>TURBINE ROLE</header>
+      <titolo>TurbineRole</titolo>
+      <numppage>15</numppage>
+      <menu>TurbineRole</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineRole</url>
+        <param nome="ID">@ROLEID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>ROLEID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="ROLE NAME">
+        <campo>ROLENAME</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineRole>
+    <LpTurbineRoleSel extend="LpTurbineRole">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineRoleSel>
+    <LpTurbineGroup>
+      <object>TurbineGroup</object>
+      <peer>TurbineGroupPeer</peer>
+      <header>TURBINE GROUP</header>
+      <titolo>TurbineGroup</titolo>
+      <numppage>15</numppage>
+      <menu>TurbineGroup</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineGroup</url>
+        <param nome="ID">@GROUPID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>GROUPID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="GROUP NAME">
+        <campo>GROUPNAME</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineGroup>
+    <LpTurbineGroupSel extend="LpTurbineGroup">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineGroupSel>
+    <LpTurbineRolePermission>
+      <object>TurbineRolePermission</object>
+      <peer>TurbineRolePermissionPeer</peer>
+      <header>TURBINE ROLE PERMISSION</header>
+      <titolo>TurbineRolePermission</titolo>
+      <numppage>15</numppage>
+      <menu>TurbineRolePermission</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineRolePermission</url>
+        <param nome="ROLEID">@ROLEID</param>
+        <param nome="PERMISSIONID">@PERMISSIONID</param>
+      </edit-info>
+      <colonna nome="ROLE ID" primary="true">
+        <campo>ROLEID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="PERMISSION ID" primary="true">
+        <campo>PERMISSIONID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineRolePermission>
+    <LpTurbineRolePermissionSel extend="LpTurbineRolePermission">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineRolePermissionSel>
+    <LpTurbineUser>
+      <object>TurbineUser</object>
+      <peer>TurbineUserPeer</peer>
+      <header>TURBINE USER</header>
+      <titolo>TurbineUser</titolo>
+      <numppage>15</numppage>
+      <menu>TurbineUser</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineUser</url>
+        <param nome="ID">@USERID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>USERID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="LOGIN NAME">
+        <campo>LOGINNAME</campo>
+        <size>32</size>
+      </colonna>
+      <colonna nome="PASSWORD VALUE">
+        <campo>PASSWORDVALUE</campo>
+        <size>32</size>
+      </colonna>
+      <colonna nome="FIRST NAME">
+        <campo>FIRSTNAME</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="LAST NAME">
+        <campo>LASTNAME</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="CONFIRM VALUE">
+        <campo>CONFIRMVALUE</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="MODIFIED">
+        <campo>MODIFIED</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="CREATED">
+        <campo>CREATED</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="LAST LOGIN">
+        <campo>LASTLOGIN</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineUser>
+    <LpTurbineUserSel extend="LpTurbineUser">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineUserSel>
+    <LpTurbineUserGroupRole>
+      <object>TurbineUserGroupRole</object>
+      <peer>TurbineUserGroupRolePeer</peer>
+      <header>TURBINE USER GROUP ROLE</header>
+      <titolo>TurbineUserGroupRole</titolo>
+      <numppage>15</numppage>
+      <menu>TurbineUserGroupRole</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineUserGroupRole</url>
+        <param nome="USERID">@USERID</param>
+        <param nome="GROUPID">@GROUPID</param>
+        <param nome="ROLEID">@ROLEID</param>
+      </edit-info>
+      <colonna nome="USER ID" primary="true">
+        <campo>USERID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="GROUP ID" primary="true">
+        <campo>GROUPID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="ROLE ID" primary="true">
+        <campo>ROLEID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineUserGroupRole>
+    <LpTurbineUserGroupRoleSel extend="LpTurbineUserGroupRole">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineUserGroupRoleSel>
+    <LpTurbineScheduledJob>
+      <object>TurbineScheduledJob</object>
+      <peer>TurbineScheduledJobPeer</peer>
+      <header>TURBINE SCHEDULED JOB</header>
+      <titolo>TurbineScheduledJob</titolo>
+      <numppage>15</numppage>
+      <menu>TurbineScheduledJob</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineScheduledJob</url>
+        <param nome="ID">@JOBID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>JOBID</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="SECOND">
+        <campo>SECOND</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="MINUTE">
+        <campo>MINUTE</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="HOUR">
+        <campo>HOUR</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="WEEK DAY">
+        <campo>WEEKDAY</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="DAY OF MONTH">
+        <campo>DAYOFMONTH</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="TASK">
+        <campo>TASK</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>60</size>
+      </colonna>
+      <colonna nome="PROPERTY">
+        <campo>PROPERTY</campo>
+        <size>10</size>
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineScheduledJob>
+    <LpTurbineScheduledJobSel extend="LpTurbineScheduledJob">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpTurbineScheduledJobSel>
+  </liste>
+  <forms>
+    <FormTurbinePermission>
+      <object>TurbinePermission</object>
+      <peer>TurbinePermissionPeer</peer>
+      <header>TURBINE PERMISSION</header>
+      <titolo>TurbinePermission</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@PERMISSIONID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>PERMISSIONID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="PERMISSION NAME">
+        <campo>PERMISSIONNAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+    </FormTurbinePermission>
+    <FormTurbineRole>
+      <object>TurbineRole</object>
+      <peer>TurbineRolePeer</peer>
+      <header>TURBINE ROLE</header>
+      <titolo>TurbineRole</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@ROLEID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>ROLEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="ROLE NAME">
+        <campo>ROLENAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+    </FormTurbineRole>
+    <FormTurbineGroup>
+      <object>TurbineGroup</object>
+      <peer>TurbineGroupPeer</peer>
+      <header>TURBINE GROUP</header>
+      <titolo>TurbineGroup</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@GROUPID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>GROUPID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="GROUP NAME">
+        <campo>GROUPNAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+    </FormTurbineGroup>
+    <FormTurbineRolePermission>
+      <object>TurbineRolePermission</object>
+      <peer>TurbineRolePermissionPeer</peer>
+      <header>TURBINE ROLE PERMISSION</header>
+      <titolo>TurbineRolePermission</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ROLEID">@ROLEID</param>
+        <param nome="PERMISSIONID">@PERMISSIONID</param>
+      </edit-info>
+      <colonna nome="ROLE ID" primary="true">
+        <campo>ROLEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsTurbineRoleSel</url>
+          <form>
+            <url>@form?type=FormTurbineRole</url>
+            <param name="ID">@ROLEID</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="PERMISSION ID" primary="true">
+        <campo>PERMISSIONID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsTurbinePermissionSel</url>
+          <form>
+            <url>@form?type=FormTurbinePermission</url>
+            <param name="ID">@PERMISSIONID</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+    </FormTurbineRolePermission>
+    <FormTurbineUser>
+      <object>TurbineUser</object>
+      <peer>TurbineUserPeer</peer>
+      <header>TURBINE USER</header>
+      <titolo>TurbineUser</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@USERID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>USERID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="LOGIN NAME">
+        <campo>LOGINNAME</campo>
+        <size>32</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="PASSWORD VALUE">
+        <campo>PASSWORDVALUE</campo>
+        <size>32</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="FIRST NAME">
+        <campo>FIRSTNAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="LAST NAME">
+        <campo>LASTNAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="CONFIRM VALUE">
+        <campo>CONFIRMVALUE</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="MODIFIED">
+        <campo>MODIFIED</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="CREATED">
+        <campo>CREATED</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="LAST LOGIN">
+        <campo>LASTLOGIN</campo>
+        <size>10</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+    </FormTurbineUser>
+    <FormTurbineUserGroupRole>
+      <object>TurbineUserGroupRole</object>
+      <peer>TurbineUserGroupRolePeer</peer>
+      <header>TURBINE USER GROUP ROLE</header>
+      <titolo>TurbineUserGroupRole</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="USERID">@USERID</param>
+        <param nome="GROUPID">@GROUPID</param>
+        <param nome="ROLEID">@ROLEID</param>
+      </edit-info>
+      <colonna nome="USER ID" primary="true">
+        <campo>USERID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsTurbineUserSel</url>
+          <form>
+            <url>@form?type=FormTurbineUser</url>
+            <param name="ID">@USERID</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="GROUP ID" primary="true">
+        <campo>GROUPID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsTurbineGroupSel</url>
+          <form>
+            <url>@form?type=FormTurbineGroup</url>
+            <param name="ID">@GROUPID</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+      <colonna nome="ROLE ID" primary="true">
+        <campo>ROLEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+        <foreign-edit-auto>
+          <mode>DISP_DESCR_EDIT</mode>
+          <url>@list?type=LsTurbineRoleSel</url>
+          <form>
+            <url>@form?type=FormTurbineRole</url>
+            <param name="ID">@ROLEID</param>
+          </form>
+        </foreign-edit-auto>
+      </colonna>
+    </FormTurbineUserGroupRole>
+    <FormTurbineScheduledJob>
+      <object>TurbineScheduledJob</object>
+      <peer>TurbineScheduledJobPeer</peer>
+      <header>TURBINE SCHEDULED JOB</header>
+      <titolo>TurbineScheduledJob</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@JOBID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>JOBID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="SECOND">
+        <campo>SECOND</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="MINUTE">
+        <campo>MINUTE</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="HOUR">
+        <campo>HOUR</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="WEEK DAY">
+        <campo>WEEKDAY</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="DAY OF MONTH">
+        <campo>DAYOFMONTH</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="TASK">
+        <campo>TASK</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+      <colonna nome="PROPERTY">
+        <campo>PROPERTY</campo>
+        <size>80</size>
+        <testtipo />
+      </colonna>
+    </FormTurbineScheduledJob>
+  </forms>
+  <liste-sql>
+    <LsTurbinePermission>
+      <header>TURBINE PERMISSION</header>
+      <titolo>turbine_permission</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_permission</menu>
+      <edit-info>
+        <url>@form?type=FormTurbinePermission</url>
+        <param nome="ID">@PERMISSION_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>PERMISSION_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="PERMISSION NAME">
+        <campo>PERMISSION_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.PERMISSION_ID, T.PERMISSION_NAME, T.OBJECTDATA</select>
+      <from>TURBINE_PERMISSION T</from>
+      <delete-from>TURBINE_PERMISSION</delete-from>
+      <orderby>PERMISSION_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbinePermission>
+    <LsTurbinePermissionSel extend="LsTurbinePermission">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbinePermissionSel>
+    <LsTurbineRole>
+      <header>TURBINE ROLE</header>
+      <titolo>turbine_role</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_role</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineRole</url>
+        <param nome="ID">@ROLE_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>ROLE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ROLE NAME">
+        <campo>ROLE_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.ROLE_ID, T.ROLE_NAME, T.OBJECTDATA</select>
+      <from>TURBINE_ROLE T</from>
+      <delete-from>TURBINE_ROLE</delete-from>
+      <orderby>ROLE_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineRole>
+    <LsTurbineRoleSel extend="LsTurbineRole">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineRoleSel>
+    <LsTurbineGroup>
+      <header>TURBINE GROUP</header>
+      <titolo>turbine_group</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_group</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineGroup</url>
+        <param nome="ID">@GROUP_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>GROUP_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="GROUP NAME">
+        <campo>GROUP_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.GROUP_ID, T.GROUP_NAME, T.OBJECTDATA</select>
+      <from>TURBINE_GROUP T</from>
+      <delete-from>TURBINE_GROUP</delete-from>
+      <orderby>GROUP_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineGroup>
+    <LsTurbineGroupSel extend="LsTurbineGroup">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineGroupSel>
+    <LsTurbineRolePermission>
+      <header>TURBINE ROLE PERMISSION</header>
+      <titolo>turbine_role_permission</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_role_permission</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineRolePermission</url>
+        <param nome="ROLEID">@ROLE_ID</param>
+        <param nome="PERMISSIONID">@PERMISSION_ID</param>
+      </edit-info>
+      <colonna nome="ROLE ID" primary="true">
+        <campo>ROLE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="PERMISSION ID" primary="true">
+        <campo>PERMISSION_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>T.ROLE_ID, T.PERMISSION_ID</select>
+      <from>TURBINE_ROLE_PERMISSION T</from>
+      <delete-from>TURBINE_ROLE_PERMISSION</delete-from>
+      <orderby>PERMISSION_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineRolePermission>
+    <LsTurbineRolePermissionSel extend="LsTurbineRolePermission">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineRolePermissionSel>
+    <LsTurbineUser>
+      <header>TURBINE USER</header>
+      <titolo>turbine_user</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_user</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineUser</url>
+        <param nome="ID">@USER_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>USER_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="LOGIN NAME">
+        <campo>LOGIN_NAME</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PASSWORD VALUE">
+        <campo>PASSWORD_VALUE</campo>
+        <size>32</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="FIRST NAME">
+        <campo>FIRST_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="LAST NAME">
+        <campo>LAST_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="CONFIRM VALUE">
+        <campo>CONFIRM_VALUE</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="MODIFIED">
+        <campo>MODIFIED</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="CREATED">
+        <campo>CREATED</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="LAST LOGIN">
+        <campo>LAST_LOGIN</campo>
+        <size>10</size>
+        <tipo>PDT_TIMESTAMP</tipo>
+      </colonna>
+      <colonna nome="OBJECTDATA">
+        <campo>OBJECTDATA</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.USER_ID, T.LOGIN_NAME, T.PASSWORD_VALUE, T.FIRST_NAME, T.LAST_NAME, T.EMAIL, T.CONFIRM_VALUE, T.MODIFIED, T.CREATED, T.LAST_LOGIN, T.OBJECTDATA</select>
+      <from>TURBINE_USER T</from>
+      <delete-from>TURBINE_USER</delete-from>
+      <orderby>USER_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineUser>
+    <LsTurbineUserSel extend="LsTurbineUser">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineUserSel>
+    <LsTurbineUserGroupRole>
+      <header>TURBINE USER GROUP ROLE</header>
+      <titolo>turbine_user_group_role</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_user_group_role</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineUserGroupRole</url>
+        <param nome="USERID">@USER_ID</param>
+        <param nome="GROUPID">@GROUP_ID</param>
+        <param nome="ROLEID">@ROLE_ID</param>
+      </edit-info>
+      <colonna nome="USER ID" primary="true">
+        <campo>USER_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="GROUP ID" primary="true">
+        <campo>GROUP_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="ROLE ID" primary="true">
+        <campo>ROLE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>T.USER_ID, T.GROUP_ID, T.ROLE_ID</select>
+      <from>TURBINE_USER_GROUP_ROLE T</from>
+      <delete-from>TURBINE_USER_GROUP_ROLE</delete-from>
+      <orderby>ROLE_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineUserGroupRole>
+    <LsTurbineUserGroupRoleSel extend="LsTurbineUserGroupRole">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineUserGroupRoleSel>
+    <LsTurbineScheduledJob>
+      <header>TURBINE SCHEDULED JOB</header>
+      <titolo>turbine_scheduled_job</titolo>
+      <numppage>15</numppage>
+      <menu>turbine_scheduled_job</menu>
+      <edit-info>
+        <url>@form?type=FormTurbineScheduledJob</url>
+        <param nome="ID">@JOB_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>JOB_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="SECOND">
+        <campo>SECOND</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="MINUTE">
+        <campo>MINUTE</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="HOUR">
+        <campo>HOUR</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="WEEK DAY">
+        <campo>WEEK_DAY</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="DAY OF MONTH">
+        <campo>DAY_OF_MONTH</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="TASK">
+        <campo>TASK</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="EMAIL">
+        <campo>EMAIL</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="PROPERTY">
+        <campo>PROPERTY</campo>
+        <size>10</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <select>T.JOB_ID, T.SECOND, T.MINUTE, T.HOUR, T.WEEK_DAY, T.DAY_OF_MONTH, T.TASK, T.EMAIL, T.PROPERTY</select>
+      <from>TURBINE_SCHEDULED_JOB T</from>
+      <delete-from>TURBINE_SCHEDULED_JOB</delete-from>
+      <orderby>JOB_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineScheduledJob>
+    <LsTurbineScheduledJobSel extend="LsTurbineScheduledJob">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsTurbineScheduledJobSel>
+  </liste-sql>
+</root>

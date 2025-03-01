@@ -1,7 +1,69 @@
-E R R O R 
+$page.setTitle($I.I("Errore"))
 
-$message
+<script language="javascript">
 
-$error
+  function checkForm()
+  {
+    return testCampoNull(document.fo.descr, "Descrizione operazioni");
+  }
 
-$exception
+  function invia()
+  {
+    document.fo.submit();
+    showLoading();
+  }
+
+</script>
+
+<div id="innerbody">
+  <form name="fo"
+        action="${data.homeLink}/action/SendError"
+        method="post">
+
+    <div class="row">
+      <div class="col-md-12">
+        <h2>$I.I("Grave errore non recuperabile.")</h2>
+
+        <div class="error_why">
+          $processingException
+        </div>
+
+        <div class="error_desc">
+          $I.I("<p>
+            Inserire una descrizione <i>possibilmente dettagliata</i> delle operazioni
+            che si stavano effettuando al momento dell'errore.<br>
+            Quindi clicca su
+            Invia per recapitare direttamente agli sviluppatori queste informazioni sull'errore verificatosi.
+            <br>
+            Quanto più saranno dettagliate le informazioni fornite,
+            <b>tanto maggiore sarà la velocità</b>
+            di individuazione e correzione dell'eventuale errore.
+          </p>
+          <p>
+            <b>Grazie</b>
+          </p>")
+
+          $I.I("Descrizione operazioni:")<br>
+          <textarea cols="80" rows="10" name="descr"></textarea><br><br>
+          <p><a class="btn btn-primary" href="javascript:invia()" role="button">Invia segnalazione</a></p>
+        </div>
+
+        <div class="error_stack" style="padding-top: 10px">
+          <pre>
+            $stackTrace
+          </pre>
+        </div>
+
+        <br>
+
+        <input type="hidden" name="ewhy" value="$processingException">
+        <input type="hidden" name="estk" value="$stackTrace">
+
+        <script language="javascript">
+          document.fo.descr.focus();
+        </script>
+      </div>
+    </div>
+
+  </form>
+</div>

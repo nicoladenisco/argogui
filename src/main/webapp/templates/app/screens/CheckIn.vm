@@ -1,0 +1,59 @@
+$page.setTitle($I.I("Checkin campione"))
+
+<script language="javascript">
+
+  var myUrl = "$link.setPage('CheckIn.vm')";
+
+  function ricarica()
+  {
+    goPage(myUrl);
+  }
+
+  function checkin()
+  {
+    relCommand("checkin");
+    showLoading();
+  }
+
+  function relCommand(comando)
+  {
+    document.ric.command.value = comando;
+    document.ric.submit();
+  }
+
+  function relCommandGet(comando)
+  {
+    goPage(myUrl + "/action/CheckInAction?command=" + encodeURIComponent(comando));
+  }
+
+</script>
+
+<div id="innerbody">
+  <form action="$link.setPage('CheckIn.vm')" method="post" name="ric">
+
+    <input type="hidden" name="action" value="CheckInAction"/>
+    <input type="hidden" name="command" value="checkin"/>
+
+    <h3>
+      <span class="label label-primary">$I.I("Checkin campioni")</span>
+      #menuCellScript ("Aggiorna" "ricarica()" $ui.menuFieldTextStyle)
+      #menuCell ("Abbandona" $data.homeLink $ui.menuFieldTextStyle)
+    </h3>
+
+    <div class="boxcheckin">
+      <b>Codice del campione</b><input type=text name=codicein value='' size=20>&nbsp;
+      <input type="button" name="SimpleSearch" value="$I.I('Avvia ricerca campione')" onclick="checkin();"/>
+    </div>
+  </form>
+
+  <form action="$link.setPage('CheckIn.vm')" method="post" name="fo">
+    $liste.getHtml($data, "coda-checkin", "CheckIn.vm", "")
+  </form>
+</div>
+
+<script language="javascript">
+  document.ric.codicein.focus();
+</script>
+
+#set($data.refresh = 30)
+

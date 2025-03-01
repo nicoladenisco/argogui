@@ -1,0 +1,29 @@
+$page.setTitle($I.I("Stampa in elaborazione."))
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<form action="${data.request.contextPath}/pdf/job?codice=${codice}" method="get" name="fo">
+
+  <table width=100%>
+    <tr>
+      <td width=50% bgcolor="$ui.topbarbgcolor" class="big_title">
+        &nbsp; $I.I("Elaborazione stampa in corso")
+      </td>
+
+      #menuCellScript ("Aggiorna" "document.fo.submit()" $ui.menuFieldTextStyle)
+      #menuCellScript ("Abbandona" "window.close()" $ui.menuFieldTextStyle)
+    </tr>
+  </table>
+
+  $I.I("<h2>Elaborazione stampa in corso ...</h2>")
+
+  <p>JOB ${job.jobCode} $I.I("avviato alle") ${tstart}.</p>
+
+  $I.I("<p>La stampa che hai richiesto è in corso di elaborazione
+  e richiede altro tempo per il completamento.</p>
+  <p>Clicca sul pulsante per ripetere l'interrogazione e verificare
+  se l'elaborazione è terminata.</p>")
+
+  <input type="submit" value="$I.I('Aggiorna')">
+
+</form>
+

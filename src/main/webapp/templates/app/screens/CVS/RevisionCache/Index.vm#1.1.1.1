@@ -1,0 +1,120 @@
+$page.setTitle($I.I("Indice"))
+
+<script type="text/javascript">
+
+  function nuovoOrdine()
+  {
+    var url = "$link.setPage('OrdineSelezionaAnagrafica.vm')";
+    goLink(url + "?new=1");
+  }
+
+  function gotoSetup(idSetup)
+  {
+    var url = "$link.setPage('mform.vm').addPathInfo('type', 'FormStpSetupStrumenti')";
+    goLink(url + "?jlc=Index.vm&ID=" + idSetup);
+  }
+
+  function apri(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'StatoStrumenti')";
+    goLink(url + "?V=1&ID=" + idStrumenti);
+  }
+
+  function attiva(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'StatoStrumenti')";
+
+    if (confirm($I.IA("Sei sicuro di riattivare questo strumento?")))
+      goPage(url + "?V=1&ID=" + idStrumenti);
+  }
+
+  function disattiva(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'StatoStrumenti')";
+
+    if (confirm($I.IA("Sei sicuro di disattivare questo strumento?")))
+      goPage(url + "?V=0&ID=" + idStrumenti);
+  }
+
+  function attivaMonitor(idStrumenti)
+  {
+    var urlwin = "$content.getURI('/monitor')/" + idStrumenti;
+    var titolo = "monitorWin" + idStrumenti;
+    openInfoWindow(urlwin, titolo);
+
+    var url = "$link.setPage('Index.vm')";
+    goPage(url + "?V=0&ID=" + idStrumenti);
+  }
+
+  function disattivaMonitor(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'DisattivaMonitor')";
+
+    goPage(url + "?V=0&ID=" + idStrumenti);
+  }
+
+  function chiudiRack(idRack)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'ChiudiRack')";
+
+    if (confirm($I.IA("Sei sicuro di chiudere definitivamente questo rack incompleto?")))
+      goPage(url + "?ID=" + idRack);
+  }
+
+  function sopprimiRack(idRack)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'SopprimiRack')";
+
+    if (confirm($I.IA("Sei sicuro di sopprimere questo rack?")))
+      goPage(url + "?ID=" + idRack);
+  }
+
+  function inviaStrumento()
+  {
+    if (confirm($I.IA("Sei sicuro di voler inviare tutti i rack selezionati ai corrispettivi strumenti?")))
+    {
+      document.fo.submit();
+      showLoading();
+    }
+  }
+
+  function apriDettaglio(idCampione)
+  {
+    var url = "$link.setPage('plista.vm').addPathInfo('type', 'parametri-campione')";
+    openInfoDialog(url + "?idcamp=" + idCampione);
+  }
+
+</script>
+
+#set($showSend = 0)
+
+<div id="innerbody">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 widget-container">
+
+      <br>
+      <table width='100%'>
+        <tr>
+          <td>
+            <ul class="nav nav-tabs dedalus-tabs">
+              <li role="presentation" class="active"><a href="#">$I.I("Lista ordini")</a></li>
+              <li role="presentation"><a class="strumenti-tab" href="$link.setPage('Strumenti.vm')">$I.I("Strumenti")</a></li>
+            </ul>
+          </td>
+
+          <td width='300' align='right'>
+            <button type="button" class="btn btn-primary btn-lg" onclick="nuovoOrdine();">
+              <span class="glyphicon glyphicon-star" aria-hidden="true"></span> $I.I("Nuovo ordine")
+            </button>
+          </td>
+
+        </tr>
+      </table>
+
+      <div class="lista-ordini">
+        $liste.getHtml($data, "IndexPrestazioni", "Index.vm", "editPopup=0")
+      </div>
+    </div>
+
+  </div>
+</div>

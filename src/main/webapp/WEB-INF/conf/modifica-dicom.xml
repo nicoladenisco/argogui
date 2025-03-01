@@ -1,0 +1,23 @@
+<!--
+  MODIFICA DEI FILES DICOM
+  Descrittore dei campi utilizzati nelle maschere di modifica dei files dicom.
+-->
+
+<root>
+  <paziente>
+   <input tag="0x0010,0x0020" label="ID paziente" order="10" />
+   <input tag="0x0010,0x0010" label="Nome paziente" order="20" />
+   <input tag="0x0010,0x0030" label="Data di nascita" order="30" />
+   <input tag="0x0010,0x0032" label="Ora di nascita" order="31" />
+   <input tag="0x0010,0x0040" label="Sesso" order="40" />
+  </paziente>
+  <esame>
+   <input tag="0x0008,0x0050" label="Accession number" order="10" />
+   <input tag="0x0008,0x1030" label="Descrizione esame" order="20" />
+   <input tag="0x0008,0x0020" label="Data esame" order="30" />
+   <input tag="0x0008,0x0030" label="Ora esame" order="31" />
+   <display tag="0x0020,0x1206" label="Numero di serie collegate" order="50" />
+   <display tag="0x0020,0x1208" label="Numero di immagini collegate" order="60" />
+   <display tag="0x0008,0x0054" label="Area di storage" order="70" />
+  </esame>
+</root>

@@ -1,0 +1,734 @@
+/////////////////////////////////////////////////
+// finestre di pop up
+
+// apre una finestra cambiando la posizione e le dimensioni
+// scalandole opportunamente considerando quelle originali
+// riferite ad uno schermo 1024x768 pixels
+function openRelativeTo1024x768Window(urlwin, titolo, posx, posy, dimx, dimy)
+{
+  var px = (posx * screen.width) / 1024;
+  var py = (posy * screen.height) / 768;
+  var dx = (dimx * screen.width) / 1024;
+  var dy = (dimy * screen.height) / 768;
+
+  titolo = titolo.toString().replace(' ', '_');
+  mywin = window.open(urlwin, titolo,
+          "menubar=no,personalbar=no,status=no,titlebar=no," +
+          "screenX=" + px + ",screenY=" + py +
+          ",top=" + py + ",left=" + px + ",width=" + dx + ",height=" + dy +
+          ",resizable=yes,alwaysRaised=yes,scrollbars=yes");
+  mywin.focus();
+  return mywin;
+}
+
+function openWindow(urlwin, titolo, px, py, dx, dy)
+{
+  titolo = titolo.toString().replace(' ', '_');
+  mywin = window.open(urlwin, titolo,
+          "menubar=no,personalbar=no,status=no,titlebar=no," +
+          "screenX=" + px + ",screenY=" + py +
+          ",top=" + py + ",left=" + px + ",width=" + dx + ",height=" + dy +
+          ",resizable=yes,alwaysRaised=yes,scrollbars=yes");
+  mywin.focus();
+  return mywin;
+}
+
+function openInNewTab(url)
+{
+  var win = window.open(url, '_blank');
+  win.focus();
+}
+
+// apre una finestra cambiando la posizione e le dimensioni
+// scalandole opportunamente considerando quelle originali
+// riferite ad uno schermo 1024x768 pixels
+function modalRelativeTo1024x768Window(urlwin, posx, posy, dimx, dimy)
+{
+  var px = (posx * screen.width) / 1024;
+  var py = (posy * screen.height) / 768;
+  var dx = (dimx * screen.width) / 1024;
+  var dy = (dimy * screen.height) / 768;
+
+  window.showModalDialog(urlwin, window,
+          "dialogTop:" + py + "px; dialogLeft:" + px + "px; " +
+          "dialogWidth:" + dx + "px; dialogHeight:" + dy + "px; resizable:yes");
+}
+
+function modalWindow(urlwin, px, py, width, height)
+{
+  window.showModalDialog(urlwin, window,
+          "dialogTop:" + py + "px; dialogLeft:" + px + "px; " +
+          "dialogWidth:" + width + "px; dialogHeight:" + height + "px; resizable:yes");
+}
+
+// apre una finestra cambiando la posizione e le dimensioni
+// scalandole opportunamente considerando quelle originali
+// riferite ad uno schermo 1024x768 pixels
+function modalCenteredRelativeTo1024x768Window(urlwin, dimx, dimy)
+{
+  var dx = (dimx * screen.width) / 1024;
+  var dy = (dimy * screen.height) / 768;
+
+  window.showModalDialog(urlwin, window,
+          "dialogWidth:" + dx + "px; dialogHeight:" + dy + "px; resizable:yes; center:yes");
+}
+
+function modalCenteredWindow(urlwin, dx, dy)
+{
+  window.showModalDialog(urlwin, window,
+          "dialogWidth:" + dx + "px; dialogHeight:" + dy + "px; resizable:yes; center:yes");
+}
+
+//center  	yes | no | 1 | 0 | on | off  	Center the dialog
+//dialogHeight 	Length/units 	Outer height of dialog
+//dialogLeft 	Integer 	Left pixel offset (overrides center)
+//dialogTop 	Integer 	Top pixel offset (overrides center)
+//dialogWidth 	Length/units 	Outer width of dialog
+//edge 	raised | sunken 	Transition style between border and content area
+//help 	yes | no | 1 | 0 | on | off 	Display help icon in titlebar
+//resizable 	yes | no | 1 | 0 | on | off 	Dialog is resizable
+//status 	yes | no | 1 | 0 | on | off 	Display status bar
+//window.showModalDialog(apri, window, "dialogWidth:300px; dialogHeight:200px; center:yes");
+
+// finestra di popup standard
+function openStandardWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 300, 120, 800, 550);
+}
+
+// finestra ricerca articoli ec
+function openArticoliWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 300, 120, 700, 500);
+}
+
+// finestra di popup dettaglio
+function openDettaglioWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 200, 220, 700, 400);
+}
+
+// finestra di popup informazioni
+function openInfoWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 100, 320, 700, 400);
+}
+
+// finestra di edit informazioni
+function openEditWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 50, 50, 900, 650);
+}
+
+// finestra di edit informazioni
+function openMaximizedWindow(urlwin, titolo)
+{
+  mywin = openRelativeTo1024x768Window(urlwin, titolo, 0, 0, 1024, 768);
+  mywin.moveTo(0, 0);
+  mywin.resizeTo(screen.width - 20, screen.height - 100);
+  mywin.focus();
+  return mywin;
+}
+
+// finestra di edit informazioni
+function openAliceWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 50, 50, 500, 600);
+}
+
+// finestra di edit informazioni
+function openPrintWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 50, 50, 900, 650);
+}
+
+// finestra di edit informazioni
+function openLauncherWindow(urlwin, titolo)
+{
+  return openRelativeTo1024x768Window(urlwin, titolo, 50, 50, 300, 50);
+}
+
+function apriPopup1(urlwin, titolo)
+{
+  openStandardDialog(urlwin);
+//openStandardWindow(urlwin, titolo);
+}
+
+function apriPopup2(urlwin, titolo)
+{
+  openArticoliDialog(urlwin);
+//openArticoliWindow(urlwin, titolo);
+}
+
+function apriPopup3(urlwin, titolo)
+{
+  openDettaglioDialog(urlwin);
+//openDettaglioWindow(urlwin, titolo);
+}
+
+function apriPopup4(urlwin, titolo)
+{
+  openInfoDialog(urlwin);
+//openInfoWindow(urlwin, titolo);
+}
+
+function apriPopup5(urlwin, titolo)
+{
+  openEditDialog(urlwin);
+//openEditWindow(urlwin, titolo);
+}
+
+function apriPopup6(urlwin, titolo)
+{
+  openMaximizedWindow(urlwin, titolo);
+}
+
+function maximizeWindow()
+{
+  window.moveTo(0, 0);
+  window.resizeTo(screen.width, screen.height);
+}
+
+// finestra di popup standard
+function openStandardDialog(urlwin)
+{
+  return modalRelativeTo1024x768Window(urlwin, 300, 120, 800, 550);
+}
+
+// finestra ricerca articoli ec
+function openArticoliDialog(urlwin)
+{
+  return modalRelativeTo1024x768Window(urlwin, 300, 120, 700, 500);
+}
+
+// finestra di popup dettaglio
+function openDettaglioDialog(urlwin)
+{
+  return modalRelativeTo1024x768Window(urlwin, 200, 220, 700, 400);
+}
+
+// finestra di popup informazioni
+function openInfoDialog(urlwin)
+{
+  return modalRelativeTo1024x768Window(urlwin, 100, 320, 700, 400);
+}
+
+// finestra di edit informazioni
+function openEditDialog(urlwin)
+{
+  return modalRelativeTo1024x768Window(urlwin, 50, 50, 900, 650);
+}
+
+// finestra di edit informazioni
+function openPrintDialog(urlwin)
+{
+  return modalRelativeTo1024x768Window(urlwin, 50, 50, 900, 650);
+}
+
+function relCommandJump(url)
+{
+  eval("location='" + url + "'");
+}
+
+function goPage(src)
+{
+  window.location.href = src;
+}
+
+function goLink(src)
+{
+  try {
+    showLoading();
+  } catch (e) {
+  }
+  window.location.href = src;
+}
+
+///////////////////////////////////////////////
+// funzioni per form
+
+function convertiCampoMaiuscolo(campo)
+{
+  campo.value = campo.value.toUpperCase();
+}
+
+function convertiCampoMinuscolo(campo)
+{
+  campo.value = campo.value.toLowerCase();
+}
+
+function ControllaCF(cf)
+{
+  var validi, i, s, set1, set2, setpari, setdisp;
+  if (cf == '')
+    return '';
+
+  cf = cf.toUpperCase();
+  if (cf.length != 16)
+    return "La lunghezza del codice fiscale non e'\n" +
+            "corretta: il codice fiscale deve essere lungo\n" +
+            "esattamente 16 caratteri.\n";
+
+  validi = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  for (i = 0; i < 16; i++) {
+    if (validi.indexOf(cf.charAt(i)) == -1)
+      return "Il codice fiscale contiene un carattere non valido `" +
+              cf.charAt(i) +
+              "'.\nI caratteri validi sono le lettere e le cifre.\n";
+  }
+  set1 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  set2 = "ABCDEFGHIJABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  setpari = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  setdisp = "BAKPLCQDREVOSFTGUHMINJWZYX";
+  s = 0;
+  for (i = 1; i <= 13; i += 2)
+    s += setpari.indexOf(set2.charAt(set1.indexOf(cf.charAt(i))));
+  for (i = 0; i <= 14; i += 2)
+    s += setdisp.indexOf(set2.charAt(set1.indexOf(cf.charAt(i))));
+  if (s % 26 != cf.charCodeAt(15) - 'A'.charCodeAt(0))
+    return "Il codice fiscale non e' corretto:\n" +
+            "il codice di controllo non corrisponde.\n";
+  return "";
+}
+
+function ControllaPIVA(pi)
+{
+  if (pi == '')
+    return '';
+  if (pi.length != 11)
+    return "La lunghezza della partita IVA non e'\n" +
+            "corretta: la partita IVA deve essere lunga\n" +
+            "esattamente 11 caratteri.\n";
+  validi = "0123456789";
+  for (i = 0; i < 11; i++) {
+    if (validi.indexOf(pi.charAt(i)) == -1)
+      return "La partita IVA contiene un carattere non valido `" +
+              pi.charAt(i) + "'.\nI caratteri validi sono le cifre.\n";
+  }
+  s = 0;
+  for (i = 0; i <= 9; i += 2)
+    s += pi.charCodeAt(i) - '0'.charCodeAt(0);
+  for (i = 1; i <= 9; i += 2) {
+    c = 2 * (pi.charCodeAt(i) - '0'.charCodeAt(0));
+    if (c > 9)
+      c = c - 9;
+    s += c;
+  }
+  if ((10 - s % 10) % 10 != pi.charCodeAt(10) - '0'.charCodeAt(0))
+    return "La partita IVA non e' valida:\n" +
+            "il codice di controllo non corrisponde.\n";
+  return '';
+}
+
+// ritorna vero se la stringa e vuota, nulla o
+// contiene solo spazi bianchi
+function isValNull(val)
+{
+  if (val == null || val == "")
+    return true;
+
+  // cerca un carattere qualsiasi deverso da spazio
+  for (var i = 0; i < val.length; i++)
+  {
+    if (val.charAt(i) != ' ')
+      return false;
+  }
+
+  return true;
+}
+
+function testCampoNull(campo, nome)
+{
+  if (!isOkStr(campo.value)) {
+    alert("Il campo " + nome + " non puo' essere vuoto!");
+    campo.focus();
+    return false;
+  }
+  return true;
+}
+
+function testCampoZero(campo, nome)
+{
+  if (!isOkStr(campo.value) || parseInt(campo.value) == 0) {
+    alert("Il campo " + nome + " non contiene un valore valido!");
+    campo.focus();
+    return false;
+  }
+  return true;
+}
+
+function testCampoAlfanumerico(campo, nome)
+{
+  return true;
+}
+
+function testCampoNumericoIntero(campo, nome)
+{
+  var val = trim(campo.value);
+  if (val.match(/^[\+\-]*[0-9]+$/)) {
+    return true;
+  }
+
+  alert("Il campo " + nome + " puo' contenere solo i numeri da 0 a 9 ed eventualmente preceduti da + o -");
+  campo.focus();
+  return false;
+}
+
+function testCampoNumericoFloat(campo, nome)
+{
+  var val = trim(campo.value);
+  if (val.match(/^[\+\-]*[0-9\.\,e]+$/)) {
+    return true;
+  }
+
+  alert("Il campo " + nome + " puo' contenere solo i numeri da 0 a 9 eventualmente preceduti da + o - e la virgola");
+  campo.focus();
+  return false;
+}
+
+function testCampoRangeIntero(campo, nome, valmin, valmax)
+{
+  var val = parseInt(campo.value);
+  if (val >= valmin && val <= valmax)
+    return true;
+
+  alert("Il campo " + nome + " non contiene un valore valido!\nDeve essere compreso fra " + valmin + " e " + valmax);
+  campo.focus();
+  return false;
+}
+
+function testCampoRangeFloat(campo, nome, valmin, valmax)
+{
+  var val = parseFloat(campo.value);
+  if (val >= valmin && val <= valmax)
+    return true;
+
+  alert("Il campo " + nome + " non contiene un valore valido!\nDeve essere compreso fra " + valmin + " e " + valmax);
+  campo.focus();
+  return false;
+}
+
+function testCampoTelefono(campo, nome)
+{
+  var val = trim(campo.value);
+  if (val.match(/^[\+]*[0-9\.]+$/)) {
+    return true;
+  }
+
+  alert("Il campo " + nome + " puo' contenere solo i numeri da 0 a 9 ed eventualmente + e . (ES: +39.081.234567)");
+  campo.focus();
+  return false;
+}
+
+function testCampoData(campo, nome)
+{
+  var val = campo.value;
+
+  // una stringa vuota è OK; eventualmente utilizzare testNull()
+  if (!isOkStr(val))
+    return true;
+
+  // il parsing delle date è molto sofisticato e non può essere
+  // controllato dal lato client: occorre comunque fare la post del form
+  return true;
+}
+
+function testCampoEMail(campo, nome)
+{
+  var val = trim(campo.value);
+  var re = /^[\w\.-]+@[\w\.-]+\.[a-z]{2,4}$/;
+
+  // un valore NULL viene considerato valido;
+  // si puo' eventualmente usare un testnull
+  if (isValNull(val))
+    return true;
+
+  var valid = re.test(val);
+  if (!valid) {
+    alert("Il campo " + nome + " è compilato in modo errato.");
+    campo.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function testCampoCodice(campo, nome)
+{
+  var val = trim(campo.value);
+  var re = /^[a-z|A-Z|0-9|_]*$/;
+
+  // un valore NULL viene considerato valido;
+  // si puo' eventualmente usare un testnull
+  if (isValNull(val))
+    return true;
+
+  var valid = re.test(val);
+  if (!valid) {
+    alert("Il campo " + nome + " non contiene un codice valido.\n" +
+            "Sono consentiti solo caratteri alfanumerici senza spazi.");
+    campo.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function testCampoCodFis(campo, nome)
+{
+  var val = trim(campo.value);
+
+  // un valore NULL viene considerato valido;
+  // si puo' eventualmente usare un testnull
+  if (isValNull(val))
+    return true;
+
+  if (val == "")
+    return true;
+
+  if (val.length == 11)
+    return testCampoPIVA(campo, nome);
+
+  var err = ControllaCF(val);
+
+  if (err > '') {
+    alert("VALORE ERRATO nel campo " + nome + "\n\n" + err + "\nCorreggi e riprova!");
+    campo.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function testCampoPIVA(campo, nome)
+{
+  var val = trim(campo.value);
+
+  // un valore NULL viene considerato valido;
+  // si puo' eventualmente usare un testnull
+  if (isValNull(val))
+    return true;
+
+  if (val == "")
+    return true;
+
+  var err = ControllaPIVA(val);
+
+  if (err > '') {
+    alert("VALORE ERRATO nel campo " + nome + "\n\n" + err + "\nCorreggi e riprova!");
+    campo.focus();
+    return false;
+  }
+
+  return true;
+}
+
+function impostaIdText(campo, testo)
+{
+  document.getElementById(campo).childNodes[0].nodeValue = testo;
+}
+
+function notImplemented()
+{
+  alert("Spiacente. La funzione richiesta non e' ancora disponibile.");
+}
+
+function toggleCheck(thisField)
+{
+  checkSet = eval("document.fo." + thisField);
+  checkSet.checked = !(checkSet.checked);
+}
+
+function toggleRadio(thisField, thisValue)
+{
+  radioSet = eval("document.fo." + thisField);
+
+  for (i = 0; i < radioSet.length; i++)
+  {
+    if (radioSet[i].value == thisValue)
+      radioSet[i].checked = true;
+  }
+}
+
+function setValueSafe(thisField, thisValue)
+{
+  try
+  {
+    control = eval("document.fo." + thisField);
+    control.value = thisValue;
+  }
+  catch (e)
+  {
+  }
+}
+
+function apriFinestraListaFiltrata(url, filtro, tipo)
+{
+  idx_ = filtro.indexOf('*');
+
+  filterField = filtro.substring(0, idx_)
+
+  filterFieldTarget = filtro.substring(idx_ + 1, filtro.length)
+
+  VL_fieldName = 'VL' + filterFieldTarget
+  elements = document.getElementsByName(filterField)
+
+  VL_fieldValue = elements[0].value
+  OP_fieldName = 'OP' + filterFieldTarget
+  // provvisoriamente cablato a 7
+  OP_fieldValue = 1
+
+  filterdUrl = url + '&' + VL_fieldName + '=' + VL_fieldValue + '&' + OP_fieldName + '=' + OP_fieldValue
+  apriFinestraLista(filterdUrl, tipo)
+}
+
+function leftTrim(stringa)
+{
+  while (stringa.substring(0, 1) == ' ')
+  {
+    stringa = stringa.substring(1, stringa.length);
+  }
+  return stringa;
+}
+
+function rightTrim(stringa)
+{
+  while (stringa.substring(stringa.length - 1, stringa.length) == ' ')
+  {
+    stringa = stringa.substring(0, stringa.length - 1);
+  }
+  return stringa;
+}
+
+function trim(stringa)
+{
+  while (stringa.substring(0, 1) == ' ')
+  {
+    stringa = stringa.substring(1, stringa.length);
+  }
+  while (stringa.substring(stringa.length - 1, stringa.length) == ' ')
+  {
+    stringa = stringa.substring(0, stringa.length - 1);
+  }
+  return stringa;
+}
+
+function isOkStr(stringa)
+{
+  if (stringa == null || stringa == "")
+    return false;
+
+  for (var i = 0; i < stringa.length; i++)
+  {
+    if (stringa.charAt(i) != ' ')
+      return true;
+  }
+
+  return false;
+}
+
+function isFilled(field, fieldName)
+{
+  if (field.value == "")
+  {
+    alert("Valorizzare il campo " + fieldName)
+    return false;
+  }
+  return true;
+}
+
+function isValidTime(timeField, timeFieldName)
+{
+  timeValue = timeField.value;
+  if (timeValue.match(/^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/)) {
+    return true;
+  } else {
+    alert('Inserire in formato HH:mm la ora nel campo ' + timeFieldName);
+    return false;
+  }
+}
+
+function isValidDate(dateField, dateFieldName)
+{
+  dateValue = dateField.value;
+  if (dateValue.match(/^(0[1-9]|[12][0-9]|3[01])[- \/.](0[1-9]|1[012])[- \/.](19|20)[0-9]{2}$/)) {
+    return true;
+  } else {
+    alert('Inserire in formato dd/MM/yyyy la data nel campo ' + dateFieldName);
+    return false;
+  }
+}
+
+function isNumeric(numericField, numericFieldName)
+{
+  numericValue = trim(numericField.value);
+  if (numericValue.match(/^\d+$/)) {
+    return true;
+  }
+
+  alert('Nel campo ' + numericFieldName + ' sono ammessi solo caratteri numerici');
+  return false;
+}
+
+function isValidDateRange(startDateField, endDateField, startDateFieldName, endDateFieldName)
+{
+  var data1 = trim(startDateField.value);
+  var data2 = trim(endDateField.value);
+  if (data1 == "" && data2 != "")
+    return false;
+  if (data1 != "" && data2 == "")
+    return true;
+
+  var oggetto1 = new Date(parseInt(data1.substr(6)), parseInt(data1.substr(3, 2), 10), parseInt(data1.substr(0, 2)));
+  var oggetto2 = new Date(parseInt(data2.substr(6)), parseInt(data2.substr(3, 2), 10), parseInt(data2.substr(0, 2)));
+  if (oggetto2 - oggetto1 < 0) {
+    alert("Attenzione. il valore del campo " + endDateFieldName + " è antecedente quello del campo " + startDateFieldName + ".");
+    endDateField.focus();
+    return false;
+  }
+  return true;
+}
+
+function isValidTimeRange(startTimeField, endTimeField, startTimeFieldName, endTimeFieldName)
+{
+  var time1 = trim(startTimeField.value);
+  var time2 = trim(endTimeField.value);
+  if (time1 == "" && time2 != "")
+    return false;
+  if (time1 != "" && time2 == "")
+    return true;
+
+  ora1 = time1.substr(0, 2);
+  min1 = time1.substr(3, 2);
+  minHours1 = (ora1 * 60) + min1;
+  ora2 = time2.substr(0, 2);
+  min2 = time2.substr(3, 2);
+  minHours2 = (ora2 * 60) + min2;
+  if (minHours2 - minHours1 < 0) {
+    alert("Attenzione. il valore del campo " + endTimeFieldName + " è antecedente quello del campo " + startTimeFieldName + ".");
+    endTimeField.focus();
+    return false;
+  }
+  return true;
+}
+
+function updateDiv(idDiv, str)
+{
+  document.getElementById(idDiv).innerHTML = str;
+}
+
+function confermaCB(prompt, url)
+{
+  if (confirm(prompt))
+    goPage(url);
+}
+
+function sleep(millis)
+{
+  var date = new Date();
+  var curDate = null;
+  do {
+    curDate = new Date();
+  }
+  while (curDate - date < millis);
+}

@@ -1,0 +1,118 @@
+<!-- INIZIO VisRadiologia.vm -->
+
+$page.setTitle($I.I("Esami di radiologia"))
+$data.getTemplateInfo().setLayoutTemplate("Default.vm")
+
+<script>
+
+  var myUrl = "$link.setPage('VisRadiologia.vm')";
+
+  function cambiaVista(tipoVista)
+  {
+    goLink("${link.setAction('VisRisultatiIndex')}?ID=${bean.idAcc}&vis=" + tipoVista);
+  }
+
+  function visImmagine(uri)
+  {
+    apriFinestraEdit("${data.request.contextPath}/imgrad/" + uri, "immagine");
+  }
+
+</script>
+
+<div id="innerbody">
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+
+      #parse("screens/BannerEsame.vm")
+
+      <br>
+      <table width='100%'>
+        <tr>
+          <td>
+
+            <ul class="nav nav-tabs">
+              #set($lsInfoMenu = $bean.getInfoMenu())
+              #foreach($im in $lsInfoMenu)
+
+              #if($bean.currVis == $im.first)
+              <li role="presentation" class="active"><a href="#">$im.second</a></li>
+              #else
+              <li role="presentation"><a href="javascript:cambiaVista('$im.first')">$im.second</a></li>
+              #end
+
+              #end
+            </ul>
+
+          </td>
+          <td width='200' align='right'>
+            <button type="button" class="btn btn-default" onclick="goLink('$data.homeLink');">
+              <span class="glyphicon glyphicon-backward" aria-hidden="true"></span> $I.I("Abbandona")
+            </button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+  #set($ie = $info.ie)
+  #set($lsImg = $bean.getPathImmaginiEsame($ie.accessionNumber))
+
+
+  <div class="col-sm-12 col-md-12 container-foto">
+
+    <div class="row container-dettaglifoto">
+      <div class="col-md-3 dati-foto">
+        <span class="label-foto">$I.I("Order id:")</span>
+        <span class="foto-res">$!ie.accessionNumber</span>
+      </div>
+      <div class="col-md-9 dati-foto">
+        <span class="label-foto">$I.I("Descrizione:")</span>
+        <span class="foto-res">$!descrizione</span>
+      </div>
+    </div>
+    <div class="row container-documenti">
+      #foreach($img in $lsImg)
+      <div class="col-xs-6 col-md-3">
+        <a href="javascript:visImmagine('${img}')" class="thumbnail">
+          <img src="${data.request.contextPath}/imgrad/${img}" alt="Immagine Dicom" width="171" height="180">
+        </a>
+      </div>
+      #end
+    </div>
+
+  </div>
+
+
+  <div class="col-sm-12 col-md-12 container-commenti">
+    <div class="col-sm-12 col-md-12">
+      <form name="note" method="post"
+            action="$link.setPage('VisRadiologia.vm').setAction('SalvaNoteEsame').addPathInfo('idvis', $idVis)">
+
+        <table>
+          <tr>
+            <td>
+              $I.I("Commento all'esame")<br>
+              <textarea name="note" rows="4" cols="80">$!ie.note</textarea><br>
+              #if($ie.statoRec != 6)
+              <input type="checkbox" name="conferma" value="1"> $I.I("Conferma questo esame come completato.")
+              #else
+              $I.I("Questo esame è stato confermato. Verrà inoltrato come previsto.")
+              #end
+            </td>
+            <td style="padding-left: 10px;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="document.note.submit();
+                  showLoading();">
+                Salva
+              </button>
+            </td>
+          </tr>
+        </table>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- FINE VisRadiologia.vm -->

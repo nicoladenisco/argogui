@@ -1,0 +1,51 @@
+<!-- inizio InfoSetup.vm -->
+$page.setTitle($I.I("Informazioni generali applicazione"))
+$data.getTemplateInfo().setLayoutTemplate("Default.vm")
+
+<style>
+  .tbl_setup {
+    border-spacing: 2px; border-collapse: separate; padding: 1px;
+  }
+
+  .tbl_setup td {
+    padding-left: 3px; padding-right: 3px;
+  }
+</style>
+
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div id="innerbody">
+
+      <h3>
+        <span class="label label-primary">$I.I("Informazioni di setup")</span>
+
+        #menuCell ("Abbandona" $data.homeLink $ui.menuFieldTextStyle)
+      </h3>
+
+      <form action="$link.setPage('InfoSetup.vm')" method="post" name="fo">
+        <input type="hidden" name="command" value="">
+        <input type="hidden" name="action" value="InfoSetupAction">
+
+        <table width="100%" class="tbl_setup">
+          #foreach($block in $info)
+          <tr class="fix-rowheader">
+            <td valign="middle" align="center" colspan="2">$!block.name</td>
+          </tr>
+          #foreach($entry in $block.entrySet())
+          <tr class="fix-rowmenu">
+            <td valign="middle" align="right">$!entry.key</td>
+            <td valign="middle" align="left">$!entry.value</td>
+          </tr>
+          #end
+          #end
+
+          <!-- spostato in InfoSetup.java -->
+
+        </table>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- fine InfoSetup.vm -->

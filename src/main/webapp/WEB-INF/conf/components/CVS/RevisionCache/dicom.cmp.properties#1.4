@@ -1,0 +1,22 @@
+#@ PROFILE ALL
+
+services.DicomServer.classname=it.radimage.argo.services.dcmsrv.ArgoDicomServer
+services.DicomServer.earlyInit=true
+
+#services.DicomServer.pacsAEtitle=ARGO
+#services.DicomServer.argo.cygwin=true
+#services.DicomServer.portaDicom=12001
+#services.DicomServer.portaWado=9009
+
+# installazione di argo
+argoDist=/usr/local/argobin
+services.DicomServer.dirArgoBin=${argoDist}
+#services.DicomServer.dirArgoLib=${argoDist}/lib
+#services.DicomServer.arQuery=${argoDist}/arquery
+#services.DicomServer.arDump=${argoDist}/ardump
+
+# installazione di Offis Dicom Toolkit
+dcmtkDir=/usr/local/dicom
+services.DicomServer.dirDcmtk=${dcmtkDir}
+#services.DicomServer.dicomDic=${dcmtkDir}/lib/dicom.dic
+

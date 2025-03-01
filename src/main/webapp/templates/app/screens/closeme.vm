@@ -1,0 +1,29 @@
+<!-- INIZIO screen di chiusura popup (closeme.vm) -->
+
+$page.setTitle($I.I("Chiusura"))
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  #if($data.parameters.getBoolean('autoclose', true))
+
+  try
+  {
+    window.opener.ricarica();
+    window.close();
+  }
+  catch (e)
+  {
+    // la funzione ricarica() potrebbe non esistere nel chiamante
+    window.close();
+  }
+
+  #end
+
+</SCRIPT>
+
+<button type="button" class="btn btn-primary btn-lg" onclick="window.close()">
+  <span class="glyphicon glyphicon-star" aria-hidden="true"></span> $I.I("Chiudi questa finestra")
+</button>
+
+<!-- FINE screen di chiusura popup (closeme.vm) -->

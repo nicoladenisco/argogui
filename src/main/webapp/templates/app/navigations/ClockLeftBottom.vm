@@ -1,0 +1,23 @@
+<hr>
+
+<div id="clockArea" style="color: black; float: left; width: 150px;">
+  Loading ...
+</div>
+
+<div style="padding-right: 30px; float: right;">
+  <p>Copyright (C) $years $ui.copyright</p>
+</div>
+
+<SCRIPT type="text/javascript">
+
+  $data.getFormScript()
+
+  function aggiornaClock()
+  {
+    $("#clockArea").load("${data.request.contextPath}/ajax/clockLittle.jsp");
+  }
+
+  // chiama ogni 3 secondi l'aggiornameto
+  window.setInterval(function(){aggiornaClock();}, 3000);
+
+</SCRIPT>

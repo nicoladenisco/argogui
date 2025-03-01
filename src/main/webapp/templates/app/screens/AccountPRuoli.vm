@@ -1,0 +1,108 @@
+$page.setTitle($I.I("Account associazione singolo permesso a ruoli"))
+
+
+<!-- INIZIO AccountPRuoli.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function tuttiSI(idPerm)
+  {
+    var src = "RPC_" + idPerm + "_";
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith(src))
+        this.checked = true;
+    });
+  }
+
+  function tuttiNO(idPerm)
+  {
+    var src = "RPC_" + idPerm + "_";
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith(src))
+        this.checked = false;
+    });
+  }
+
+  function tuttiRoleSI(idRole)
+  {
+    var src = "_" + idRole;
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith("RPC_") && this.name.endsWith(src))
+        this.checked = true;
+    });
+  }
+
+  function tuttiRoleNO(idRole)
+  {
+    var src = "_" + idRole;
+
+    // Iterate each checkbox
+    jQuery(':checkbox').each(function () {
+      if (this.name.startsWith("RPC_") && this.name.endsWith(src))
+        this.checked = false;
+    });
+  }
+
+  // attiva il menu locale superfish
+  jQuery(function () {
+    jQuery('ul.lf-menu').superfish();
+  });
+
+</SCRIPT>
+
+<STYLE type="text/css">
+
+  .rigel_formtable a
+  {
+    font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; color: #990000; font-weight: bold;
+  }
+
+</STYLE>
+
+<div id="innerbody">
+
+  <h3>
+    #if($user)
+    <span class="label label-primary">$I.I("Associazione dei ruoli al permesso") $pr.name</span>
+    #else
+    <span class="label label-primary">$I.I("Associazione dei ruoli ai permessi selezionati")</span>
+    #end
+
+    #menuCell ("Aggiorna" $link.setPage("AccountPRuoli.vm").addPathInfo("reload", "1") $ui.menuFieldTextStyle)
+    #menuCellScript ("Salva" "document.fo.submit();" $ui.menuFieldTextStyle)
+    #menuCell ("Abbandona" $link.setPage("AccountRuoliPermessi.vm").addPathInfo("reload", "1") $ui.menuFieldTextStyle)
+  </h3>
+
+  <form action="AccountPRuoli.vm" method="post" name="fo">
+    <input type="hidden" name="action" value="SalvaRuoliPermessi">
+    <table width=100% cellspacing=3 cellpadding=2>
+      <tr>
+        <td bgcolor="#CCCCCC" valign="top">
+          $html
+        </td>
+        <td bgcolor="#CCCCCC" valign="top">
+          <label>Elenco permessi<br>
+            <select name="perm_selected" size="25" multiple="multiple">
+              #foreach($p in $plist)
+              #if($ab.isSelectedPermission($p))
+              <option value="$p.permissionId" selected>$p.permissionName</option>
+              #else
+              <option value="$p.permissionId">$p.permissionName</option>
+              #end
+              #end
+            </select>
+          </label>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+</div>
+<!-- FINE AccountPRuoli.vm -->
+

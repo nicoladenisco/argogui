@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <menu descrizione="RICERCA" programma="Ricerca.vm" permission="menu_ricerca"/>
+  <menu descrizione="IMPOSTAZIONI" programma="Unisetup.vm?type=LsStpNodiDicom" permission="menu_impostazioni"/>
+  <menu descrizione="DATI HL7" programma="Uniana.vm?type=LsInfInAnagrafiche" permission="menu_anagrafiche"/>
+
+  <menu descrizione="MAINT" permission="menu_maint">
+    <menu descrizione="Ricarica liste" programma="Index.vm/action/RicaricaListe" permission="menu_maint"/>
+    <menu descrizione="Flush cache" programma="Index.vm/action/FlushGlobalCache" permission="menu_maint" />
+    <menu descrizione="Memoria" programma="memory.jsp" permission="menu_maint"/>
+    <menu descrizione="Arresta task in background" programma="Index.vm/action/ArrestaTaskAction" permission="ArrestaTaskAction"/>
+    <menu descrizione="Riavvia task in background" programma="Index.vm/action/AvviaTaskAction" permission="AvviaTaskAction"/>
+    <menu descrizione="Analizza logs" programma="AnalizzaLogs.vm" permission="menu_maint"/>
+    <menu descrizione="Informazioni setup" programma="InfoSetup.vm" permission="menu_maint"/>
+    <menu descrizione="Simula errore" programma="InfoSetup.vm" permission="menu_maint"/>
+    <menu descrizione="Ricarica worklist" programma="Index.vm/action/WorklistAction/command/update" permission="menu_maint"/>
+    <menu descrizione="Pulisci worklist" programma="Index.vm/action/WorklistAction/command/pulisci" permission="menu_maint"/>
+  </menu>
+
+  <menu descrizione="DEBUG" permission="debug_perseo">
+    <menu descrizione="Cancella anagrafiche" programma="Index.vm?action=DebugCancellaAnagrafica" permission="debug_perseo"/>
+    <menu descrizione="Cancella risultati accettazioni" programma="Index.vm?action=DebugPulisciTutteAccettazioni" permission="debug_perseo"/>
+    <menu descrizione="Cancella setup esami" programma="Index.vm?action=DebugCancellaSetupEsami" permission="debug_perseo"/>
+    <menu descrizione="Pulisci branche" programma="Index.vm?action=DebugRimuoviBranche" permission="debug_perseo"/>
+    <menu descrizione="Pulisci prestazioni" programma="Index.vm?action=DebugRimuoviPrestazioni" permission="debug_perseo"/>
+  </menu>
+
+  <menu descrizione="LOG" submenugen="LogsMenuGenerator" permission="menu_logs"/>
+
+  <menu descrizione="ACCOUNT" permission="menu_account">
+    <menu descrizione="Profilo utente" programma="ProfiloUtente.vm" permission="menu_account"/>
+    <menu descrizione="Utenti" programma="AccountUtenti.vm" permission="menu_account"/>
+    <menu descrizione="Ruoli" programma="AccountRuoli.vm" permission="menu_account"/>
+    <menu descrizione="Permessi" programma="AccountPermessi.vm" permission="menu_account"/>
+    <menu descrizione="Utenti-ruoli" programma="AccountUtentiRuoli.vm" permission="menu_account"/>
+    <menu descrizione="Ruoli-permessi" programma="AccountRuoliPermessi.vm" permission="menu_account"/>
+    <menu descrizione="Giornale" programma="@list?type=LsGenLoginjour" permission="menu_account"/>
+  </menu>
+</root>

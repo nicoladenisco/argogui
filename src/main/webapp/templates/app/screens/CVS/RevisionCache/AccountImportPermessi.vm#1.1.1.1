@@ -1,0 +1,49 @@
+$page.setTitle("Import ruoli/permessi da file XML")
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<!-- INIZIO AccountImportPermessi.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function chiudi()
+  {
+    window.close();
+  }
+
+</SCRIPT>
+
+<div id="innerbody">
+
+  <h3>
+    <span class="label label-primary">$I.I("Import permessi e ruoli da file xml")</span>
+
+    #menuCellScript ("Chiudi" "chiudi();" $ui.menuFieldTextStyle)
+  </h3>
+
+  <form action="$link.setPage('closeme.vm')"
+        enctype="multipart/form-data" method="post" name="fo">
+    <input type="hidden" name="action" value="ImportRuoliPermessi">
+
+    <DIV style="padding: 10px; margin: 10px">
+      <p class="txt-red-bold-11">$I.I("Attenzione: il file da importare deve essere stato creato da una precedente funzione esporta.")</p>
+      <br><br>
+      <p>$I.I("Specificare il file da importare")</p><br>
+      <INPUT type="file" size="80" name="filexml"><br>
+      <INPUT type="checkbox" value="1" name="ckremove"> $I.I("cancella tutti i ruoli e permessi esistenti")<br>
+      <br><br>
+
+      <button type="button" class="btn btn-default" onclick="chiudi();">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> $I.I("Annulla")
+      </button>
+      <button type="button" class="btn btn-primary" onclick="document.fo.submit();">
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> $I.I("Importa")
+      </button>
+
+    </DIV>
+
+  </form>
+
+</div>
+
+<!-- FINE AccountImportPermessi.vm -->
+

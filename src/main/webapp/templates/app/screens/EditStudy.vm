@@ -1,0 +1,228 @@
+$page.setTitle($I.I("Modifica esami/paziente"))
+
+<script type="text/javascript">
+
+  function salvaModifiche()
+  {
+    if (prompt($I.IA("Questa operazione è irreversibile!\nDigita 'SONO SICURO' e premi OK per confermare.")) === $I.IA("SONO SICURO"))
+    {
+      relCommand('salvamodifiche');
+    }
+  }
+
+  function copiaClipboard()
+  {
+    relCommand("copiaclipboard");
+  }
+
+  function inviaClipboard()
+  {
+    relCommand("inviaclipboard");
+  }
+
+  function inviaEsameCorrente()
+  {
+    relCommand("inviaesamecorrente");
+  }
+
+  function pulisciClipboard()
+  {
+    relCommand("pulisciclipboard");
+  }
+
+  function abbandona()
+  {
+    relCommand("abbandona");
+  }
+
+  function incollaClipboard(studyUID)
+  {
+    relCommand("incollaclipboard", studyUID);
+  }
+
+  function inviaEsame(studyUID)
+  {
+    relCommand("inviaesame", studyUID);
+  }
+
+  function relCommand(command)
+  {
+    relCommand(command, "")
+  }
+
+  function relCommand(command, cmdparam)
+  {
+    document.fo.command.value = command;
+    document.fo.cmdparam.value = cmdparam;
+    document.fo.submit();
+
+    showLoading();
+  }
+
+</script>
+
+<div id="innerbody">
+  <form name="fo" action="$link.setPage('EditStudy.vm')" method="post">
+    <input type="hidden" name="action" value="SalvaModificheDicomAction">
+    <input type="hidden" name="command" value="">
+    <input type="hidden" name="cmdparam" value="">
+
+    <div class="col-sm-12 col-md-12">
+      <h3>
+        <span class="label label-primary">Manipolazione Esame</span>
+
+        #menuCellScript ("Abbandona" "abbandona()" $ui.menuFieldTextStyle)
+      </h3>
+    </div>
+
+    <!-- riga con dati paziente ed esame -->
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Modifica dati paziente")</h3>
+          </div>
+
+          <div class="panel-body">
+            <table width="100%">
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th>$I.I("Valore corrente")</th>
+                  <th>$I.I("Nuovo valore")</th>
+                </tr>
+              </thead>
+              <tbody>
+                #set($lstags = $bean.getTagsmodPatient())
+                #foreach($e in $lstags)
+                <tr>
+                  <td>$!{e.label}</td>
+                  <td>$!{e.value}</td>
+                  #if($e.editabile)
+                  <td><input type="text" name="$e.tag" value="$!{e.value}" size="30"></td>
+                  #else
+                  <td>&nbsp;</td>
+                  #end
+                </tr>
+                #end
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-sm-12">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Modifica dati esame")</h3>
+          </div>
+
+          <div class="panel-body">
+            <table width="100%">
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th>$I.I("Valore corrente")</th>
+                  <th>$I.I("Nuovo valore")</th>
+                </tr>
+              </thead>
+              <tbody>
+                #set($lstags = $bean.getTagsmodStudy())
+                #foreach($e in $lstags)
+                <tr>
+                  <td>$!{e.label}</td>
+                  <td>$!{e.value}</td>
+                  #if($e.editabile)
+                  <td><input type="text" name="$e.tag" value="$!{e.value}" size="30"></td>
+                  #else
+                  <td>&nbsp;</td>
+                  #end
+                </tr>
+                #end
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- riga con clipboard -->
+    #if($clipboard)
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">$I.I("Clipboard")</h3>
+          </div>
+
+          <div class="panel-body">
+            <table width="100%" class="table table-condensed">
+              <thead>
+                <tr>
+                  <th>$I.I("Patient ID")</th>
+                  <th>$I.I("Nome paziente")</th>
+                  <th>$I.I("Data nascita")</th>
+                  <th>$I.I("Accension number")</th>
+                  <th>$I.I("Descrizione esame")</th>
+                  <th>$I.I("Data esame")</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                #foreach($s in $clipboard)
+                <tr>
+                  <td>$s.getTagAsStringFromName("PatientID")</td>
+                  <td>$s.getTagAsStringFromName("PatientName")</td>
+                  <td>$data.formatData($s.getPatientBirth())</td>
+                  <td>$s.accno</td>
+                  <td>$s.studyDesc</td>
+                  <td>$data.formatDataFull($s.getStudyDate())</td>
+                  <td align="right">
+                    <button type="button" class="btn btn-primary btn-xs"
+                            onclick="inviaEsame('$s.studyInstanceUID')">$I.I("Invia DICOM")</button>
+                    <button type="button" class="btn btn-danger btn-xs"
+                            onclick="incollaClipboard('$s.studyInstanceUID')">$I.I("Modifca con questo esame")</button>
+                  </td>
+                </tr>
+                #end
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    #end
+
+    <!-- riga con pulsanti -->
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div style="float: left">
+          #if($bean.fusione)
+          <div class="has-warning">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="chk_fondiesami" value="1" name="chk_fondiesami">
+                $I.I("Fondi l'esame corrente a quello selezionato.")
+              </label>
+            </div>
+          </div>
+          #end
+          #if($bean.nofusione)
+          $I.I("La fusione di esami fra aree di storage differenti non è possibile.")
+          #end
+        </div>
+        <div style="float: right">
+          <button type="button" class="btn btn-default" onclick="copiaClipboard()">$I.I("Copia esame corrente in clipboard")</button>
+          #if($clipboard)
+          <button type="button" class="btn btn-default" onclick="pulisciClipboard()">$I.I("Pulisci clipboard")</button>
+          <button type="button" class="btn btn-primary" onclick="inviaClipboard()">$I.I("Invia clipboard DICOM")</button>
+          #end
+          <button type="button" class="btn btn-primary" onclick="inviaEsameCorrente()">$I.I("Invia esame corrente DICOM")</button>
+          <button type="button" class="btn btn-danger" onclick="salvaModifiche()">$I.I("Salva modifiche")</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>

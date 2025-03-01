@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    $navigation.setTemplate("CommonHead.vm")
+
+    <SCRIPT type="text/javascript">
+      $data.getFormScriptNoInvio()
+    </SCRIPT>
+  </head>  
+
+  <body role="document">
+
+    $navigation.setTemplate("EmptyNavBar.vm")
+
+    <br><br><br>
+    <div class="container" role="main">
+
+      #if($data.getMessage())
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          <div id="messaggio" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+              <tr>
+                <td class="main-alert alert-danger" align="center" valign="middle" width="130">
+                  <img src="$ui.image('alert.png')" border="0">
+                </td>
+                <td class="main-alert alert-danger" align="left" valign="top">
+                  $data.getMessage()
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      #end
+
+      $screen_placeholder
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          $navigation.setTemplate("DefaultBottom.vm")
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>
+

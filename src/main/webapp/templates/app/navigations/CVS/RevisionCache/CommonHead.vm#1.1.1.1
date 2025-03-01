@@ -1,0 +1,97 @@
+<!--
+  tag <head> comune a tutti i layout
+-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>$ui.maintitle - $page.title</title>
+
+<link href="$ui.stylecss" type="text/css" rel="stylesheet">
+
+<SCRIPT type="text/javascript" src="$content.getURI('js/stdfunc.js')"></SCRIPT>
+<SCRIPT type="text/javascript" src="$content.getURI('js/calendario.js')"></SCRIPT>
+<SCRIPT type="text/javascript" src="$content.getURI('js/winboot.js')"></SCRIPT>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<!-- Bootstrap Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- Bootstrap Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- Bootstrap Latest compiled and minified JavaScript -->
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap dialog -->
+<link rel="stylesheet" href="$content.getURI('js/bootstrap-dialog.min.css')">
+<script type="text/javascript" src="$content.getURI('js/bootstrap-dialog.min.js')"></script>
+
+<!-- hoverIntent by Brian Cherne -->
+<script type="text/javascript" src="$content.getURI('js/hoverIntent.js')"></script>
+
+<!-- client XML-RPC javascript -->
+<script type="text/javascript" src="$content.getURI('js/mimic.js')"></script>
+
+<!-- FONTAWESOME - FONT PER ICONE -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+#if( $data.haveRefresh() )
+<meta http-equiv="refresh" content="$data.getRefresh()">
+#end
+
+<SCRIPT type="text/javascript">
+
+  // preload dell'immagine di occupato
+  var loadingImgDummy = new Image();
+  loadingImgDummy.src = "$ui.image('loading-red.gif')";
+  function showLoading()
+  {
+    var html =
+            "<div align=\"center\">" +
+            "<table><tr>" +
+            "<td><img src=\"$ui.image('loading-red.gif')\" align=\"left\"></td>" +
+            "<td>&nbsp;&nbsp;&nbsp;</td>\n" +
+            "<td>$I.I('Operazione in corso; attendere ...')</td>" +
+            "</tr></table>" +
+            "</div>";
+    updateDiv("innerbody", html);
+  }
+
+  setUriCalendario("$content.getURI('ajax/calendario.jsp')");
+
+  /*
+   function apriFinestraLista(url, tipo)
+   {
+   #if($data.haveDialog())
+   openStandardDialog(url, tipo);
+   #else
+   openStandardWindow(url, tipo);
+   #end
+   }
+   */
+
+  function apriFinestraEdit(url, tipo)
+  {
+    /* #if($data.haveDialog()) */
+    openEditDialog(url, tipo);
+    /* #else */
+    openEditWindow(url, tipo);
+    /* #end  */
+  }
+
+  /*
+   function apriFinestraForm(url, tipo)
+   {
+   #if($data.haveDialog())
+   openEditDialog(url, tipo);
+   #else
+   openEditWindow(url, tipo);
+   #end
+   }
+   */
+
+</SCRIPT>

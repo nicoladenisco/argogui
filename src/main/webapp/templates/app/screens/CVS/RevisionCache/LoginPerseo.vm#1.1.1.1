@@ -1,0 +1,76 @@
+$page.setTitle($I.I("Accesso al programma"))
+$data.getTemplateInfo().setLayoutTemplate("LoginPerseo.vm")
+
+<!-- INIZIO Login.vm -->
+
+<!--
+  Nel device manager la logon avviene dalla taskbar presente nell'header.
+  Qui quindi non facciamo assolutamente nulla.
+-->
+
+<div class="row">
+
+  #set($con = $modsta.getListaStrumenti())
+  #set($count = 0)
+  #foreach($c in $con)
+  #set($u = $c.getRunner())
+  #set($s = $c.getSetup())
+  #set($t = $s.getStpStrumenti())
+  #set($m = $t.getStpModelliStrumenti())
+  #set($ID = $s.idStrumenti)
+  #set($IS = $s.setupStrumentiId)
+
+  <div class="col-md-4">
+
+    <!-- inizio pannello -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">$t.descrizione</h3>
+      </div>
+      <div class="panel-body">
+
+        <table width="100%">
+          <tr>
+            <td valign="middle" align="center">
+              <div style="margin: 5px;">
+                #if($c.isOnLine())
+                <img src="$ui.image('signs04.gif')" border="0"
+                     alt="$I.I('Strumento on-line.')"
+                     title="$I.I('Strumento on-line.')"/>
+                #elseif($c.isActive())
+                <img src="$ui.image('signs02.gif')" border="0"
+                     alt="$I.I('Strumento attivo ma comunicazioni non presenti.')"
+                     title="$I.I('Strumento attivo ma comunicazioni non presenti.')"/>
+                #else
+                <img src="$ui.image('signs01.gif')" border="0"
+                     alt="$I.I('Strumento non attivo.')"
+                     title="$I.I('Strumento non attivo.')"/>
+                #end
+              </div>
+            </td>
+            <td valign="top">
+              <div class="tinfo" style="margin: 5px;">
+                <table width="100%">
+                  <tr><td class="titolo" width="100">$I.I("Modello")</td><td>$!m.descrizione</td></tr>
+                  <tr><td class="titolo" width="100">$I.I("Strumento")</td><td>$!t.descrizione</td></tr>
+                  <tr><td class="titolo" width="100">$I.I("Modo")</td><td>$!modsta.getModalita($s.modalitaTxrx)</td></tr>
+                  <tr><td class="titolo" width="100">$I.I("Connessione")</td><td>$!modsta.getConnessione($s.connessione)</td></tr>
+                </table>
+              </div>
+
+            </td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+    <!-- fine del pannello -->
+
+  </div>
+
+  #end
+
+</div>
+
+<!-- FINE Login.vm -->
+

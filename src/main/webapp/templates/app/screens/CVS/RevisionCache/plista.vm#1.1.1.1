@@ -1,0 +1,78 @@
+<!-- INIZIO lista di popup (plista.vm) -->
+
+$page.setTitle("$titolo")
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  $scImposta
+  $scNuovo
+
+  function cancellaElemento(codice)
+  {
+    if (confirm("Sei sicuro di voler cancellare '" + codice + "' ?")) {
+      goPage("$baseUri/command/cancella/key/" + codice);
+    }
+  }
+
+  function stampa()
+  {
+    openPrintWindow("${prstampe}?type=${type}&xsl=data2fop.xsl&iebug=noie.pdf", "stampa");
+  }
+
+  function ricarica()
+  {
+    goPage("$baseUri")
+  }
+
+</SCRIPT>
+
+<a name="principale"></a>
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div id="innerbody">
+
+      #set ( $filtro = $data.getParameters().getInt("filtro", 0) )
+
+      #if ($filtro == 0 || $filtro == 2 || $filtro == 3)
+
+      <h3>
+        <span class="label label-primary">$header</span>
+
+        #if($hbuts)
+        #foreach($hb in $hbuts)
+        #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+        #end
+        #end
+
+        #if ($haveEdit == true)
+        #menuCellScript ("Nuovo" "relCommandNuovo()" $ui.menuFieldTextStyle)
+        #end
+        #menuCell ("Ricerca avanzata" "$baseUri/filtro/1" $ui.menuFieldTextStyle)
+        #menuCellScript ("Stampa" "stampa();" $ui.menuFieldTextStyle)
+        #menuCellScript ("Chiudi" "window.close();" $ui.menuFieldTextStyle)
+      </h3>
+
+      #else
+
+      <h3>
+        <span class="label label-primary">$header</span>
+
+        #menuCell ("Annulla" "$baseUri" $ui.menuFieldTextStyle)
+        #menuCellScript ("Applica" "document.fo.submit()" $ui.menuFieldTextStyle)
+        #menuCell ("Pulisci filtro" "$baseUri/filtro/3" $ui.menuFieldTextStyle)
+      </h3>
+
+      #end
+
+      <form name="fo" method="post" action="$baseUri">
+
+        $!cscript
+
+        $phtml
+      </form>
+    </div>
+  </div>
+</div>
+<!-- FINE lista di popup (plista.vm) -->
+

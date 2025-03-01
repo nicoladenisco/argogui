@@ -1,0 +1,31 @@
+# moduli di sirio
+module.packages=org.sirio.modules
+
+# tools specifici di sirio
+tool.global.cfg=org.sirio.modules.tools.ConfigurationReadTool
+tool.global.liste=org.sirio.modules.tools.RigelListeTool
+tool.global.form=org.sirio.modules.tools.RigelFormTool
+tool.authorized.perm=org.sirio.modules.tools.PermissionTool
+tool.session.I=org.sirio.modules.tools.I18nTool
+tool.global.navstack=org.sirio.modules.tools.NavigationStackTool
+
+#-----------------
+# Bus dei messaggi
+#-----------------
+services.MessageBus.classname=org.sirio.services.bus.CoreMessageBus
+
+#-------------------------
+# Autenticazione con token
+#-------------------------
+services.TokenAuthService.classname=org.sirio.services.token.CoreTokenAuthServices
+services.TokenAuthService.expiriesSeconds=300
+services.TokenAuthService.earlyInit=true
+
+#--------------------------------------
+# formattatori di numeri, valuta e data
+#--------------------------------------
+services.ValutaFormatter.classname=org.sirio.services.formatter.EuroValutaFormatter
+services.DataFormatter.classname=org.sirio.services.formatter.ItalianDataFormatter
+services.NumFormatter.classname=org.sirio.services.formatter.ItalianNumFormatter
+#services.NumFormatter.numint=8
+#services.NumFormatter.numdec=2

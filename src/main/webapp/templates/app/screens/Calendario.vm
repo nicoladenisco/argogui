@@ -1,0 +1,113 @@
+<!-- INIZIO Calendario.vm -->
+
+$page.setTitle($I.I("Calendario"))
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function changeDay(day) {
+    opener.${bean.getFunc()}(day);
+    self.close;
+  }
+
+  function changeMonth() {
+    document.fo.month.value = document.fo.LM.options[document.fo.LM.selectedIndex].value + '';
+    document.fo.submit();
+  }
+
+  function changeYear() {
+    document.fo.year.value = document.fo.LY.options[document.fo.LY.selectedIndex].value + '';
+    document.fo.submit();
+  }
+
+  function goToday() {
+    document.fo.day.value = '$bean.oggig';
+    document.fo.month.value = '$bean.oggim';
+    document.fo.year.value = '$bean.oggiy';
+    document.fo.submit();
+  }
+
+  function goNextMonth() {
+    document.fo.day.value = '$giorno';
+    document.fo.month.value = '$nextMese';
+    document.fo.year.value = '$nextAnno';
+    document.fo.submit();
+  }
+
+  function goPrevMonth() {
+    document.fo.day.value = '$giorno';
+    document.fo.month.value = '$prevMese';
+    document.fo.year.value = '$prevAnno';
+    document.fo.submit();
+  }
+
+</SCRIPT>
+
+<FORM name="fo" action="Calendario.vm" method="post">
+  <TABLE BORDER=0 width=100%>
+    <TR>
+      <TD>
+
+        <TABLE width="100%">
+          <TR>
+            <TD ALIGN="LEFT" VALIGN="MIDDLE">
+              <a href="javascript:goPrevMonth()"><img src="$ui.image('nwprev.gif')" border=0></a>
+            </TD>
+            <TD ALIGN=LEFT WIDTH=50% CLASS="cal_curr" bgcolor="navy">
+              &nbsp; $bean.monthName $anno
+            </TD>
+            <TD WIDTH=50% ALIGN=RIGHT>
+              <SELECT NAME="LM" onChange="changeMonth();">
+                $bean.getHtmlOpMesi()
+              </SELECT>
+
+              <SELECT NAME="LY" onChange="changeYear();">
+                $bean.getHtmlOpAnni()
+              </SELECT>
+            </TD>
+            <TD ALIGN="RIGHT" VALIGN="MIDDLE">
+              <a href="javascript:goNextMonth()"><img src="$ui.image('nwnext.gif')" border=0></a>
+            </TD>
+          </TR>
+        </TABLE>
+
+      </TD>
+    </TR>
+    <TR>
+      <TD>
+
+        <TABLE width=100% CELLSPACING=1 CELLPADDING=0 BORDER=0>
+          ${bean.getHtml2()}
+        </TABLE>
+
+      </TD>
+    </TR>
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="MIDDLE">
+
+        <TABLE WIDTH=100%>
+          <TR>
+            <TD ALIGN="LEFT" VALIGN="MIDDLE">
+              <a href="javascript:goPrevMonth()"><img src="$ui.image('nwprev.gif')" border=0></a>
+            </TD>
+            <TD ALIGN="CENTER" VALIGN="MIDDLE">
+              <input type="button" value="Oggi $today" onClick="changeDay('$today')">
+              <input type="button" value="Vai a oggi" onClick="goToday()">
+              <input type="button" value="Chiudi" onClick="window.close()">
+            </TD>
+            <TD ALIGN="RIGHT" VALIGN="MIDDLE">
+              <a href="javascript:goNextMonth()"><img src="$ui.image('nwnext.gif')" border=0></a>
+            </TD>
+          </TR>
+        </TABLE>
+
+      </TD>
+    </TR>
+  </TABLE>
+
+  <input type="hidden" name="day" value="$giorno">
+  <input type="hidden" name="month" value="$mese">
+  <input type="hidden" name="year" value="$anno">
+</FORM>
+
+<!-- FINE Calendario.vm -->

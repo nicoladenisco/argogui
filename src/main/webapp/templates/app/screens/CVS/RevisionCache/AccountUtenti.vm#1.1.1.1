@@ -1,0 +1,47 @@
+$page.setTitle("Account utenti")
+
+<!-- INIZIO AccountUtenti.vm -->
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function cancellaElemento(codice)
+  {
+    if (confirm($I.IA("Sei sicuro di voler cancellare l'utente con codice") + " '" + codice + "' ?")) {
+      goPage("AccountUtenti.vm?command=cancella&key=" + codice);
+    }
+  }
+
+</SCRIPT>
+
+<div id="innerbody">
+
+  #set ( $filtro = $data.getParameters().getInt("filtro", 0) )
+
+  #if ($filtro == 0 || $filtro == 2 || $filtro == 3)
+
+  <h3>
+    <span class="label label-primary">Account utenti</span>
+
+    #menuCell ("Nuovo" $urlNuovo $ui.menuFieldTextStyle)
+    #menuCell ("Ricerca avanzata" $link.setPage("AccountUtenti.vm").addPathInfo("filtro", "1") $ui.menuFieldTextStyle)
+  </h3>
+
+  #else
+
+  <h3>
+    <span class="label label-primary">Account utenti</span>
+
+    #menuCell ("Annulla" $link.setPage("AccountUtenti.vm") $ui.menuFieldTextStyle)
+    #menuCell ("Applica" "javascript:document.fo.submit()" $ui.menuFieldTextStyle)
+    #menuCell ("Pulisci filtro" $link.setPage("AccountUtenti.vm").addPathInfo("filtro", "3") $ui.menuFieldTextStyle)
+  </h3>
+
+  #end
+
+  <form action="AccountUtenti.vm" method="post" name="fo">
+    $html
+  </form>
+
+</div>
+<!-- FINE AccountUtenti.vm -->
+

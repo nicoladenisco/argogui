@@ -1,0 +1,132 @@
+<!-- INIZIO Uniana.vm -->
+
+$page.setTitle("$titolo")
+$data.getTemplateInfo().setLayoutTemplate("Dashboard.vm")
+
+<SCRIPT LANGUAGE="JavaScript">
+
+  function cancellaElemento(codice)
+  {
+    if (confirm("$I.I('Sei sicuro di voler cancellare') '" + codice + "' ?")) {
+      goPage("$baseUri?command=cancella&key=" + encodeURIComponent(codice));
+    }
+  }
+
+  function stampa()
+  {
+    openPrintWindow("${prstampe}?type=${type}&xsl=data2fop.xsl", "stampa");
+  }
+
+  function stampaLand()
+  {
+    openPrintWindow("${prstampe}?type=${type}&xsl=data2fopLand.xsl", "stampa");
+  }
+
+  function ricarica()
+  {
+    goPage("$baseUri")
+  }
+
+</SCRIPT>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 sidebar">
+    <h4><span class="label label-info">$I.I("ANAGRAFICHE")</span></h4>
+    <ul class="nav nav-sidebar">
+      #uniAnaCellPerm( "Pazienti", "LsInfInAnagrafiche", "visualizza_anagrafiche" )
+      #uniAnaCellPerm( "Accettazioni", "LsInfInAccettazioni", "visualizza_anagrafiche" )
+      #uniAnaCellPerm( "Esami", "LsInfInEsami", "visualizza_anagrafiche" )
+    </ul>
+  </div>
+
+  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    #if($allarme)
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div id="allarme" class="alert alert-info alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+            <tr>
+              <td class="main-alert alert-info" align="center" valign="middle" width="130">
+                <a href="$link.setPage('Uniana.vm')?type=maint-allarmi">
+                  <img src="$ui.image('error.png')" border="0">
+                </a>
+              </td>
+              <td class="main-alert alert-info" align="left" valign="top">
+                $allarme
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    #end
+
+    #if($data.getMessage())
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div id="messaggio" class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <table border="0" align="center" width="100%" cellspacing="0" cellpadding="5">
+            <tr>
+              <td class="main-alert alert-danger" align="center" valign="middle" width="130">
+                <img src="$ui.image('alert.png')" border="0">
+              </td>
+              <td class="main-alert alert-danger" align="left" valign="top">
+                $data.getMessage()
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    #end
+
+    <div id="innerbody">
+
+      #set ( $filtro = $data.getParameters().getInt("filtro", 0) )
+
+      #if ($filtro == 0 || $filtro == 2 || $filtro == 3)
+
+      <h3>
+        <span class="label label-primary">$header</span>
+        #if($hbuts)
+        #foreach($hb in $hbuts)
+        #menuCellScript ($hb.caption $hb.script $ui.menuFieldTextStyle)
+        #end
+        #end
+
+        #if($newEnabled)
+        #menuCell ("Nuovo" $urlNuovo $ui.menuFieldTextStyle)
+        #end
+        #menuCell ("Ricerca avanzata" "$baseUri/filtro/1" $ui.menuFieldTextStyle)
+        #menuCellScript ("Stampa verticale" "stampa();" $ui.menuFieldTextStyle)
+        #menuCellScript ("Stampa orizzontale" "stampaLand();" $ui.menuFieldTextStyle)
+      </h3>
+
+      #else
+
+      <h3>
+        <span class="label label-primary">$header</span>
+        #menuCell ("Annulla" "$baseUri" $ui.menuFieldTextStyle)
+        #menuCellScript ("Applica" "document.fo.submit()" $ui.menuFieldTextStyle)
+        #menuCell ("Pulisci filtro" "$baseUri/filtro/3" $ui.menuFieldTextStyle)
+      </h3>
+
+      #end
+
+      <form name="fo" method="post" action="$baseUri">
+
+        $!cscript
+
+        <div class="table-responsive">
+          $phtml
+        </div>
+      </form>
+
+    </div>
+  </div>
+</DIV>
+
+<!-- FINE Uniana.vm -->

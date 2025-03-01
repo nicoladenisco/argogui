@@ -1,0 +1,308 @@
+<!-- INIZIO Visualizzatore.vm -->
+$page.setTitle($patientNameEscape)
+
+<SCRIPT type="text/javascript">
+
+  var myUrl = "$link.setPage('Visualizzatore.vm')";
+
+  function loadSerie(serieUID)
+  {
+     borderThumb = '';
+     setImageInfos('${numberOfImages}');
+     loadImages('${data.contextPath}/ajax/ImageContainer.jsp?studyUID=${studyUID}&serieUID='+serieUID);
+     return false;
+
+    //goPage(myUrl + "?studyUID=${studyUID}&serieUID=" + serieUID);
+  }
+
+</script>
+
+<div id="toolBar">
+  <div id="toolBarContainer">
+
+    <div id="wcButton" class="wcButton toolBarButton">
+      <div class="toolBarText" id="wcText">WL/WW</div>
+    </div>
+
+    <div id="presetButton" class="toolBarButton" onclick="popupQueryOptions();">
+      <div class="toolBarText toolBarTextNonMode" id="presetText">Preset</div>
+    </div>
+
+    <div id="resetButton" class="toolBarButton" onclick="resetAll();">
+      <div class="toolBarText toolBarTextNonMode">Reset</div>
+    </div>
+
+    <div id="moveButton" class="toolBarButton moveButton">
+      <div class="toolBarText" id="moveText">Move</div>
+    </div>
+
+    <div id="measureButton" class="toolBarButton measureButton">
+      <div class="toolBarText" id="measureText">Measure</div>
+    </div>
+
+    <div id="zoomButton" class="toolBarButton zoomButton">
+      <div class="toolBarText" id="zoomText">Zoom on</div>
+    </div>
+
+    <div id="zoomInButton" class="toolBarButton"
+         onmouseover="zoom(512, 512, 'picture', 'in');" onmouseout="clearzoom()">
+      <div class="toolBarText">Zoom in</div>
+    </div>
+
+    <div id="zoomOutButton" class="toolBarButton"
+         onmouseover="zoom(512, 512, 'picture', 'out');" onmouseout="clearzoom()">
+      <div class="toolBarText">Zoom out</div>
+    </div>
+  </div>
+</div>
+
+<div id="seriesPane">
+  <center>
+    <div>
+      <table>
+        #foreach($ser in $series)
+        <tr>
+          <td style="border-bottom: 2px solid #d9d9d9;">
+            <div class="seriesDetails">${ser.descrizione}</div>
+            <div class="seriesDetails">Total Images : ${ser.numimg}</div>
+
+            #if($modality == 'SR')
+            ## Structured Reporting Document
+            <div class="image" onclick="loadSerie('$ser.SerieInstanceUID'); return false;"></div>
+            #elseif($modality == 'KO')
+            ## Key Object Selection
+            <div class="image" onclick="loadSerie('$ser.SerieInstanceUID'); return false;"></div>
+            #elseif($modality == 'ES' && $ser.sopClassUID == '1.2.840.10008.5.1.4.1.1.77.1.1.1')
+            <div class="image" onclick="loadSerie('$ser.SerieInstanceUID'); return false;">
+              <img  width="128px" class="reflec" src="images/icons/icn_video.gif" onclick="changeSeriesBorder(this);">
+            </div>
+            #else
+            <div class="image" onclick="loadSerie('$ser.SerieInstanceUID'); return false;">
+              <img id="series${ser.num}" width="128px" class="reflec"
+                   src="${data.contextPath}/Image.do?study=${studyUID}&series=${ser.SerieInstanceUID}&object=${ser.imageUID}&row=128"
+                   onclick="changeSeriesBorder(this); changeFirstImgBorder('img0');">
+            </div>
+            #end
+        </tr>
+        #end ##foreach ser
+      </table>
+    </div>
+  </center>
+</div>
+
+<div id="seriesDivider" onclick="hideSeries();" title="Click or press 's' to toggle series visibility">
+  <img id="dividerImg" src="images/icn_grip1.gif" alt="">
+</div>
+
+<div id="imagePane">
+  <div id="left">
+    <table id="imgTable">
+      <tr>
+        <td class="imageHolder">
+          <div class="imageHolder">
+            <center>
+              <div class="shadow" id="patStudyDesc">$!{studyDesc}</div>
+              <div class="shadow" id="patSex">$!{patientSex}</div>
+              <div class="shadow" id="patPhyName">$!{physicianNameHtml}</div>
+              <div class="shadow" id="patBirthDate">$!{patientBirthDate}</div>
+              <div class="shadow" id="patStudyDate">$!{studyDate}</div>
+              <div class="shadow" id="patModality">$!{modality}</div>
+              <div class="shadow" id="number"></div>
+
+              <img class="dragme" name="picture"
+                   src="${data.contextPath}/Image.do?study=${studyUID}&series=${seriesUID}&object=${instanceUID}"
+                   width="512" alt="" id="picture">
+            </center>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="thumbNails">
+    <div id="thumbDivider" onclick="singleImage();"
+         title="Click or press 'i' to toggle thumbnails visibility"><img
+        id="dividerImg" src="images/icn_grip1.gif" alt=""></div>
+    <div id="thumbNailHolder">
+      #set($c = 0)
+      #foreach($img in $images)
+      <div class="scale-item">
+        <div class="imgNo">${img.num}</div>
+        <img alt="" id="img${c}" class="scale-image"
+             src="${data.contextPath}/Image.do?study=${studyUID}&series=${seriesUID}&object=${img.SOPInstanceUID}"
+             width="100%" onclick="changeslides(${c}); changeBorder(this);">
+      </div>
+      #set($c = $c + 1)
+      #end
+    </div>
+  </div>
+</div>
+
+  <div id="footerArea">
+    <div id="pageFooter">
+      <table width="100%">
+        <tr>
+          <td width="45%">
+            <div id="viewControls">
+              <div title="Click or press 'p' to toggle patient visibility"
+                   id="viewPatient" class="viewSwitcher" onclick="hidePatient();
+                       hideDataSet();">
+                <div class="label">Patient</div>
+              </div>
+
+              <div title="Click or press 's' to toggle series visibility"
+                   id="viewSeries" class="viewSwitcher" onclick="hideSeries();
+                       hideDataSet();">
+                <div class="label">Series</div>
+              </div>
+
+              <div title="Click or press 'g' to display this series in grid view"
+                   id="gridView" class="viewSwitcher" onclick="gridView();
+                       hideDataSet();">
+                <div class="label">Grid</div>
+              </div>
+
+              <div title="Click or press 'm' to display this series in mosaic view"
+                   id="mosaicView" class="viewSwitcher" onclick="mosaicView();
+                       hideDataSet();">
+                <div class="label">Mosaic</div>
+              </div>
+
+              <div title="Play a cineLoop of this series" id="cineLoop"
+                   class="viewSwitcher" onclick="cineLoop();
+                       hideDataSet();">
+                <div class="label">Loop</div>
+              </div>
+
+              <div id="cineSlider" style="position: relative; visibility: hidden;"
+                   class="viewSwitcher">
+                <div id="cineTrack"
+                     style="width: 140px; background-image: url('images/icons/icn_slider_track.png'); background-repeat: repeat-x; background-position: left; height: 10px;">
+                  <div id="cineHandle"
+                       style="width: 18px; background-image: url('images/icons/icn_slider_handle.png'); background-repeat: no-repeat; background-position: right; height: 15px;"></div>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td><a href="http://oviyam.raster.in" target="_blank"><img
+                src="images/oviyam_logo_b.png" alt="" title="Version: 0.9.1 (10.01.2011)"></a></td>
+          <td width="300" align="right">
+            <div class="colorChooser" id="colorChooser">
+              <div class="label">Background:&nbsp;</div>
+              <div title="view this page with a black background" id="black"
+                   class="backColor" onclick="changeBlack();" onmouseover="setCursor()">
+              </div>
+
+              <div title="view this page with a dark gray background" id="dkgrey"
+                   class="backColor" onclick="changeGray();" onmouseover="setCursor()">
+              </div>
+
+              <div title="view this page with a light gray background" id="ltgrey"
+                   class="backColor" onclick="changeLightGray();"
+                   onmouseover="setCursor()"></div>
+
+              <div title="view this page with a white background" id="white"
+                   class="backColor" onclick="changeWhite();" onmouseover="setCursor()">
+              </div>
+            </div>
+          </td>
+          <td width="200">
+            <div id="sizeSlider" class="viewSwitcher"
+                 style="position: relative; margin-top: 13px;">
+              <div id="track"
+                   style="width: 140px; background-image: url('images/icons/icn_slider_track.png'); background-repeat: repeat-x; background-position: left; height: 10px;">
+                <div id="handle"
+                     style="width: 18px; background-image: url('images/icons/icn_slider_handle.png'); background-repeat: no-repeat; background-position: right; height: 15px;"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+<div id="loadingView">
+  <div id="spinnerDiv"><img src="images/overlay_spinner.gif" alt="">
+    <div id="loadingText" class="loadingText">Loading...</div>
+  </div>
+</div>
+
+<div id="searchPane1" class="hiddenPanel" style="visibility: hidden">
+  <div class="back-div">
+    <div id="presetTools">
+      <table class="parameterTable" id="parameterTable" width="100%" cellpadding="5" style="color:#FFFFFF;">
+        <tr>
+          <td style="padding-left:67px">
+            <b><font size="2">Preset</font></b>
+          </td>
+          <td>
+            <select name="preset" id="preset" onChange="setPresetValues();" >
+              <option value="40:350">Chest/Abdomen/Pelvis</option>
+              <option value="1500:-600">Lung</option>
+              <option value="80:40">Brain</option>
+              <option value="2500:480">Bone</option>
+              <option value="350:90">Head/Neck</option>
+              <option value="0:0">Custom</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left:65px">
+            <b><font size="2">Window Center</font></b>
+          </td><td>
+            <input type="text" name="wc" id="wc" value="350" size="7" onchange="onChangeWLsetPreset();">
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left:65px">
+            <b><font size="2">Window Width</font></b>
+          </td><td>
+            <input type="text" id="ww" name="ww" value="40" size="7" onchange="onChangeWLsetPreset();">
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left:65px" colspan="2">
+            <input type="checkbox" name="preview" id="preview" onchange="applyPreview();"><b><font size="2">Preview </font></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input value=$I.IA("Applica") onclick="applyCenterAndWidth()" type="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input value=$I.IA("Applica a tutti") onclick="applyAllValues();" type="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input value=$I.IA("Reset") onclick="resetWLValues();" type="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input value=$I.IA("Chiudi") onclick="closePopupMenu();" type="button">
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+  <script type="text/javascript" language="javascript">
+
+    var demoSlider = new Control.Slider('handle', 'track',
+            {axis: 'horizontal', minimum: 0, maximum: 250, alignX: 00, increment: 2, sliderValue: 0.5});
+    demoSlider.options.onSlide = function (value) {
+      scaleIt(value);
+    }
+    demoSlider.options.onChange = function (value) {
+      scaleIt(value);
+    }
+
+    var cineSlider = new Control.Slider('cineHandle', 'cineTrack',
+          {axis: 'horizontal', minimum: 100, maximum: 1000, alignX: 00, increment: 100, sliderValue: 0.5});
+    cineSlider.options.onSlide = function (value) {
+      changeSpeed(1000 - (value * 1000));
+    }
+    cineSlider.options.onChange = function (value) {
+      changeSpeed(1000 - (value * 1000));
+    }
+
+
+    numberOfImages = $images.size();
+    keynav = 1;
+    setImageAndHeaders(document.getElementById("img0").src);
+    document.getElementById('number').innerHTML = "Image 1 of " + numberOfImages;
+    load();
+    enableMeasure();
+
+  </script>
+
+<!-- FINE Visualizzatore.vm -->
+

@@ -1,0 +1,188 @@
+$page.setTitle($I.I("Strumenti"))
+
+<script type="text/javascript">
+
+  function gotoSetup(idSetup)
+  {
+    var url = "$link.setPage('mform.vm').addPathInfo('type', 'FormStpSetupStrumenti')";
+    goPage(url + "?jlc=Index.vm&ID=" + idSetup);
+  }
+
+  function apri(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'StatoStrumenti')";
+    goPage(url + "?V=1&ID=" + idStrumenti);
+  }
+
+  function attiva(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'StatoStrumenti')";
+
+    if (confirm("Sei sicuro di riattivare questo strumento?"))
+      goPage(url + "?V=1&ID=" + idStrumenti);
+  }
+
+  function disattiva(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'StatoStrumenti')";
+
+    if (confirm("Sei sicuro di disattivare questo strumento?"))
+      goPage(url + "?V=0&ID=" + idStrumenti);
+  }
+
+  function attivaMonitor(idStrumenti)
+  {
+    var urlwin = "$content.getURI('/monitor')/" + idStrumenti;
+    var titolo = "monitorWin" + idStrumenti;
+    openInfoWindow(urlwin, titolo);
+
+    var url = "$link.setPage('Index.vm')";
+    goPage(url + "?V=0&ID=" + idStrumenti);
+  }
+
+  function disattivaMonitor(idStrumenti)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'DisattivaMonitor')";
+
+    goPage(url + "?V=0&ID=" + idStrumenti);
+  }
+
+  function chiudiRack(idRack)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'ChiudiRack')";
+
+    if (confirm("Sei sicuro di chiudere definitivamente questo rack incompleto?"))
+      goPage(url + "?ID=" + idRack);
+  }
+
+  function sopprimiRack(idRack)
+  {
+    var url = "$link.setPage('Index.vm').addPathInfo('action', 'SopprimiRack')";
+
+    if (confirm("Sei sicuro di sopprimere questo rack?"))
+      goPage(url + "?ID=" + idRack);
+  }
+
+  function inviaStrumento()
+  {
+    if (confirm("Sei sicuro di voler inviare tutti i rack selezionati ai corrispettivi strumenti?"))
+    {
+      document.fo.submit();
+      showLoading();
+    }
+  }
+
+  function apriDettaglio(idCampione)
+  {
+    var url = "$link.setPage('plista.vm').addPathInfo('type', 'parametri-campione')";
+    openInfoDialog(url + "?idcamp=" + idCampione);
+  }
+
+</script>
+
+#set($showSend = 0)
+
+<div id="innerbody">
+  <form action="$link.setPage('Index.vm')" method="post" name="fo">
+    <input type="hidden" name="action" value="InviaRacks"/>
+
+    <ul class="nav nav-tabs">
+      <li role="presentation"><a href="$link.setPage('Index.vm')">$I.I("Lista Ordini")</a></li>
+      <li role="presentation" class="active"><a href="#">$I.I("Strumenti")</a></li>
+    </ul>
+
+    <br>
+
+    <div class="row">
+
+      #set($count = 0)
+      #foreach($c in $con)
+      #set($u = $c.getRunner())
+      #set($s = $c.getSetup())
+      #set($t = $s.getStpStrumenti())
+      #set($m = $t.getStpModelliStrumenti())
+      #set($ID = $s.idStrumenti)
+      #set($IS = $s.setupStrumentiId)
+
+      <div class="col-md-4">
+
+        <!-- inizio del pannello -->
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">$t.descrizione</h3>
+          </div>
+          <div class="panel-body">
+
+            <table width="100%">
+              <tr>
+                <td valign="middle" align="center">
+                  <div style="margin: 5px;">
+                    #if($c.isOnLine())
+                    <img src="$ui.image('signs04.gif')" border="0"
+                         alt="$I.I('Strumento on-line.')"
+                         title="$I.I('Strumento on-line.')"/>
+                    #elseif($c.isActive())
+                    <img src="$ui.image('signs02.gif')" border="0"
+                         alt="$I.I('Strumento attivo ma comunicazioni non presenti.')"
+                         title="$I.I('Strumento attivo ma comunicazioni non presenti.')"/>
+                    #else
+                    <img src="$ui.image('signs01.gif')" border="0"
+                         alt="$I.I('Strumento non attivo.')"
+                         title="$I.I('Strumento non attivo.')"/>
+                    #end
+                  </div>
+                </td>
+                <td valign="top">
+                  <div class="tinfo" style="margin: 5px;">
+                    <table width="100%">
+                      <tr><td class="titolo" width="100">$I.I("Modello")</td><td>$!m.descrizione</td></tr>
+                      <tr><td class="titolo" width="100">$I.I("Strumento")</td><td>$!t.descrizione</td></tr>
+                      <tr><td class="titolo" width="100">$I.I("Modo")</td><td>$!modsta.getModalita($s.modalitaTxrx)</td></tr>
+                      <tr><td class="titolo" width="100">$I.I("Connessione")</td><td>$!modsta.getConnessione($s.connessione)</td></tr>
+                    </table>
+                  </div>
+                  <div style="margin: 10px;">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="aaaa">
+                      <button type="button" class="btn btn-default" onclick="gotoSetup($IS)"/>$I.I("Setup strumento")</button>
+
+                      #if($s.soloOperatoreBool)
+
+                      <!-- strumenti con interfaccia specifica -->
+                      <button type="button" class="btn btn-default" onclick="apri($ID)"/>$I.I("Apri strumento")</button>
+
+                      #else
+
+                      <!-- strumenti normali -->
+                      #if($c.isActive())
+                      <button type="button" class="btn btn-default" onclick="disattiva($ID)"/>$I.I("Arresta strumento")</button>
+                      #if($u.haveMonitor())
+                      #if($u.isMonitorActive())
+                      <button type="button" class="btn btn-default" onclick="disattivaMonitor($ID)"/>$I.I("Disattiva monitor")</button>
+                      <button type="button" class="btn btn-default" onclick="attivaMonitor($ID)"/>$I.I("Apri finestra")</button>
+                      #else
+                      <button type="button" class="btn btn-default" onclick="attivaMonitor($ID)"/>$I.I("Attiva monitor")</button>
+                      #end
+                      #end
+                      #else
+                      <button type="button" class="btn btn-default" onclick="attiva($ID)"/>$I.I("Attiva strumento")</button>
+                      #end
+
+                      #end
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+        <!-- fine del pannello -->
+
+      </div>
+
+      #end
+
+    </div>
+
+  </form>
+</div>

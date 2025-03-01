@@ -1,0 +1,37 @@
+$page.setTitle($I.I("Analisi automatica dei log"))
+
+<!-- INIZIO AnalizzaLogs.vm -->
+
+<div id="innerbody">
+
+  #if($LOG)
+  #foreach($b in $LOG)
+  <div class="logs">
+    <h2 style="text-align: center">$b.flog.getName()</h2>
+    <pre>
+<code>
+#foreach($l in $b.arLines)
+#if($l.begin)
+<span style="color: red;"><b>$l.fmtLineNumber()</b> $l.str</span>
+#else
+#if($l.ln != 0)
+<b>$l.fmtLineNumber()</b> $l.str
+#else
+$l.str
+#end
+#end
+#end
+</code>
+    </pre>
+  </div>
+  #end
+  #else
+  <div class="logs" style="text-align: center">
+    <p style="font-weight: bold; font-size: 26px">$I.I("Nessuna log contiene messaggi di errore.")</p><br/>
+    $I.I("Consultare separatamente le logs dal menù LOGS per l'elenco dettagliato dei messaggi.")
+  </div>
+  #end
+
+</div>
+
+<!-- FINE AnalizzaLogs.vm -->

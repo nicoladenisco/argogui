@@ -1,0 +1,68 @@
+#=============================
+# Stile di default per ARGO
+# Questo e' lo stile di base
+# di distribuzione di ARGO
+#=============================
+
+#
+# Per la visualizzazione nell'indice dell'application server.
+#
+index_icon = logo.png
+index_title = MHIMAGE
+index_description = MyHospital imaging - DICOM PACS
+
+#
+# Generali e varie
+#
+cabinet = 0
+perseo = 0
+bgcolor = #ffffff
+mainstylebgcolor = #000000
+mainstyletextcolor = #FFFFFF
+maintitle = MHIMAGE
+mainname = MyHospital imaging
+productShortName = mhimage
+productLongName = MyHospital imaging
+productMenuName = MyHImaging
+logomain=logomain.png
+
+topbarbgcolor = lightgray
+sansSerifFonts = verdana,geneva,helvetica
+formLabelColor = #FF0000
+formFieldColor = #FFFFFF
+labelColor = #00FF00
+dataColor = #007700
+vlink = #00FF00
+alink = #0000FF
+
+tableCellSpacing = 0
+tableCellPadding = 0
+
+menuColor = #000000
+
+buttonAlignment = left
+buttonColor = #DDDDDD
+
+#
+# menu di sinistra (Menu.vm)
+#
+menuFieldTextStyle = btn-default
+menuFieldTextStyleEvi = btn-default
+
+# Images
+alertImage = alert1.gif
+logo = tambora.gif
+poweredByImage = powered_by_tambora.gif
+line = line.gif
+
+#
+# Colori vari
+#
+darkColor = #000088
+lightColor = #DDDDDD
+tableColor = #AAAAAA
+
+#
+# Copyright message
+#
+copyright = MyAdmin s.r.l.

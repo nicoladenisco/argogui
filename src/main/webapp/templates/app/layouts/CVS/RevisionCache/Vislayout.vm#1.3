@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--
+      Layout speciale per visualizzatore DICOM javascript
+    -->
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>$ui.maintitle - $page.title</title>
+
+    <link href="$ui.stylecss" type="text/css" rel="stylesheet">
+    <link type="text/css" rel="StyleSheet" href="$ui.getScript('oviyam7.css')">
+    <link type="text/css" rel="StyleSheet" href="$ui.getScript('dcm-style.css')" />
+
+    <SCRIPT type="text/javascript" src="$content.getURI('js/stdfunc.js')"></SCRIPT>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script -->
+
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/lib/prototype.js')" ></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/lib/jquery-1.4.2.min.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/lib/ahpi.imgload.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/lib/jquery.jqote2.min.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/oviyam7.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/imageDrag.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/imageZoom.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/ajaxLoadPage.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/keyNavigation.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/webtoolkit.sortabletable.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/src/scriptaculous.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/DatePicker.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/windowLevel.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/VLCobject.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/VLCcontrols.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/ExternalLibLoader.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/imageMeasure.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/LightBox.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/Ruler.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/lib/raphael-min.js')"></script>
+    <script type="text/javascript" language="javascript" src="$content.getURI('/js/jsovi/lib/raphaelle.js')"></script>
+
+    #if( $data.haveRefresh() )
+    <meta http-equiv="refresh" content="$data.getRefresh()">
+    #end
+
+    <SCRIPT type="text/javascript">
+
+      // preload dell'immagine di occupato
+      var loadingImgDummy = new Image();
+      loadingImgDummy.src = "$ui.image('loading-red.gif')";
+      function showLoading()
+      {
+        var html =
+                "<div align=\"center\">" +
+                "<table><tr>" +
+                "<td><img src=\"$ui.image('loading-red.gif')\" align=\"left\"></td>" +
+                "<td>&nbsp;&nbsp;&nbsp;</td>\n" +
+                "<td>$I.I('Operazione in corso; attendere ...')</td>" +
+                "</tr></table>" +
+                "</div>";
+        updateDiv("innerbody", html);
+      }
+
+      //setUriCalendario("$content.getURI('ajax/calendario.jsp')");
+
+      /*
+       function apriFinestraLista(url, tipo)
+       {
+       #if($data.haveDialog())
+       openStandardDialog(url, tipo);
+       #else
+       openStandardWindow(url, tipo);
+       #end
+       }
+       */
+
+      function apriFinestraEdit(url, tipo)
+      {
+        /* #if($data.haveDialog()) */
+        openEditDialog(url, tipo);
+        /* #else */
+        openEditWindow(url, tipo);
+        /* #end  */
+      }
+
+      /*
+       function apriFinestraForm(url, tipo)
+       {
+       #if($data.haveDialog())
+       openEditDialog(url, tipo);
+       #else
+       openEditWindow(url, tipo);
+       #end
+       }
+       */
+
+    </SCRIPT>
+
+  </head>
+  <body>
+
+    $screen_placeholder
+
+  </body>
+</html>

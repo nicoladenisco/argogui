@@ -1,0 +1,21 @@
+$page.setTitle($I.I("Statistica"))
+$data.getTemplateInfo().setLayoutTemplate("Null.vm")
+
+<form action="${data.request.contextPath}/pdf/${codice}" method="get" name="fo">
+
+  <h3>
+    <span class="label label-primary">$descrizione</span>
+    #menuCellScript ("Stampa" "document.fo.submit()" $ui.menuFieldTextStyle)
+    #menuCellScript ("Chiudi" "window.close()" $ui.menuFieldTextStyle)
+  </h3>
+
+  <table width="100%">
+    <tr><td colspan="2" bgcolor="#CCCCFF"><h2>Parametri per la stampa:</h2></td></tr>
+    $htmlFiltriStatistica
+    <tr><td colspan="2" bgcolor="#CCCCFF">&nbsp;</td></tr>
+  </table>
+
+  <input type="hidden" name="codice" value="${codice}">
+
+</form>
+
