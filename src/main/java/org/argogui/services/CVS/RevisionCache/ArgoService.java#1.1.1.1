@@ -1,0 +1,258 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services;
+
+import java.io.File;
+
+/**
+ * Interfaccia base di tutti i servizi di Newstar.
+ * @author Nicola De Nisco
+ */
+public interface ArgoService
+{
+  public void ASSERT(boolean test, String cause) throws Exception;
+
+  public void TRACE(String mess);
+
+  public void die(String causa) throws Exception;
+
+  /**
+   * Ritorna l'indirizzo TCP/IP principale
+   * dell'istanza di Pcsdm in esecuzione.
+   * @return
+   */
+  public String getCanonicalServerAddress();
+
+  /**
+   * Ritorna il nome del server canonico
+   * dell'istanza di Pcsdm in esecuzione.
+   * @return
+   */
+  public String getCanonicalServerName();
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * per la masterizzazione di CD/DVD.
+   * @param pgm programma da localizzare
+   * @return path completa
+   */
+//  public String getCdrecordPgm(String pgm);
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * per la masterizzazione di CD/DVD.
+   * @param pgm programma da localizzare
+   * @return oggetto File con path completa
+   */
+//  public File getCdrecordPgmFile(String pgm);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * di configurazione dei certificati di sicurezza.
+   * (/newstar/WEB-INF/conf/cert per UNIX a partire dalla
+   * directory di installazione dell'applicazione web).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getConfCertFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale di configurazione del sistema Pcsdm.
+   * (/newstar/WEB-INF/conf per UNIX a partire dalla
+   * directory di installazione dell'applicazione web).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getConfMainFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * di configurazione dei file di jreport.
+   * (/newstar/WEB-INF/conf/reports per UNIX a partire dalla
+   * directory di installazione dell'applicazione web).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getConfReportFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * di configurazione degli schemi xml.
+   * (/newstar/WEB-INF/conf/schemas per UNIX a partire dalla
+   * directory di installazione dell'applicazione web).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getConfSchemasFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * di configurazione del setup client.
+   * (/newstar/WEB-INF/conf/setup per UNIX a partire dalla
+   * directory di installazione dell'applicazione web).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getConfSetupFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * di configurazione dei file xls.
+   * (/newstar/WEB-INF/conf/xls per UNIX a partire dalla
+   * directory di installazione dell'applicazione web).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getConfXlsFile(String subFile);
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * del toolkit DICOM utlizzando le path di setup.
+   * @param pgm programma da localizzare
+   * @return path completa
+   */
+//  public String getDicomPgm(String pgm);
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * del toolkit DICOM utlizzando le path di setup.
+   * @param pgm programma da localizzare
+   * @return oggetto File con path completa
+   */
+//  public File getDicomPgmFile(String pgm);
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * di servizio di PostgreSQL.
+   * @param pgm programma da localizzare
+   * @return path completa
+   */
+  public String getPgsqlPgm(String pgm);
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * di servizio di PostgreSQL.
+   * @param pgm programma da localizzare
+   * @return oggetto File con path completa
+   */
+  public File getPgsqlPgmFile(String pgm);
+
+  /**
+   * Ritorna la path effettiva di un file all'interno
+   * della directory dell'applicazione web.
+   * La path viene ritornata in modo consono alla piattaforma
+   * di funzionamento (windows o Unix).
+   * ES index.jsp -> /usr/local/tdk/webapps/newstar/index.jsp
+   * @param path una path qualsiasi all'interno dell'applicazione web
+   * @return path assoluta nel file system
+   */
+  public String getRealPath(String path);
+
+  /**
+   * Data una url relativa torna l'url completa a seconda dell'ambiente.
+   * La stringa si riferisce a una risorsa qualsiasi riferita alla path
+   * dell'applicazione
+   * ES url=img.gif -> http://localhost:8080/img.gif
+   * oppure http://mio.server.it:8080/miaapp/img.gif
+   */
+  public String getServerUrlGeneric(String url);
+
+  /**
+   * Data una url relativa torna l'url completa a seconda dell'ambiente.
+   * La stringa si riferisce a una risorsa JSP
+   * ES url=jsmia.jsp -> http://localhost:8080/src/jsmia.jsp
+   * oppure http://mio.server.it:8080/miaapp/servlet/miaapp/template/jsmia.jsp
+   */
+  public String getServerUrlJSP(String url);
+
+  /**
+   * Ritorna la context path dell'applicazione.
+   * (di solito /newstar/).
+   * @return
+   */
+  public String getTurbineContextPath();
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale della cache del sistema Pcsdm.
+   * (/var/newstar/cache per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkCacheFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale dei documenti del sistema Pcsdm.
+   * (/var/newstar/doc per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkDocsFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale dei logs.
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getLogFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale delle iso prodotte del sistema Pcsdm.
+   * (/var/newstar/iso per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkIsoFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale di appoggio del sistema Pcsdm.
+   * (/var/newstar per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkMainFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale di store degli MPPS del sistema Pcsdm.
+   * (/var/newstar/mpps per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkGraphFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale di spool del sistema Pcsdm.
+   * (/var/newstar/spool per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkSpoolFile(String subFile);
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale dei temporanei del sistema Pcsdm.
+   * (/var/newstar/tmp per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  public File getWorkTmpFile(String subFile);
+
+}

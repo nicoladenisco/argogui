@@ -1,0 +1,139 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services;
+
+import java.io.*;
+
+import org.apache.turbine.*;
+import org.apache.commons.logging.*;
+import org.apache.commons.configuration.Configuration;
+
+import org.sirio.services.AbstractCoreBaseService;
+
+/**
+ * Classe base di tutti i servizi di Argo.
+ * I servizi sono configurati nel file newstar.properties
+ * come gli altri servizi di turbine.
+ */
+abstract public class ArgoBaseService extends AbstractCoreBaseService implements ArgoService
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(ArgoBaseService.class);
+  /** path di riferimento */
+  private static String pathPgsqlBin = null;
+  private static String pathDicomBin = null;
+  private static String pathWorkGraph = null;
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale di store dei grafici.
+   * (/var/argo/grafici per UNIX).
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  @Override
+  public File getWorkGraphFile(String subFile)
+  {
+    return getGenericFile(pathWorkGraph, subFile);
+  }
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * del toolkit DICOM utlizzando le path di setup.
+   * @param pgm programma da localizzare
+   * @return path completa
+   */
+  @Override
+  public String getDicomPgm(String pgm)
+  {
+    String sPath = normalizePath(pathDicomBin + "/" + pgm);
+    return normalizeWindowsExecutable(sPath);
+  }
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * di servizio di PostgreSQL.
+   * @param pgm programma da localizzare
+   * @return path completa
+   */
+  @Override
+  public String getPgsqlPgm(String pgm)
+  {
+    String sPath = normalizePath(pathPgsqlBin + "/" + pgm);
+    return normalizeWindowsExecutable(sPath);
+  }
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * del toolkit DICOM utlizzando le path di setup.
+   * @param pgm programma da localizzare
+   * @return oggetto File con path completa
+   */
+  @Override
+  public File getDicomPgmFile(String pgm)
+  {
+    return new File(getDicomPgm(pgm));
+  }
+
+  /**
+   * Ritorna la path completa di un eseguibile
+   * di servizio di PostgreSQL.
+   * @param pgm programma da localizzare
+   * @return oggetto File con path completa
+   */
+  @Override
+  public File getPgsqlPgmFile(String pgm)
+  {
+    return new File(getPgsqlPgm(pgm));
+  }
+
+  @Override
+  final public void coreInit()
+     throws Exception
+  {
+    // inizializzazioni una tantum dei servizi argo
+    if(SERVICE.getService() == null)
+    {
+      SERVICE.setService(this);
+      Configuration cfg = Turbine.getConfiguration();
+
+      pathWorkGraph = TV(cfg.getString("path.work.graph", pathWork + "/grafici"));
+      makeTestDirWrite(pathWorkGraph);
+
+      pathPgsqlBin = TV(cfg.getString("path.pgsql.bin", "/usr/bin/"));
+      pathDicomBin = TV(cfg.getString("path.dicom.bin", "/usr/local/dicom/bin/"));
+    }
+
+    argoInit();
+  }
+
+  /**
+   * Inizializzazione servizio derivato.
+   * @throws Exception
+   */
+  public abstract void argoInit()
+     throws Exception;
+
+  /**
+   * Ritorna un file ubicato nella directory
+   * principale dei logs.
+   * @param subFile nome del file SENZA path
+   * @return collocazione completa nel file system
+   */
+  @Override
+  public File getLogFile(String subFile)
+  {
+    return getGenericRealFile("/logs", subFile);
+  }
+}

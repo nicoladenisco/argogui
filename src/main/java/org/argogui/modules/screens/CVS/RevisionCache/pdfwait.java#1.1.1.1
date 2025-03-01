@@ -1,0 +1,54 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.screens;
+
+import it.radimage.argo.services.formatter.DataFormatter;
+import it.radimage.argo.services.print.PdfPrint;
+import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+import it.radimage.argo.services.cache.UsersDataCache;
+import it.radimage.argo.utils.ArgoRunData;
+
+/**
+ * Controllore per pdfwait.vm.
+ *
+ * @author Nicola De Nisco
+ */
+public class pdfwait extends ArgoBaseScreen
+{
+  private final static PdfPrint pp = (PdfPrint) TurbineServices.getInstance().
+     getService(PdfPrint.SERVICE_NAME);
+  private final static DataFormatter df = (DataFormatter) TurbineServices.getInstance().
+     getService(DataFormatter.SERVICE_NAME);
+
+  @Override
+  protected void doBuildTemplate2(ArgoRunData data, Context context) throws Exception
+  {
+    super.doBuildTemplate2(data, context);
+
+    String jobCode = data.getParameters().getString("codice", null);
+    PdfPrint.JobInfo job = pp.refreshInfo(jobCode);
+
+    if(pp == null)
+      throw new Exception("JOB " + jobCode + " non trovato.");
+
+    context.put("codice", jobCode);
+    context.put("tstart", df.formatDataFull(job.tStart));
+    context.put("job", job);
+    context.put("jobs", new EnumerationIterator(pp.getJobs()));
+    context.put("users", UsersDataCache.getInstance());
+  }
+}

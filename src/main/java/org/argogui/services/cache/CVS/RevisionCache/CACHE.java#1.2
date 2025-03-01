@@ -1,0 +1,251 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.cache;
+
+import com.pixelmed.dicom.TransferSyntax;
+import it.radimage.argo.services.SERVICE;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.cache.CachedObject;
+import org.apache.turbine.services.cache.ObjectExpiredException;
+import org.commonlib.utils.CommonFileUtils;
+
+/**
+ * Accesso al servizio di cache globale.
+ *
+ * @author Nicola De Nisco
+ */
+public class CACHE
+{
+  private static ArgoCacheServices mb = null;
+  public static final String WADO_CACHE_CLASS = "WADO_CACHE_CLASS";
+
+  public static ArgoCacheServices getService()
+  {
+    if(mb == null)
+      mb = (ArgoCacheServices) TurbineServices.getInstance().getService(ArgoCacheServices.SERVICE_NAME);
+    return mb;
+  }
+
+  public static CachedObject getObject(String objClass, String id)
+     throws ObjectExpiredException
+  {
+    return getService().getObject(objClass, id);
+  }
+
+  public static CachedObject getObjectQuiet(String objClass, String id)
+  {
+    try
+    {
+      return getService().getObject(objClass, id);
+    }
+    catch(ObjectExpiredException e)
+    {
+      return null;
+    }
+  }
+
+  public static Object getContentQuiet(String objClass, String id)
+  {
+    try
+    {
+      return getService().getObject(objClass, id).getContents();
+    }
+    catch(Throwable e)
+    {
+      return null;
+    }
+  }
+
+  public static void addObject(String objClass, String id, CachedObject o)
+  {
+    getService().addObject(objClass, id, o);
+  }
+
+  public static void addContent(String objClass, String id, Object content)
+  {
+    getService().addObject(objClass, id, new CachedObject(content));
+  }
+
+  public static void removeObject(String objClass, String id)
+  {
+    getService().removeObject(objClass, id);
+  }
+
+  public static void addLimit(String objClass, int limit)
+  {
+    getService().addLimit(objClass, limit);
+  }
+
+  public static int getLimit(String objClass)
+  {
+    return getService().getLimit(objClass);
+  }
+
+  public static int getNumberOfObjects(String objClass)
+  {
+    return getService().getNumberOfObjects(objClass);
+  }
+
+  public static Enumeration classNames()
+  {
+    return getService().classNames();
+  }
+
+  public static Enumeration cachedObjects(String className)
+  {
+    return getService().cachedObjects(className);
+  }
+
+  public static void dumpCache(String objClass, PrintWriter out)
+     throws Exception
+  {
+    getService().dumpCache(objClass, out);
+  }
+
+  public static CachedObject getObject(String id)
+     throws ObjectExpiredException
+  {
+    return getService().getObject(id);
+  }
+
+  public static void addObject(String id, CachedObject o)
+  {
+    getService().addObject(id, o);
+  }
+
+  public static void removeObject(String id)
+  {
+    getService().removeObject(id);
+  }
+
+  public static int getCacheSize()
+     throws IOException
+  {
+    return getService().getCacheSize();
+  }
+
+  public static int getNumberOfObjects()
+  {
+    return getService().getNumberOfObjects();
+  }
+
+  public static void flushCache()
+  {
+    getService().flushCache();
+  }
+
+  public static void flushCache(String objClass)
+  {
+    getService().flushCache(objClass);
+  }
+
+  /**
+   * Abbassamento messaggi di log/allarmi.
+   * Verifica se il codice indicato è già stato segnalato in log.
+   * @param codice codice da verificare
+   * @return vero se già loggato o generato allarme
+   */
+  public static boolean isLogSignaled(String codice)
+  {
+    return getService().isLogSignaled(codice);
+  }
+
+  /**
+   * Abbassamento messaggi di log/allarmi.
+   * Segnala il codice come inviato a log/allarmi.
+   * @param codice codice da segnalare
+   */
+  public static void addLogSignaled(String codice)
+  {
+    getService().addLogSignaled(codice);
+  }
+
+  public static File getWadoDicomFile(ServerConfiguration sc, String studyUID, String seriesUID, String objectUID)
+     throws Exception
+  {
+    String dicomURL = "http://" + sc.getHostName() + ":" + sc.getWadoPort() + "/wado?requestType=WADO&";
+
+    // Generates the URL for the requested DICOM Dataset page.
+    dicomURL += "contentType=application/dicom&studyUID=" + studyUID
+       + "&seriesUID=" + seriesUID + "&objectUID=" + objectUID
+       + "&transferSyntax=" + TransferSyntax.ExplicitVRLittleEndian;
+    dicomURL = dicomURL.replace("+", "%2B");
+
+    try
+    {
+      FileCacheObject fo = (FileCacheObject) getObject(WADO_CACHE_CLASS, dicomURL);
+      return (File) fo.getContents();
+    }
+    catch(ObjectExpiredException ex)
+    {
+      File fcDir = SERVICE.getWorkCacheFile("remote-dicom");
+      SERVICE.ASSERT_DIR_WRITE(fcDir);
+      File fc = File.createTempFile("tmp", ".dcm", fcDir);
+      fc.deleteOnExit();
+      CommonFileUtils.readUrlToFile(dicomURL, fcDir);
+      addObject(WADO_CACHE_CLASS, dicomURL, new FileCacheObject(fc));
+      return fc;
+    }
+  }
+
+  public static File getWadoJpegFile(ServerConfiguration sc, String studyUID, String seriesUID, String objectUID,
+     String frameNo, String contentType, String rows, String windowCenter, String windowWidth)
+     throws Exception
+  {
+    String imageURL = "http://" + sc.getHostName() + ":" + sc.getWadoPort()
+       + "/wado?requestType=WADO&studyUID=" + studyUID + "&seriesUID="
+       + seriesUID + "&objectUID=" + objectUID;
+
+    if(frameNo != null)
+    {
+      imageURL += "&frameNumber=" + frameNo;
+    }
+    if(contentType != null)
+    {
+      imageURL += "&contentType=" + contentType;
+    }
+    if(rows != null)
+    {
+      imageURL += "&rows=" + rows;
+    }
+    if(windowCenter != null)
+    {
+      imageURL += "&windowCenter=" + windowCenter;
+    }
+    if(windowWidth != null)
+    {
+      imageURL += "&windowWidth=" + windowWidth;
+    }
+
+    try
+    {
+      FileCacheObject fo = (FileCacheObject) getObject(WADO_CACHE_CLASS, imageURL);
+      return (File) fo.getContents();
+    }
+    catch(ObjectExpiredException ex)
+    {
+      File fcDir = SERVICE.getWorkCacheFile("remote-jpeg");
+      SERVICE.ASSERT_DIR_WRITE(fcDir);
+      File fc = File.createTempFile("tmp", ".jpeg", fcDir);
+      fc.deleteOnExit();
+      CommonFileUtils.readUrlToFile(imageURL, fcDir);
+      addObject(WADO_CACHE_CLASS, imageURL, new FileCacheObject(fc));
+      return fc;
+    }
+  }
+}

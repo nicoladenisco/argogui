@@ -1,0 +1,112 @@
+/*
+ *  Copyright (C) 2014 Informatica Medica s.r.l.
+ *
+ *  Questo software è proprietà di Informatica Medica s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  Informatica Medica s.r.l.
+ *  Viale dei Tigli, 19
+ *  Casalnuovo di Napoli (NA)
+ *
+ *  Creato il 17-apr-2014, 13.30.10
+ */
+package it.radimage.argo.beans;
+
+import it.radimage.argo.utils.ArgoRunData;
+import org.apache.turbine.util.RunData;
+
+/**
+ * ESEMPIO DI BEAN.
+ * Questa classe è un esempio di come devono essere
+ * implementati i bean. Quando viene creato un nuovo
+ * bean copiare questa classe e incollarla nel nuovo
+ * bean. Eseguire quindi un cerca e cambia di
+ * AAAskelBean nel nuovo nome della classe bean.
+ *
+ * TODO: inserire due linee nell'action che usa questo bean
+    // trasferisce tutti i parametri dall'html a proprietà del bean
+    data.getParameters().setProperties(bean);
+ *
+ *
+ * @author Nicola De Nisco
+ */
+final public class AAAskelBean extends ArgoBaseBean
+{
+  // costanti
+  public static final String BEAN_KEY = "AAAskelBean:BEAN_KEY";
+
+// <editor-fold defaultstate="collapsed" desc="Getter/Setter">
+  // TODO: inserire qui i getter e setter
+  // di eventuali proprietà del bean
+// </editor-fold>
+
+  protected AAAskelBean()
+  {
+  }
+
+  @Override
+  public void init(ArgoRunData data)
+     throws Exception
+  {
+    super.init(data);
+
+    // TODO: inserire qui il codice di inizializzazione del bean
+  }
+
+  /**
+   * Verifica se questo bean è ancora valido.
+   * Questa funzione viene chiamata quando
+   * il bean viene recuperato dalla sessione.
+   * Se nella richiesta vi sono parametri che
+   * ne inficiano l'utilizzo questo metodo
+   * deve ritornare false e una nuova istanza
+   * di questo bean verrà creata e inizializzata.
+   * @param data dati della richiesta HTML
+   * @return vero se il bean è valido
+   */
+  protected boolean isValid(ArgoRunData data)
+  {
+    // TODO: inserire qui eventuali controlli
+    // per determinare se questo bean è valido
+    // rispetto ai parametri della richiesta HTML
+
+    return true;
+  }
+
+  /**
+   * Recupera una istanza del bean della sessione. Se una istanza del bean è
+   * presente in sessione viene ritornata dopo aver verificato che sia
+   * compatibile con eventuali parametri passati con la richiesta. Se non
+   * esiste o non è utilizzabile una nuova istanza viene creata.
+   *
+   * @param data parametri generali della richiesta
+   * @return istanza del bean
+   * @throws Exception
+   */
+  public static AAAskelBean getFromSession(RunData data)
+     throws Exception
+  {
+    AAAskelBean bean = (AAAskelBean) data.getSession().getAttribute(BEAN_KEY);
+
+    if(bean == null || !bean.isValid((ArgoRunData) data))
+    {
+      removeFromSession(data);
+      bean = new AAAskelBean();
+      bean.init((ArgoRunData)data);
+      data.getSession().setAttribute(BEAN_KEY, bean);
+    }
+
+    return bean;
+  }
+
+  /**
+   * Rimuove eventuale istanza di questo bean dalla sessione.
+   *
+   * @param data parametri generali della richiesta
+   */
+  public static void removeFromSession(RunData data)
+  {
+    data.getSession().removeAttribute(BEAN_KEY);
+  }
+}

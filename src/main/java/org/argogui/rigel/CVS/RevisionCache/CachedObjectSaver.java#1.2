@@ -1,0 +1,114 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel;
+
+import java.sql.Connection;
+import java.util.Hashtable;
+import org.apache.torque.om.BaseObject;
+
+/**
+ * Salvataggio di oggetti Peer.
+ * Mantiene una cache di ArgoObjectSaver associata ai rispettivi oggetti Peer.
+ *
+ * @author Nicola De Nisco
+ */
+public class CachedObjectSaver
+{
+  private static final Hashtable<Class, ArgoObjectSaver> htCache = new Hashtable<Class, ArgoObjectSaver>();
+
+  /**
+   * Recupera un oggetto saver adatto al salvataggio del BaseObject specificato.
+   * L'oggetto viene recuperato dalla cache se esiste, altrimenti viene creato
+   * e inserito nella cache.
+   * @param toSave oggetto da salvare
+   * @return saver adatto e inizalizzato per salvare l'oggetto specificato
+   * @throws Exception
+   */
+  public static ArgoObjectSaver getObjectSaver(BaseObject toSave)
+     throws Exception
+  {
+    return getObjectSaver(toSave.getClass());
+  }
+
+  /**
+   * Recupera un oggetto saver adatto al salvataggio del BaseObject specificato.
+   * L'oggetto viene recuperato dalla cache se esiste, altrimenti viene creato
+   * e inserito nella cache.
+   * @param peerObjectClass classe dell'oggetto da salvare
+   * @return saver adatto e inizalizzato per salvare l'oggetto specificato
+   * @throws Exception
+   */
+  public static ArgoObjectSaver getObjectSaver(Class peerObjectClass)
+     throws Exception
+  {
+    synchronized(htCache)
+    {
+      ArgoObjectSaver ps = htCache.get(peerObjectClass);
+      if(ps == null)
+      {
+        String peerClassName = peerObjectClass.getName() + "Peer";
+        ps = new ArgoObjectSaver(peerObjectClass, Class.forName(peerClassName));
+        htCache.put(peerObjectClass, ps);
+      }
+      return ps;
+    }
+  }
+
+  /**
+   * Salva l'oggetto peer utilizzando un PeerObjectSaver.
+   * Il salvataggio diventa compatbile per la multiutenza
+   * e con una serie di controlli automatici sul salvataggio.
+   * I campi IdUser, IdUcrea, Creazione, UltModif e altri
+   * sono aggiornati in automatico.
+   * Il salvataggio tiene conto del valore precedente di statorec
+   * che viene confrontato con writeLevel per verificare se l'operazione
+   * è autorizzata.
+   * @param con connessione al database (può essere null)
+   * @param toSave oggetto da salvare
+   * @param idUser itentificativo dell'utente
+   * @param newStatoRec nuovo valore per lo stato rec
+   * @param writeLevel livello di permessi in scrittura (0-9)
+   * @throws Exception
+   */
+  public static void save(Connection con, BaseObject toSave, int idUser, int newStatoRec, int writeLevel)
+     throws Exception
+  {
+    ArgoObjectSaver ps = getObjectSaver(toSave);
+    ps.setUserInfo(idUser);
+
+    if(con == null)
+      ps.salva(toSave, newStatoRec, writeLevel);
+    else
+      ps.salva(toSave, con, newStatoRec, writeLevel);
+  }
+
+  /**
+   * Salva l'oggetto peer utilizzando un PeerObjectSaver.
+   * Il salvataggio diventa compatbile per la multiutenza
+   * e con una serie di controlli automatici sul salvataggio.
+   * I campi IdUser, IdUcrea, Creazione, UltModif e altri
+   * sono aggiornati in automatico.
+   * Il valore di statorec viene ignorato.
+   * @param con connessione al database (può essere null)
+   * @param toSave oggetto da salvare
+   * @param idUser itentificativo dell'utente
+   * @param newStatoRec nuovo valore per lo stato rec
+   * @throws Exception
+   */
+  public static void saveForce(Connection con, BaseObject toSave, int idUser, int newStatoRec)
+     throws Exception
+  {
+    save(con, toSave, idUser, newStatoRec, -1);
+  }
+}

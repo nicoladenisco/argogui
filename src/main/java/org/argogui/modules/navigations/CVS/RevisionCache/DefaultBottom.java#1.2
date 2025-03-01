@@ -1,0 +1,54 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.navigations;
+
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+import java.util.*;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+
+/**
+ * Prepara i dati per la barra inferiore.
+ * @author Nicola De Nisco
+ */
+public class DefaultBottom extends ArgoNavigation
+{
+  public static final String KEY_YEARS = "KEY_YEARS";
+
+  @Override
+  protected void doBuildTemplate(RunData data, Context context)
+     throws Exception
+  {
+    String sYears = null;
+    if((sYears = SU.okStrNull(data.getSession().getAttribute(KEY_YEARS))) == null)
+    {
+      int firstYear = TR.getInt("firstYear", 2015);
+      Date now = new Date();
+      Calendar c = new GregorianCalendar();
+      c.setTime(now);
+      int lastYear = c.get(Calendar.YEAR);
+
+      sYears = "";
+      for(int y=firstYear ; y<=lastYear ; y++)
+        sYears += ", " + y;
+
+      sYears = sYears.substring(2);
+      data.getSession().setAttribute(KEY_YEARS, sYears);
+    }
+
+    context.put("years", sYears);
+  }
+}
+

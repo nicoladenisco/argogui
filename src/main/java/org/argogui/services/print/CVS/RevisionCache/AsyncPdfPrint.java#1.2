@@ -1,0 +1,176 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.print;
+
+import it.radimage.argo.om.GenStampe;
+import java.util.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.logging.*;
+import org.apache.turbine.services.cache.CachedObject;
+import org.apache.turbine.services.cache.GlobalCacheService;
+import it.radimage.argo.services.cache.ArgoCacheServices;
+
+/**
+ * Servizio di stampa via PDF.
+ * Il servizio sovrintende alla generazione al
+ * volo di PDF da utilizzare come strumento di stampa.
+ * Questa versione del servizio elabora ogni PDF all'interno
+ * di un thread dedicato, consentendo di tornare se l'elaborazione
+ * diventa troppo lunga.
+ * Quando in JobInfo il campo filePdf è a null vuol dire
+ * che l'elaborazione è in corso. La servlet che usa il servizio
+ * può notificare l'utente e invitarlo a riprovare la richiesta.
+ *
+ * @author Nicola De Nisco
+ */
+public class AsyncPdfPrint extends StandardPdfPrint
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(AsyncPdfPrint.class);
+  //
+  // costanti
+  public static final String CACHE_CLASS = "PDFJOBS";
+  //
+  /** variabili locali */
+  protected int tWaitSeconds = 0; // tempo di attesa prima che il thread ritorni
+  protected int tExpiresSeconds = 0; // tempo di eliminazione dalla cache
+  protected ArgoCacheServices gcs = null;
+
+  @Override
+  public void argoInit() throws Exception
+  {
+    super.argoInit();
+    Configuration cfg = getConfiguration();
+
+    tWaitSeconds = cfg.getInt("tWaitSeconds", 30);
+    tExpiresSeconds = cfg.getInt("tExpiresSeconds", 600);
+
+    gcs = (ArgoCacheServices) getServiceBroker().getService(GlobalCacheService.SERVICE_NAME);
+  }
+
+  /**
+   * Avvia il processo di stampa di un job.
+   * @param codiceStampa codice dalla stampa richiesta
+   * @param params parametri per la stampa
+   * @return il descrittore informazioni sul job
+   * @throws java.lang.Exception
+   */
+  @Override
+  public JobInfo generatePrintJob(int idUser, String codiceStampa, Map params)
+     throws Exception
+  {
+    AsyncPdfJob job = new AsyncPdfJob();
+    ReportParametersInfo ri = getParameters(idUser, codiceStampa, params);
+
+    GenStampe gs = ri.getStampa();
+    job.init(this, idUser, gs.getPlugin(), gs.getNome(), gs.getInfo(), params, ri);
+    job.start();
+    job.join(tWaitSeconds * 1000);
+
+    if(job.isRunning())
+      addJobInCache(job);
+
+    return job.getInfo();
+  }
+
+  /**
+   * Avvia il processo di stampa di un job.
+   * @param pluginName tipo del plugin richiesto
+   * @param reportName nome del report richiesto
+   * @param params parametri accessori del plugin
+   * @return il descrittore informazioni sul job
+   * @throws java.lang.Exception
+   */
+  @Override
+  public JobInfo generatePrintJob(int idUser, String pluginName,
+     String reportName, String reportInfo, Map params)
+     throws Exception
+  {
+    AsyncPdfJob job = new AsyncPdfJob();
+
+    job.init(this, idUser, pluginName, reportName, reportInfo, params, null);
+    job.start();
+    job.join(tWaitSeconds * 1000);
+
+    if(job.isRunning())
+      addJobInCache(job);
+
+    return job.getInfo();
+  }
+
+  /**
+   * Reperisce informazioni aggiornate sul job in avanzamento.
+   * @param jobCode
+   * @return
+   * @throws java.lang.Exception
+   */
+  @Override
+  public JobInfo refreshInfo(String jobCode)
+     throws Exception
+  {
+    try
+    {
+      CachedObject obj = gcs.getObject(jobCode);
+      if(obj == null || obj.isStale())
+        return null;
+
+      AsyncPdfJob job = (AsyncPdfJob) obj.getContents();
+      return job.getInfo();
+    }
+    catch(Exception e)
+    {
+    }
+
+    return null;
+  }
+
+  @Override
+  public Enumeration getJobs() throws Exception
+  {
+    return gcs.cachedObjects(CACHE_CLASS);
+  }
+
+  static class AsyncPdfJobCacheItem extends CachedObject
+  {
+    public AsyncPdfJobCacheItem(AsyncPdfJob job, long expireSeconds)
+    {
+      super(job, expireSeconds * 1000);
+    }
+
+    @Override
+    public synchronized boolean isStale()
+    {
+      AsyncPdfJob job = (AsyncPdfJob) getContents();
+      if(job.isRunning())
+      {
+        refresh();
+        return false;
+      }
+
+      return super.isStale();
+    }
+
+    public void refresh()
+    {
+      this.created = System.currentTimeMillis();
+    }
+  }
+
+  protected void addJobInCache(AsyncPdfJob job)
+     throws Exception
+  {
+    gcs.addObject(CACHE_CLASS, job.getInfo().jobCode,
+       new AsyncPdfJobCacheItem(job, tExpiresSeconds));
+  }
+}

@@ -1,0 +1,192 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel;
+
+import javax.servlet.http.HttpSession;
+
+import org.rigel.glue.table.HeditTableApp;
+import org.rigel.glue.table.PeerAppMaintFormTable;
+import org.rigel.table.peer.html.*;
+
+import org.rigel.table.sql.html.SqlWrapperListaHtml;
+import org.apache.turbine.services.TurbineServices;
+import it.radimage.argo.rigel.table.AlternateColorTablePcsdm;
+import it.radimage.argo.services.modellixml.modelliXML;
+import it.radimage.argo.utils.TR;
+import it.radimage.argo.rigel.table.HeditTableAppPcsdm;
+import it.radimage.argo.utils.ArgoRunData;
+import org.apache.turbine.util.RunData;
+import org.rigel.glue.PeerObjectSaver;
+import org.rigel.glue.WrapperBuilderInterface;
+import org.rigel.glue.WrapperCacheBase;
+import org.rigel.glue.table.AlternateColorTableAppBase;
+import org.rigel.table.peer.xml.PeerWrapperListaXml;
+import org.rigel.table.sql.html.SqlWrapperFormHtml;
+import org.rigel.table.sql.xml.SqlWrapperListaXml;
+
+/**
+ * Cache degli oggetti wrapper creati da Rigel.
+ * Questa cache viene conservata in sessione.
+ * Deve essere diversa per ogni utente.
+ * Questa versione viene utilizzata nelle maschere
+ * rigel utilizzate con Turbine.
+ *
+ * @author Nicola De Nisco
+ */
+public class RigelTurbineWrapperCache extends WrapperCacheBase
+{
+  // gestore modelli xml
+  private modelliXML mdl = (modelliXML) (TurbineServices.getInstance().getService(modelliXML.SERVICE_NAME));
+  public static final String BEAN_KEY = "RigelTurbineWrapperCache:BEAN_KEY";
+
+  private RigelTurbineWrapperCache()
+  {
+  }
+
+  /**
+   * Inizializzazione di questa cache oggetti rigel.
+   * @param data dati della richiesta
+   */
+  private void init(RunData data)
+  {
+    tagTabelleForm = TR.getString("tag.tabelle.form", "TABLE WIDTH=\"100%\""); // NOI18N
+    tagTabelleList = TR.getString("tag.tabelle.list", "TABLE WIDTH=\"100%\""); // NOI18N
+    i18n = new RigelHtmlI18n((ArgoRunData) data);
+
+    basePath = new String[]
+    {
+      "it.infomed.pcsdm.rigel.table" // NOI18N
+    };
+
+    wrpBuilder = new WrapperBuilderInterface()
+    {
+      @Override
+      public PeerWrapperListaHtml getListaPeer(String nomeLista)
+         throws Exception
+      {
+        return mdl.getListaPeer(nomeLista);
+      }
+
+      @Override
+      public PeerWrapperEditHtml getListaEditPeer(String nomeLista)
+         throws Exception
+      {
+        return mdl.getListaEditPeer(nomeLista);
+      }
+
+      @Override
+      public PeerWrapperFormHtml getFormPeer(String nomeForm)
+         throws Exception
+      {
+        return mdl.getFormPeer(nomeForm);
+      }
+
+      @Override
+      public PeerWrapperListaXml getListaXmlPeer(String nomeLista)
+         throws Exception
+      {
+        return mdl.getListaXmlPeer(nomeLista);
+      }
+
+      @Override
+      public SqlWrapperListaHtml getListaSql(String nomeLista)
+         throws Exception
+      {
+        return mdl.getListaSql(nomeLista);
+      }
+
+      @Override
+      public SqlWrapperFormHtml getFormSql(String nomeForm)
+         throws Exception
+      {
+        return mdl.getFormSql(nomeForm);
+      }
+
+      @Override
+      public SqlWrapperListaXml getListaXmlSql(String nomeLista)
+         throws Exception
+      {
+        return mdl.getListaXmlSql(nomeLista);
+      }
+
+      @Override
+      public PeerWrapperListaHtml getListaTmap(String nomeTabella)
+         throws Exception
+      {
+        return mdl.getListaTmap(nomeTabella);
+      }
+
+      @Override
+      public PeerWrapperEditHtml getListaEditTmap(String nomeTabella)
+         throws Exception
+      {
+        return mdl.getListaEditTmap(nomeTabella);
+      }
+
+      @Override
+      public PeerWrapperFormHtml getFormTmap(String nomeTabella)
+         throws Exception
+      {
+        return mdl.getFormTmap(nomeTabella);
+      }
+    };
+  }
+
+  @Override
+  public AlternateColorTableAppBase buildDefaultTableList()
+  {
+    return new AlternateColorTablePcsdm();
+  }
+
+  @Override
+  public HeditTableApp buildDefaultTableEdit()
+  {
+    return new HeditTableAppPcsdm();
+  }
+
+  @Override
+  public PeerAppMaintFormTable buildDefaultTableForm()
+  {
+    return new PeerAppMaintFormTable();
+  }
+
+  @Override
+  public PeerObjectSaver buildDefaultSaver()
+  {
+    return new ArgoObjectSaver();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // Metodi statici per il recupero dalla sessione
+  //
+  public static RigelTurbineWrapperCache getFromSession(RunData data)
+     throws Exception
+  {
+    HttpSession se = data.getSession();
+    RigelTurbineWrapperCache rv = (RigelTurbineWrapperCache) se.getAttribute(BEAN_KEY);
+    if(rv == null)
+    {
+      rv = new RigelTurbineWrapperCache();
+      rv.init(data);
+      se.setAttribute(BEAN_KEY, rv);
+    }
+    return rv;
+  }
+
+  public static void removeFromSession(HttpSession se)
+     throws Exception
+  {
+    se.removeAttribute(BEAN_KEY);
+  }
+}

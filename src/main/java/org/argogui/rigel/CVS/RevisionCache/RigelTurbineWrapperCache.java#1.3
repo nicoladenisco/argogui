@@ -1,0 +1,68 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel;
+
+import it.radimage.argo.rigel.table.AlternateColorTableArgo;
+import org.rigel.glue.table.HeditTableApp;
+import org.rigel.glue.table.PeerAppMaintFormTable;
+import it.radimage.argo.rigel.table.HeditTableAppArgo;
+import org.apache.turbine.util.RunData;
+import org.rigel.glue.table.AlternateColorTableAppBase;
+import org.sirio.rigel.CoreTurbineWrapperCache;
+
+/**
+ * Cache degli oggetti wrapper creati da Rigel.
+ * Questa cache viene conservata in sessione.
+ * Deve essere diversa per ogni utente.
+ * Questa versione viene utilizzata nelle maschere
+ * rigel utilizzate con Turbine.
+ *
+ * @author Nicola De Nisco
+ */
+public class RigelTurbineWrapperCache extends CoreTurbineWrapperCache
+{
+  /**
+   * Inizializzazione di questa cache oggetti rigel.
+   * @param data dati della richiesta
+   */
+  @Override
+  public void init(RunData data)
+  {
+    super.init(data);
+
+    basePath = new String[]
+    {
+      "org.sirio.rigel.table", // NOI18N
+      "it.radimage.argo.rigel.table" // NOI18N
+    };
+  }
+
+  @Override
+  public AlternateColorTableAppBase buildDefaultTableList()
+  {
+    return new AlternateColorTableArgo();
+  }
+
+  @Override
+  public HeditTableApp buildDefaultTableEdit()
+  {
+    return new HeditTableAppArgo();
+  }
+
+  @Override
+  public PeerAppMaintFormTable buildDefaultTableForm()
+  {
+    return new PeerAppMaintFormTable();
+  }
+}

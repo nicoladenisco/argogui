@@ -1,0 +1,90 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.tools;
+
+import org.apache.turbine.services.pull.ApplicationTool;
+import org.apache.turbine.util.RunData;
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.ArgoTorqueUser;
+
+/**
+ * Tool per la verifica di permission dell'utente.
+ * Consente alle .vm di testare direttamente i permessi
+ * dell'utente, accedendo ai metodi di PcsdmSecurity.
+ * Questo tool va registrato nel .properties come authorized
+ * in modo che venga inzializzato dopo il login utente
+ * e che ogni utente ne abbia una copia separata:
+ * <code>
+ * tool.authorized.perm=pcsdm.modules.tools.PcsdmPermissionTool
+ * </code>
+ *
+ * FILENOI18N
+ * @author Nicola De Nisco
+ */
+public class ArgoPermissionTool implements ApplicationTool
+{
+  private ArgoTorqueUser user = null;
+
+  @Override
+  public void init(Object data)
+  {
+    if(data instanceof ArgoTorqueUser)
+      this.user = (ArgoTorqueUser)data;
+  }
+
+  @Override
+  public void refresh()
+  {
+  }
+
+  /**
+   * Ritorna vero se l'utente è l'amministratore di sistema.
+   * @param data oggetto RunData (contiene le ACL)
+   * @return vero se utente 'turbine'
+   * @throws Exception
+   */
+  public boolean isAdmin(RunData data)
+     throws Exception
+  {
+    return SEC.isAdmin(data);
+  }
+
+  /**
+   * Verifica tutte le permission specificate.
+   * Verifica una o un gruppo di permission separate da virgola.
+   * @param data oggetto RunData (contiene le ACL)
+   * @param permissions una o più permission da verificare
+   * @return vero se TUTTE le permission sono verificate per l'utente corrente
+   * @throws Exception
+   */
+  public boolean isAuthorizedAll(RunData data, String permissions)
+     throws Exception
+  {
+    return SEC.checkAllPermission(data, permissions);
+  }
+
+  /**
+   * Verifica una delle permission specificate.
+   * Verifica una o un gruppo di permission separate da virgola.
+   * @param data oggetto RunData (contiene le ACL)
+   * @param permissions una o più permission da verificare
+   * @return vero se ALMENO UNA delle permission sono verificate per l'utente corrente
+   * @throws Exception
+   */
+  public boolean isAuthorizedAny(RunData data, String permissions)
+     throws Exception
+  {
+    return SEC.checkAnyPermission(data, permissions);
+  }
+}

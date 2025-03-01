@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <forms>
+    <FormIdTable>
+      <object>IdTable</object>
+      <peer>IdTablePeer</peer>
+      <header>ID TABLE</header>
+      <titolo>IdTable</titolo>
+      <numcolonne>1</numcolonne>
+      <edit-info>
+        <param nome="ID">@IDTABLEID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>IDTABLEID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="TABLE NAME">
+        <campo>TABLENAME</campo>
+        <size>80</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="NEXT ID">
+        <campo>NEXTID</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+      <colonna nome="QUANTITY">
+        <campo>QUANTITY</campo>
+        <size>10</size>
+        <testtipo />
+        <testnull />
+      </colonna>
+    </FormIdTable>
+  </forms>
+  <liste-sql>
+    <LsIdTable>
+      <header>ID TABLE</header>
+      <titolo>id_table</titolo>
+      <numppage>20</numppage>
+      <menu>id_table</menu>
+      <edit-info>
+        <url>@form?type=FormIdTable</url>
+        <param nome="ID">@ID_TABLE_ID</param>
+      </edit-info>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>ID_TABLE_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="TABLE NAME">
+        <campo>TABLE_NAME</campo>
+        <size>60</size>
+        <tipo>PDT_STRING</tipo>
+      </colonna>
+      <colonna nome="NEXT ID">
+        <campo>NEXT_ID</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <colonna nome="QUANTITY">
+        <campo>QUANTITY</campo>
+        <size>10</size>
+        <tipo>PDT_INTEGER</tipo>
+      </colonna>
+      <select>T.ID_TABLE_ID, T.TABLE_NAME, T.NEXT_ID, T.QUANTITY</select>
+      <from>ID_TABLE T</from>
+      <delete-from>ID_TABLE</delete-from>
+      <orderby>ID_TABLE_ID</orderby>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LsIdTable>
+    <LsIdTableSel extend="LsIdTable">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LsIdTableSel>
+  </liste-sql>
+  <listeEdit>
+    <LpIdTable>
+      <object>IdTable</object>
+      <peer>IdTablePeer</peer>
+      <header>ID TABLE</header>
+      <titolo>IdTable</titolo>
+      <numppage>20</numppage>
+      <menu>IdTable</menu>
+      <edit-info>
+        <url>@form?type=FormIdTable</url>
+        <param nome="ID">@IDTABLEID</param>
+      </edit-info>
+      <post-parse-validator>
+        <class>UndoLogicalDeleteValidator</class>
+        <alternate-key>
+          <field>TABLE_NAME</field>
+        </alternate-key>
+      </post-parse-validator>
+      <colonna nome="ID" primary="true" editable="false">
+        <campo>IDTABLEID</campo>
+        <size>10</size>
+        <testnull />
+      </colonna>
+      <colonna nome="TABLE NAME">
+        <campo>TABLENAME</campo>
+        <size>60</size>
+        <testnull />
+      </colonna>
+      <colonna nome="NEXT ID">
+        <campo>NEXTID</campo>
+        <size>10</size>
+        <testnull />
+      </colonna>
+      <colonna nome="QUANTITY">
+        <campo>QUANTITY</campo>
+        <size>10</size>
+        <testnull />
+      </colonna>
+      <colonna nome="Fun." align="center">
+        <campo>#fun</campo>
+        <size>10</size>
+        <caratteristiche>
+          <edit />
+          <cancella />
+        </caratteristiche>
+      </colonna>
+    </LpIdTable>
+    <LpIdTableSel extend="LpIdTable">
+      <colonna nome="Sel." align="center" pos="0">
+        <campo>#sel</campo>
+        <size>5</size>
+        <caratteristiche>
+          <selezione />
+        </caratteristiche>
+      </colonna>
+    </LpIdTableSel>
+  </listeEdit>
+</root>

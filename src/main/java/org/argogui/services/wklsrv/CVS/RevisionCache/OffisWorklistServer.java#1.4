@@ -1,0 +1,529 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.wklsrv;
+
+import com.pixelmed.dicom.UIDGenerator;
+import it.radimage.argo.Costanti;
+import it.radimage.argo.om.*;
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.rigel.CachedObjectSaver;
+import it.radimage.argo.services.InfoSetupBlock;
+import it.radimage.argo.services.InfoSetupInterface;
+import it.radimage.argo.services.ArgoBaseService;
+import it.radimage.argo.services.bus.BUS;
+import it.radimage.argo.services.bus.BusMessages;
+import it.radimage.argo.services.bus.MessageBusListener;
+import it.radimage.argo.utils.SU;
+import java.io.*;
+import java.sql.Connection;
+import java.util.*;
+
+import org.apache.torque.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.configuration.Configuration;
+import org.commonlib.utils.CommonFileUtils;
+import org.commonlib.utils.FileScanner;
+import org.rigel.db.turbine.CriteriaRigel;
+
+/**
+ * Server per la generazione della PacsWorklist a partire da file
+ * di testo e per la fornitura dei servizi di worklist ad apparecchiature
+ * DICOM utilizzando un server esterno con relativi files di appoggio.
+ * Questa versione non lancia il server wlmscpfs il cui lancio viene
+ * affidato ad un servizio esterno (init).
+ *
+ * @author Nicola De Nisco
+ */
+public class OffisWorklistServer extends ArgoBaseService
+   implements WorklistServer, Runnable, MessageBusListener, InfoSetupInterface
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(OffisWorklistServer.class);
+  private static final String ALLSRV = "WKLSRV";
+  protected int delayReadMillis = 0, delayThreadMillis = 0, currDelayThreadMillis = 0,
+     secondiRegen = 0, giorniRegen = 0, giorniCancellazione = 0;
+  protected boolean autoStart = false;
+  protected File dirSpool = null;
+  protected File dirInput = null;
+  protected File dirGenera = null;
+  protected String AETWL = null;
+  protected Thread thRun = null;
+  protected File lockDir, lockFile;
+  protected String nomeGeneratore = null;
+  protected UIDGenerator uidGen = new UIDGenerator();
+  protected int portaServer = 0;
+  /**
+   * Questo flag indica la necessita di rigenerare i
+   * files di servizio per il gestore delle richieste.
+   */
+  protected boolean needRegen = false;
+  protected Date lastGen = null;
+
+  @Override
+  public void argoInit()
+     throws Exception
+  {
+    Configuration cfg = getConfiguration();
+    autoStart = cfg.getBoolean("autoStart", true);
+    AETWL = cfg.getString("AETWL", DEFAULT_AETITLE);
+    delayReadMillis = cfg.getInt("delayReadMillis", 10); // secondi
+    delayThreadMillis = cfg.getInt("delayThreadMillis", 5000); // millisecondi
+    currDelayThreadMillis = cfg.getInt("firstDelayThreadMillis", 30000); // millisecondi
+    secondiRegen = cfg.getInt("secondiRegen", 1800); // secondi
+    giorniRegen = cfg.getInt("giorniRegen", 2); // giorni
+    giorniCancellazione = cfg.getInt("giorniCancellazione", 30); // giorni
+    nomeGeneratore = cfg.getString("nomeGeneratore", "pmedgen");
+    portaServer = cfg.getInt("portaServer", 12100);
+
+    FileGeneratorFactory.getInstance().init(cfg);
+
+    // verifica l'esistenza della directory di spool
+    dirSpool = getWorkSpoolFile("wklout");
+    ASSERT_DIR_WRITE(dirSpool);
+
+    lockDir = new File(dirSpool, AETWL);
+    ASSERT_DIR_WRITE(lockDir);
+
+    lockFile = new File(lockDir, LOCK_FILE);
+
+    // crea la directory per i files CSV in arrivo
+    dirInput = getWorkSpoolFile("wklin");
+    ASSERT_DIR_WRITE(dirInput);
+
+    // directory per la generazione dei file .wkl
+    // che verranno poi spostati dopo la generazione in dirSpool
+    dirGenera = getWorkSpoolFile("genera");
+    ASSERT_DIR_WRITE(dirGenera);
+
+    // avvia thread di indicizzazione
+    thRun = new Thread(this);
+    thRun.setName("OffisWorklistServer-background");
+    thRun.setDaemon(true);
+    thRun.start();
+
+    // registra il servizio sul bus
+    BUS.registerEventListner("OffisWorklistServer", this);
+
+    // servizio inizializzato correttamente
+    log.info("Inizializzazione OffisWorklistServer con la directory " + dirSpool.getAbsolutePath());
+  }
+
+  /**
+   * Avvio per il thread di ispezione directory.
+   */
+  @Override
+  public void run()
+  {
+    while(true)
+    {
+      try
+      {
+        Thread.sleep(currDelayThreadMillis);
+        currDelayThreadMillis = delayThreadMillis;
+        runPulseCSV();
+        runPulseGEN();
+        runClearOldWorklist();
+      }
+      catch(Exception ex)
+      {
+        log.error("OffisWorklistServer error:", ex);
+      }
+    }
+  }
+
+  /**
+   * Funzione di lavoro per la scansione delle directory.
+   * Ad ogni giro di clock vengono controllate le directory
+   * di spool a caccia di files testo CSV da indicizzare.
+   * @throws java.lang.Exception
+   */
+  protected void runPulseCSV()
+     throws Exception
+  {
+    List<File> vFiles = FileScanner.scan(dirInput, 999, new FilenameFilter()
+    {
+      int maxPerPulse = 100;
+      int countPerPulse = 0;
+
+      @Override
+      public boolean accept(File dir, String name)
+      {
+        if(countPerPulse++ >= maxPerPulse)
+          return false;
+
+        return !name.equals(LOCK_FILE);
+      }
+    });
+
+    if(vFiles.isEmpty())
+      return;
+
+    runVectorCSV(vFiles);
+  }
+
+  /**
+   * Processa un vettore di oggetti File ovvero di
+   * files di testo CSV per salvarli opportunamente.
+   * @param vFiles
+   * @throws java.lang.Exception
+   */
+  protected void runVectorCSV(List<File> vFiles)
+     throws Exception
+  {
+    for(int i = 0; i < vFiles.size(); i++)
+    {
+      File csvFile = (File) (vFiles.get(i));
+
+      if(!csvFile.canRead())
+        continue;
+
+      if(SU.isOlderThan(csvFile, delayReadMillis))
+        runFileCSV(csvFile);
+    }
+  }
+
+  /**
+   * Processa un singolo file CSV per salvarlo opportunamente.
+   * @param csvFile
+   * @throws java.lang.Exception
+   */
+  protected void runFileCSV(File csvFile)
+     throws Exception
+  {
+    log.info("Elaboro il file " + csvFile.getAbsolutePath());
+    AggiornaDB adb = new AggiornaDB();
+    List<RisWorklist> vWork = adb.leggi(csvFile, null);
+    if(!vWork.isEmpty())
+    {
+      for(int i = 0; i < vWork.size(); i++)
+      {
+        RisWorklist wk = (RisWorklist) vWork.get(i);
+        adb.leggi(lockDir, null);
+      }
+      needRegen = true;
+    }
+
+    log.info("Aggiunti " + vWork.size() + " elementi alla worklist.");
+    csvFile.delete();
+  }
+
+  /**
+   * Funzione di lavoro per la rigenerazione della worklist.
+   * @throws java.lang.Exception
+   */
+  protected synchronized void runPulseGEN()
+     throws Exception
+  {
+    Date now = new Date();
+    int delayRegenMillis = secondiRegen * 1000;
+
+    if(lastGen == null || needRegen
+       || (now.getTime() - lastGen.getTime()) > delayRegenMillis)
+    {
+      // attiva rigenerazione dei files di controllo
+      lastGen = now;
+      needRegen = false;
+
+      // calcola la data spiazzata dei giorni di aggiornamento
+      Calendar cal = new GregorianCalendar();
+      cal.setTime(now);
+      cal.add(Calendar.DAY_OF_YEAR, -giorniRegen);
+      Date startDate = cal.getTime();
+
+      hookRegen(startDate, now);
+
+      // cancellazione preventiva directory di generazione
+      CommonFileUtils.deleteDir(dirGenera, false);
+
+      // estrae le worklist di interesse
+      CriteriaRigel c = new CriteriaRigel(RisWorklistPeer.TABLE_NAME);
+      c.add(RisWorklistPeer.STATO_REC, 0); // solo record non processati (vedi argodicomserver)
+      c.add(RisWorklistPeer.SCHED_PROC_STEP_START_DATE_TIME, startDate, SqlEnum.GREATER_EQUAL);
+      c.addAscendingOrderByColumn(RisWorklistPeer.WORKLIST_ID);
+      List<RisWorklist> lWork = RisWorklistPeer.doSelect(c);
+      if(!lWork.isEmpty())
+      {
+        log.debug("Selezionati " + lWork.size() + " record di WORKLIST candidati alla generazione.");
+
+        // scrive i files di supporto
+        AbstractFileGenerator sf = FileGeneratorFactory.getInstance().build(nomeGeneratore);
+        WorklistDispatcher wd = new WorklistDispatcher();
+        wd.dispatch(dirGenera, lWork, sf);
+        sf.shutdown();
+      }
+
+      // blocca worklist cancellando il lockfile
+      clearLockFile();
+      Thread.sleep(50);
+
+      // Pulisco la directory di spool delle worklist
+      CommonFileUtils.deleteDir(lockDir, false);
+
+      // sposto tutti i files dalla directory di generazione a quella delle worklist
+      CommonFileUtils.moveAllFileDirToDir(dirGenera, lockDir, null);
+
+      // sblocco la worklist creando il lockfile
+      genLockFile();
+    }
+  }
+
+  protected void genLockFile()
+     throws IOException
+  {
+    File dir = lockFile.getParentFile();
+    dir.mkdirs();
+    lockFile.createNewFile();
+  }
+
+  protected void clearLockFile()
+     throws IOException
+  {
+    lockFile.delete();
+  }
+
+  protected boolean isLockFile()
+  {
+    return lockFile.exists();
+  }
+
+  @Override
+  public void uptdateWorklist()
+     throws Exception
+  {
+    needRegen = true;
+  }
+
+  /**
+   * Crea il file Dicom di RisWorklist
+   * nel relativo percorso.
+   *
+   * @param oid intero che indica l'ID del record della tabella Workist
+   * @param con
+   * @throws java.lang.Exception
+   */
+  @Override
+  synchronized public void uptdateWorklist(int oid, Connection con)
+     throws Exception
+  {
+    // nuova versione: ci sono problemi lock sul db; ci limitamo a settare il flag di rigenerazione
+    needRegen = true;
+  }
+
+  /**
+   * Aggiorna la worklist in seguito ad una modifica/inserimento accettazione
+   *
+   * @param acc InfInAccettazioni
+   * @param con
+   * @throws java.lang.Exception
+   */
+  @Override
+  synchronized public void updateWorklist(InfInAccettazioni acc, Connection con)
+     throws Exception
+  {
+    InfInAnagrafiche ana = acc.getInfInAnagrafiche(con);
+    List<InfInEsami> prestazioni = acc.getInfInEsamis(con);
+
+    String admissionID = acc.getCodice();
+    String patientID = ana.getCodiceAlternativo();
+    String patName = ana.getCognome() + "^" + ana.getNome();
+
+    Date dataNascita = ana.getDataNascita();
+    String patSesso = ana.getSesso();
+
+    String pointofcare = "";
+    StpReparti reparto = acc.getStpReparti(con);
+    if(reparto != null)
+      pointofcare = reparto.getCodice()
+         + "^^^^" + reparto.getDescrizione();
+
+    for(InfInEsami pre : prestazioni)
+    {
+      StpEsami esa = pre.getStpEsame(con);
+      if(esa == null)
+        continue;
+
+      StpCategorie cat = esa.getStpCategorie();
+      String accessionNumber = SU.okStrNull(pre.getAccessionNumber());
+      String preCodice = SU.okStrNull(pre.getCodice());
+      String preDescr = SU.okStrNull(pre.getDescrizione());
+
+      if(accessionNumber == null)
+        continue;
+
+      String stationName = null;
+      if(cat != null)
+        stationName = SU.okStrNull(cat.getSchedStationName());
+
+      if(SU.isOkStr(esa.getSchedStationName()))
+        stationName = esa.getSchedStationName();
+
+      if(!SU.isOkStr(stationName))
+        continue;
+
+      List<RisWorkrule> rules = Utils.getRules(stationName);
+      if(rules.isEmpty())
+        continue;
+
+      String razza = "";
+      if(ana.getIdRazza() != 0)
+        razza = ana.getAnaRazze().getDescrizione();
+
+      String pregnancy = "";
+      if(acc.getDataUltMest() != null)
+      {
+        long millis = System.currentTimeMillis() - acc.getDataUltMest().getTime();
+        pregnancy = I.I("%s settimane", millis / Costanti.ONE_WEEK_MILLIS);
+      }
+
+      for(RisWorkrule rule : rules)
+      {
+        String aetitle = SU.okStr(rule.getSchedStationAeTitle());
+        if(!SU.isOkStr(aetitle))
+          continue;
+
+        RisWorklist wk = RisWorklistPeer.retrieveByAlternateKey1Quiet(pre.getInEsamiId(), aetitle, con);
+        if(wk == null)
+        {
+          wk = new RisWorklist();
+          wk.setStudyInstanceUid(uidGen.getAnotherNewUID());
+        }
+
+        wk.setIdPrestazione(pre.getInEsamiId());
+        wk.setIdEsame(esa.getEsamiId());
+        wk.setPatName(patName);
+        wk.setPatId(patientID);
+        wk.setPatNascita(dataNascita);
+        wk.setPatSex(patSesso);
+        wk.setAccessionNumber(accessionNumber);
+        wk.setAdmissionId(admissionID);
+        wk.setCurrpatloc(pointofcare);
+        wk.setSchedProcStepStartDateTime(acc.getDataAccettazione());
+        wk.setSchedProcStepDesc(preDescr);
+        wk.setSchedProcStepId(preCodice);
+        wk.setReqProcDesc(preDescr);
+        wk.setReqProcId(preCodice);
+        wk.setSchedStationName(stationName);
+        wk.setSchedStationAeTitle(aetitle);
+        wk.setModality(rule.getModality());
+        wk.setEthnicGroup(razza);
+        wk.setPregnancyStatus(pregnancy);
+
+        CachedObjectSaver.save(con, wk, 0, 0, 0);
+        needRegen = true;
+      }
+    }
+  }
+
+  @Override
+  public int startWrkServer()
+     throws Exception
+  {
+    genLockFile();
+    return 0;
+  }
+
+  @Override
+  public int stopWrkServer()
+     throws Exception
+  {
+    clearLockFile();
+    return 0;
+  }
+
+  @Override
+  public boolean isRunning()
+     throws Exception
+  {
+    return isLockFile();
+  }
+
+  @Override
+  public int message(int msgID, Object originator, Connection con, Object[] args)
+     throws Exception
+  {
+    switch(msgID)
+    {
+      case BusMessages.ACC_SAVED:
+      case BusMessages.ACC_REQUEUE:
+      case BusMessages.GENERIC_OBJECT_SAVED:
+        if(args[0] != null && args[0] instanceof InfInAccettazioni)
+        {
+          InfInAccettazioni acc = (InfInAccettazioni) args[0];
+          updateWorklist(acc, con);
+        }
+        break;
+    }
+
+    return 0;
+  }
+
+  @Override
+  public void populateInfoSetup(List<InfoSetupBlock> arInfo, boolean isAdmin)
+     throws Exception
+  {
+    arInfo.add(new InfoSetupBlock(I.I("Server Worklist"), "E").
+       add(I.I("AETITLE"), AETWL).
+       add(I.I("porta"), Long.toString(portaServer)).
+       add(I.I("delayRegen"), Long.toString(secondiRegen)).
+       add(I.I("giorniRegen"), Long.toString(giorniRegen)).
+       add(I.I("dirSpool"), dirSpool.getCanonicalPath())
+    );
+  }
+
+  /**
+   * Segnaposto per classi derivate: rigenerazione dati worklist per l'intervallo specificato.
+   * Viene chiamata dal thread di ispezione della tabella ris.worklist prima di estrarre i
+   * record dalla tabella. Può essere utlizzata in classi derivate per popolare la tabella
+   * on demand.
+   * @param startDate
+   * @param now
+   * @throws java.lang.Exception
+   */
+  protected void hookRegen(Date startDate, Date now)
+     throws Exception
+  {
+  }
+
+  /**
+   * Cancellazione record worklist più vecchi.
+   * Un parametro di setup indica i giorni di permanenza dei records nella worklist.
+   * Superato questo limite i records vengono cancellati dal db.
+   * @throws Exception
+   */
+  protected void runClearOldWorklist()
+     throws Exception
+  {
+    Date now = new Date();
+
+    // calcola la data spiazzata dei giorni di cancellazione
+    Calendar cal = new GregorianCalendar();
+    cal.setTime(now);
+    cal.add(Calendar.DAY_OF_YEAR, -giorniCancellazione);
+    Date startDate = cal.getTime();
+
+    // estrae le worklist di interesse
+    Criteria c = new Criteria();
+    c.add(RisWorklistPeer.SCHED_PROC_STEP_START_DATE_TIME, startDate, SqlEnum.LESS_THAN);
+    c.addAscendingOrderByColumn(RisWorklistPeer.WORKLIST_ID);
+    List<RisWorklist> lWork = RisWorklistPeer.doSelect(c);
+
+    for(RisWorklist r : lWork)
+    {
+      if(r.getWorklistId() != 0)
+        r.deleteCascade(null);
+    }
+  }
+}

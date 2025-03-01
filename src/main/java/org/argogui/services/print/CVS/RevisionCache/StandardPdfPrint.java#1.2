@@ -1,0 +1,146 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.print;
+
+import it.radimage.argo.om.GenStampe;
+import it.radimage.argo.om.GenStampePeer;
+import java.io.*;
+import java.util.*;
+
+import it.radimage.argo.services.ArgoBaseService;
+import it.radimage.argo.services.print.plugin.PdfGenPlugin;
+import it.radimage.argo.services.print.plugin.PdfGeneratorFactory;
+
+import org.apache.commons.logging.*;
+import org.apache.commons.configuration.Configuration;
+
+/**
+ * Implementazione standard del servizio
+ * di generazione PDF (ovvero stampe via PDF).
+ *
+ * @author Nicola De Nisco
+ */
+public class StandardPdfPrint extends ArgoBaseService
+   implements PdfPrint
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(StandardPdfPrint.class);
+  //
+  /** variabili locali */
+  protected File dirTmp = null; // directory per i temporanei
+  protected String xmlbaseuri = null;
+  protected Hashtable htCacheInfo = new Hashtable();
+  protected boolean enableCache = false;
+
+  @Override
+  public void argoInit() throws Exception
+  {
+    String s;
+    Configuration cfg = getConfiguration();
+
+    enableCache = cfg.getBoolean("enableCache", true);
+
+    dirTmp = getWorkTmpFile("pdfprint");
+    dirTmp.mkdirs();
+    ASSERT_DIR_WRITE(dirTmp);
+
+    PdfGeneratorFactory.getInstance().configure(cfg, dirTmp);
+  }
+
+  @Override
+  public ReportParametersInfo getParameters(int idUser, String codiceStampa, Map params)
+     throws Exception
+  {
+    ReportParametersInfo info = null;
+    if(enableCache && (info = (ReportParametersInfo) htCacheInfo.get(codiceStampa)) != null)
+      return info;
+
+    GenStampe gs = GenStampePeer.retrieveByCodice(codiceStampa);
+    if(gs == null)
+      die("Stampa " + codiceStampa + " non presente in archivio.");
+
+    PdfGenPlugin plg = PdfGeneratorFactory.getInstance().build(gs.getPlugin());
+    info = plg.getParameters(idUser, gs.getNome(), gs.getInfo(), params);
+    info.setStampa(gs);
+
+    htCacheInfo.put(codiceStampa, info);
+    return info;
+  }
+
+  @Override
+  public JobInfo generatePrintJob(int idUser, String codiceStampa, Map params)
+     throws Exception
+  {
+    JobInfo info = new JobInfo();
+    info.idUser = idUser;
+    ReportParametersInfo ri = getParameters(idUser, codiceStampa, params);
+    GenStampe gs = ri.getStampa();
+    info.filePdf = makePdf(info, idUser, gs.getPlugin(), gs.getNome(), gs.getInfo(), params, ri);
+    info.percCompleted = 100;
+    return info;
+  }
+
+  @Override
+  public JobInfo generatePrintJob(int idUser, String pluginName, String reportName, String reportInfo, Map params)
+     throws Exception
+  {
+    JobInfo info = new JobInfo();
+    info.idUser = idUser;
+    info.filePdf = makePdf(info, idUser, pluginName, reportName, reportInfo, params, null);
+    info.percCompleted = 100;
+    return info;
+  }
+
+  /**
+   * Reperisce informazioni aggiornate sul job in avanzamento.
+   * @param jobCode
+   * @return
+   * @throws java.lang.Exception
+   */
+  @Override
+  public JobInfo refreshInfo(String jobCode)
+     throws Exception
+  {
+    return null;
+  }
+
+  protected File makePdf(JobInfo job,
+     int idUser, String pluginName, String reportName, String reportInfo,
+     Map params, ReportParametersInfo pbean)
+     throws Exception
+  {
+    log.info("Avvita elaborazione job per plugin=" + pluginName + " reportName=" + reportName);
+    PdfGenPlugin plg = PdfGeneratorFactory.getInstance().build(pluginName);
+
+    File pdfFile = getTmpFile();
+    plg.buildPdf(job, idUser, reportName, reportInfo, params, pbean, pdfFile);
+    log.info("Elaborazione job per plugin=" + pluginName + " reportName=" + reportName
+       + " conclusa con successo.");
+
+    return pdfFile;
+  }
+
+  protected File getTmpFile() throws Exception
+  {
+    File ftmp = File.createTempFile("pdfmaker", ".tmp", dirTmp);
+    ftmp.deleteOnExit();
+    return ftmp;
+  }
+
+  @Override
+  public Enumeration getJobs() throws Exception
+  {
+    return null;
+  }
+}

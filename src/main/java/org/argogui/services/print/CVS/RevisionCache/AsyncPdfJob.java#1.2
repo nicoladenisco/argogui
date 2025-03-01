@@ -1,0 +1,116 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.print;
+
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.services.print.PdfPrint.JobInfo;
+import java.util.*;
+import org.apache.commons.logging.*;
+
+/**
+ * Ogni istanza di questa classe rappresenta un job
+ * in esecuzione per realizzare un PDF.
+ *
+ * @author Nicola De Nisco
+ */
+public class AsyncPdfJob
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(AsyncPdfJob.class);
+  // variabili locali
+  protected JobInfo info = null;
+  protected Thread thRun = null;
+  protected AsyncPdfPrint service = null;
+  protected String pluginName, reportName, reportInfo;
+  protected Map params = null;
+  protected ReportParametersInfo ri = null;
+
+  public void init(AsyncPdfPrint service, int idUser, String pluginName,
+     String reportName, String reportInfo, Map params,
+     ReportParametersInfo ri)
+     throws Exception
+  {
+    this.service = service;
+    this.pluginName = pluginName;
+    this.reportName = reportName;
+    this.reportInfo = reportInfo;
+    this.params = params;
+
+    info = new JobInfo();
+    info.jobCode = generateJobCode();
+    info.uri = "PLG:" + pluginName + "|RN:" + reportName;
+    info.tStart = new Date();
+    info.idUser = idUser;
+  }
+
+  public void start()
+     throws Exception
+  {
+    if(info == null)
+      throw new IllegalStateException(I.I("Job non inizializzato: usare prima init()."));
+
+    if(isRunning())
+      throw new IllegalStateException(I.I("Job %s già in elaborazione.", info.jobCode));
+
+    thRun = new Thread()
+    {
+      @Override
+      public void run()
+      {
+        runJob();
+      }
+    };
+
+    thRun.setDaemon(true);
+    thRun.setName("AsyncPdfJob_" + info.jobCode);
+    thRun.start();
+  }
+
+  public boolean isRunning()
+  {
+    return thRun != null && thRun.isAlive();
+  }
+
+  protected void runJob()
+  {
+    try
+    {
+      info.filePdf = service.makePdf(info, info.idUser,
+         pluginName, reportName, reportInfo, params, null);
+      info.percCompleted = 100;
+    }
+    catch(Exception e)
+    {
+      info.error = e;
+      log.error("Grave errore nell'elaborazione del job " + info.uri, e);
+    }
+  }
+
+  protected String generateJobCode()
+  {
+    return "JOB" + System.currentTimeMillis();
+  }
+
+  public JobInfo getInfo()
+  {
+    return info;
+  }
+
+  public void join(long timeout)
+     throws InterruptedException
+  {
+    if(isRunning())
+      thRun.join(timeout);
+  }
+}

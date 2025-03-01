@@ -1,0 +1,738 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.cache;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.util.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.turbine.services.cache.CachedObject;
+import org.apache.turbine.services.cache.ObjectExpiredException;
+import org.apache.turbine.services.cache.RefreshableCachedObject;
+import it.radimage.argo.Costanti;
+import it.radimage.argo.services.ArgoBaseService;
+import it.radimage.argo.services.bus.BUS;
+import it.radimage.argo.services.bus.BusMessages;
+
+/**
+ * Estensione del servizio di cache globale di Turbine.
+ * Aggiugne la possibilita' di eliminare oggetti.
+ * @author Nicola De Nisco
+ */
+public class ArgoGlobalCacheService extends ArgoBaseService
+   implements ArgoCacheServices, Runnable
+{
+  public static class CacheBlock
+  {
+    public int limit = UNLIMITED;
+    public Hashtable cache = new Hashtable();
+  }
+  protected Hashtable htClasses = new Hashtable();
+  /**
+   * Initial size of hash table
+   * Value must be > 0.
+   * Default = 20
+   */
+  public static final int DEFAULT_INITIAL_CACHE_SIZE = 20;
+  /**
+   * The property for the InitalCacheSize
+   */
+  public static final String INITIAL_CACHE_SIZE = "cache.initial.size";
+  /**
+   * The property for the Cache check frequency
+   */
+  public static final String CACHE_CHECK_FREQUENCY = "cache.check.frequency";
+  /**
+   * Cache check frequency in Millis (1000 Millis = 1 second).
+   * Value must be > 0.
+   * Default = 15 seconds
+   */
+  public static final long DEFAULT_CACHE_CHECK_FREQUENCY = 15000; // 15 seconds
+  /**
+   * cacheCheckFrequency (default = 15 seconds)
+   */
+  private long cacheCheckFrequency = DEFAULT_CACHE_CHECK_FREQUENCY;
+
+  /**
+   * Called the first time the Service is used.
+   */
+  @Override
+  public void pcsdmInit()
+     throws Exception
+  {
+    int cacheInitialSize = DEFAULT_INITIAL_CACHE_SIZE;
+    Configuration conf = getConfiguration();
+    if(conf != null)
+    {
+      cacheInitialSize = conf.getInt(INITIAL_CACHE_SIZE, DEFAULT_INITIAL_CACHE_SIZE);
+      if(cacheInitialSize <= 0)
+        throw new IllegalArgumentException(INITIAL_CACHE_SIZE + " must be >0");
+
+      cacheCheckFrequency = conf.getLong(CACHE_CHECK_FREQUENCY, DEFAULT_CACHE_CHECK_FREQUENCY);
+      if(cacheCheckFrequency <= 0)
+        throw new IllegalArgumentException(CACHE_CHECK_FREQUENCY + " must be >0");
+    }
+
+    // Start housekeeping thread.
+    Thread housekeeping = new Thread(this);
+    // Indicate that this is a system thread. JVM will quit only when there
+    // are no more active user threads. Settings threads spawned internally
+    // by Turbine as daemons allows commandline applications using Turbine
+    // to terminate in an orderly manner.
+    housekeeping.setName("PcsdmGlobalCacheService");
+    housekeeping.setDaemon(true);
+    housekeeping.start();
+
+    setInit(true);
+  }
+
+  protected CacheBlock getCacheBlock(String objClass)
+  {
+    CacheBlock cb = (CacheBlock) (htClasses.get(objClass));
+    if(cb == null)
+    {
+      cb = new CacheBlock();
+      htClasses.put(objClass, cb);
+    }
+    return cb;
+  }
+
+  protected Hashtable getCache(String objClass)
+  {
+    return getCacheBlock(objClass).cache;
+  }
+
+  /**
+   * Returns an item from the cache.  RefreshableCachedObject will be
+   * refreshed if it is expired and not untouched.
+   *
+   * @param id The key of the stored object.
+   * @return The object from the cache.
+   * @exception ObjectExpiredException when either the object is
+   * not in the cache or it has expired.
+   */
+  @Override
+  public synchronized CachedObject getObject(String objClass, String id)
+     throws ObjectExpiredException
+  {
+    Hashtable cache = getCache(objClass);
+    CachedObject obj = (CachedObject) cache.get(id);
+
+    if(obj == null)
+    {
+      // Not in the cache.
+      throw new ObjectExpiredException();
+    }
+
+    if(obj.isStale())
+    {
+      if(obj instanceof RefreshableCachedObject)
+      {
+        RefreshableCachedObject rco = (RefreshableCachedObject) obj;
+        if(rco.isUntouched())
+          // Do not refresh an object that has exceeded TimeToLive
+          throw new ObjectExpiredException();
+
+        // Refresh Object
+        rco.refresh();
+
+        if(rco.isStale())
+          // Object is Expired.
+          throw new ObjectExpiredException();
+      }
+      else if(obj instanceof ArgoRefreshableCachedObject)
+      {
+        ArgoRefreshableCachedObject wrco = (ArgoRefreshableCachedObject) obj;
+        if(wrco.isUntouched())
+          // Do not refresh an object that has exceeded TimeToLive
+          throw new ObjectExpiredException();
+
+        // Refresh Object
+        wrco.refresh();
+
+        if(wrco.isStale())
+          // Object is Expired.
+          throw new ObjectExpiredException();
+      }
+      else
+      {
+        // Expired.
+        throw new ObjectExpiredException();
+      }
+    }
+
+    if(obj instanceof RefreshableCachedObject)
+    {
+      // notify it that it's being accessed.
+      RefreshableCachedObject rco = (RefreshableCachedObject) obj;
+      rco.touch();
+    }
+    else if(obj instanceof ArgoRefreshableCachedObject)
+    {
+      ArgoRefreshableCachedObject wrco = (ArgoRefreshableCachedObject) obj;
+      wrco.refreshEntry();
+      wrco.touch();
+    }
+    else if(obj instanceof ArgoCachedObject)
+    {
+      ArgoCachedObject wco = (ArgoCachedObject) obj;
+      wco.refreshEntry();
+    }
+
+    return obj;
+  }
+
+  /**
+   * Adds an object to the cache.
+   *
+   * @param id The key to store the object by.
+   * @param o The object to cache.
+   */
+  @Override
+  public synchronized void addObject(String objClass, String id, CachedObject o)
+  {
+    CacheBlock cb = getCacheBlock(objClass);
+    Hashtable cache = cb.cache;
+
+    // If the cache already contains the key, remove it and add
+    // the fresh one.
+    CachedObject co = (CachedObject) cache.get(id);
+    if(co != null)
+    {
+      if(!notifyRemoveObject(co))
+        return;
+
+      cache.remove(id);
+      cache.put(id, o);
+    }
+    else
+    {
+      cache.put(id, o);
+    }
+  }
+
+  /**
+   * Removes an object from the cache.
+   *
+   * @param id The String id for the object.
+   */
+  @Override
+  public synchronized void removeObject(String objClass, String id)
+  {
+    Hashtable cache = getCache(objClass);
+    CachedObject co = (CachedObject) cache.get(id);
+    if(co != null)
+    {
+      if(!notifyRemoveObject(co))
+        return;
+      cache.remove(id);
+    }
+  }
+
+  /**
+   * Rimuove tutti gli oggetti la cui chiave inizia con una stringa.
+   * @param objClass classe della cache
+   * @param idLeftPart stringa iniziale degli id da rimuovere
+   */
+  public synchronized void removeAllObjects(String objClass, String idLeftPart)
+  {
+    Hashtable cache = getCache(objClass);
+    Enumeration enKeys = cache.keys();
+    while(enKeys.hasMoreElements())
+    {
+      String key = (String) enKeys.nextElement();
+      if(key.startsWith(idLeftPart))
+      {
+        CachedObject co = (CachedObject) cache.get(key);
+        if(co != null)
+        {
+          if(!notifyRemoveObject(co))
+            return;
+          cache.remove(key);
+        }
+      }
+    }
+  }
+
+  /**
+   * Prima di rimuovere l'oggetto dalla cache avvia
+   * le operazioni di cancellazione dello stesso.
+   * @param co
+   * @return
+   */
+  protected boolean notifyRemoveObject(CachedObject co)
+  {
+    if(co instanceof ArgoCachedObject)
+    {
+      ArgoCachedObject wco = (ArgoCachedObject) co;
+
+      // un oggetto non cancellabile non puo' essere rimosso dalla cache
+      if(!wco.isDeletable())
+        return false;
+
+      // segnala che sta per essere cancellato
+      wco.deletingExpired();
+    }
+    return true;
+  }
+
+  /**
+   * Circle through the cache and remove stale objects.  Frequency
+   * is determined by the cacheCheckFrequency property.
+   */
+  @Override
+  public void run()
+  {
+    while(true)
+    {
+      // Sleep for amount of time set in cacheCheckFrequency -
+      // default = 5 seconds.
+      try
+      {
+        Thread.sleep(cacheCheckFrequency);
+      }
+      catch(InterruptedException exc)
+      {
+      }
+
+      clearCache();
+    }
+  }
+
+  /**
+   * Iterate through the cache and remove or refresh stale objects.
+   */
+  protected void clearCache()
+  {
+    Vector refreshThese = new Vector(100, 100);
+    Vector deleteThese = new Vector(100, 100);
+
+    // acquisisce semaforo cancellazione in corso
+    synchronized(semClear)
+    {
+
+      // Sync on this object so that other threads do not
+      // change the Hashtable while enumerating over it.
+      synchronized(this)
+      {
+        for(Enumeration f = htClasses.keys(); f.hasMoreElements();)
+        {
+          String objClass = (String) f.nextElement();
+          CacheBlock cb = getCacheBlock(objClass);
+          Hashtable cache = cb.cache;
+
+          for(Enumeration e = cache.keys(); e.hasMoreElements();)
+          {
+            String key = (String) e.nextElement();
+            CachedObject co = (CachedObject) cache.get(key);
+
+            if(co instanceof RefreshableCachedObject)
+            {
+              RefreshableCachedObject rco = (RefreshableCachedObject) co;
+              if(rco.isUntouched())
+              {
+                cache.remove(key);
+              }
+              else if(rco.isStale())
+              {
+                // Do refreshing outside of sync block so as not
+                // to prolong holding the lock on this object
+                refreshThese.addElement(rco);
+              }
+            }
+            else if(co instanceof ArgoRefreshableCachedObject)
+            {
+              ArgoRefreshableCachedObject wrco = (ArgoRefreshableCachedObject) co;
+
+              if(wrco.isUntouched())
+              {
+                // un oggetto non cancellabile non puo' essere rimosso dalla cache
+                if(!wrco.isDeletable())
+                  continue;
+
+                // segnala che sta per essere cancellato
+                deleteThese.add(wrco);
+                cache.remove(key);
+              }
+              else if(wrco.isStale())
+              {
+                // Do refreshing outside of sync block so as not
+                // to prolong holding the lock on this object
+                refreshThese.addElement(wrco);
+              }
+            }
+            else if(co instanceof ArgoCachedObject)
+            {
+              ArgoCachedObject wco = (ArgoCachedObject) co;
+
+              if(co.isStale())
+              {
+                // un oggetto non cancellabile non puo' essere rimosso dalla cache
+                if(!wco.isDeletable())
+                  continue;
+
+                // segnala che sta per essere cancellato
+                deleteThese.add(wco);
+                cache.remove(key);
+              }
+            }
+            else
+            {
+              if(co.isStale())
+                cache.remove(key);
+            }
+          }
+
+          // verifica se la cache ha un limite ed eventualmente cancella
+          int limit = cb.limit;
+          if(limit != UNLIMITED && cache.size() >= limit)
+            checkLimit(cache, limit, deleteThese);
+        }
+      }
+
+      // notifica agli oggetti la loro rimozione dalla cache
+      synchronized(semDelete)
+      {
+        for(Enumeration e = deleteThese.elements(); e.hasMoreElements();)
+        {
+          try
+          {
+            ArgoCachedObject co = (ArgoCachedObject) e.nextElement();
+            co.deletingExpired();
+          }
+          catch(Exception ex)
+          {
+          }
+        }
+      }
+
+      // chiama il metodo refresh per gli elementi che lo richiedono
+      synchronized(semUpdate)
+      {
+        for(Enumeration e = refreshThese.elements(); e.hasMoreElements();)
+        {
+          try
+          {
+            CachedObject co = (CachedObject) e.nextElement();
+            if(co instanceof RefreshableCachedObject)
+            {
+              RefreshableCachedObject rco = (RefreshableCachedObject) co;
+              rco.refresh();
+            }
+            else if(co instanceof ArgoRefreshableCachedObject)
+            {
+              ArgoRefreshableCachedObject wrco = (ArgoRefreshableCachedObject) co;
+              wrco.refresh();
+            }
+          }
+          catch(Exception ex)
+          {
+          }
+        }
+      }
+
+    }
+  }
+
+  /**
+   * Returns the number of objects currently stored in the cache
+   *
+   * @return int number of object in the cache
+   */
+  @Override
+  public synchronized int getNumberOfObjects()
+  {
+    int numItem = 0;
+    for(Enumeration f = htClasses.keys(); f.hasMoreElements();)
+    {
+      String objClass = (String) f.nextElement();
+      CacheBlock cb = getCacheBlock(objClass);
+      Hashtable cache = cb.cache;
+      numItem += cache.size();
+    }
+
+    return numItem;
+  }
+
+  /**
+   * Returns the number of objects currently stored in the cache
+   *
+   * @return int number of object in the cache
+   */
+  @Override
+  public synchronized int getNumberOfObjects(String objClass)
+  {
+    Hashtable cache = getCache(objClass);
+    return cache.size();
+  }
+
+  /**
+   * Returns the current size of the cache.
+   *
+   * @return int representing current cache size in number of bytes
+   */
+  @Override
+  public synchronized int getCacheSize()
+     throws IOException
+  {
+    int objectsize = 0;
+    for(Enumeration f = htClasses.keys(); f.hasMoreElements();)
+    {
+      String objClass = (String) f.nextElement();
+      CacheBlock cb = getCacheBlock(objClass);
+      Hashtable cache = cb.cache;
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(baos);
+      out.writeObject(cache);
+      out.flush();
+      //
+      // Subtract 4 bytes from the length, because the serialization
+      // magic number (2 bytes) and version number (2 bytes) are
+      // both written to the stream before the object
+      //
+      objectsize +=
+         baos.toByteArray().length - 4;
+    }
+
+    return objectsize;
+  }
+
+  /**
+   * Flush the cache of all objects.
+   */
+  @Override
+  public synchronized void flushCache()
+  {
+    for(Enumeration f = htClasses.keys(); f.hasMoreElements();)
+    {
+      String objClass = (String) f.nextElement();
+      flushCache(objClass);
+    }
+
+    // notifica gli interessati l'avvenuto svuotamento della global cache
+    BUS.sendMessage(BusMessages.CLEAR_GLOBAL_CACHE, this);
+  }
+
+  /**
+   * Elimina tutti gli oggetti della cache della classe specificata.
+   * @param objClass classe deglli oggetti
+   */
+  @Override
+  public void flushCache(String objClass)
+  {
+    Hashtable cache = getCache(objClass);
+    for(Enumeration e = cache.keys(); e.hasMoreElements();)
+    {
+      String key = (String) e.nextElement();
+      CachedObject co = (CachedObject) cache.get(key);
+      if(co != null)
+      {
+        if(notifyRemoveObject(co))
+          cache.remove(key);
+      }
+    }
+  }
+
+  /**
+   * Imposta limite per una classe di oggetti.
+   * @param objClass classe degli oggetti
+   * @param limit numero massimo oggetti possibili per la classe specificata
+   */
+  @Override
+  public void addLimit(String objClass, int limit)
+  {
+    CacheBlock cb = getCacheBlock(objClass);
+    cb.limit = limit;
+  }
+
+  /**
+   * Recuper limite i oggetti per la classe indicata.
+   * @param objClass classe degli oggetti
+   * @return numero massimo oggetti possibili per la classe specificata
+   */
+  @Override
+  public int getLimit(String objClass)
+  {
+    CacheBlock cb = getCacheBlock(objClass);
+    return cb.limit;
+  }
+
+  /**
+   * Verifica il superamento del limite massimo.
+   * Per una determinata sottoarea della cache verifica il raggiungimento
+   * del limite massimo di oggetti previsto per la classe di oggetti.
+   * Al superamento del limite gli oggetti eccedenti vengono rimossi
+   * in ordina cronologico.
+   * @param cache sottoarea della cache (classe di oggetti)
+   * @param limit limite per la sottoarea (classe)
+   * @param deleteThese vettore per l'accodamento degli oggetti da cancellare
+   */
+  protected void checkLimit(Hashtable cache, int limit, Vector deleteThese)
+  {
+    Collection c = cache.values();
+    CachedObject[] coArr = new CachedObject[c.size()];
+    c.toArray(coArr);
+
+    Arrays.sort(coArr, new Comparator()
+    {
+      @Override
+      public int compare(Object o1, Object o2)
+      {
+        long oc1 = ((CachedObject) (o1)).getCreated();
+        long oc2 = ((CachedObject) (o2)).getCreated();
+
+        if(oc1 == oc2)
+          return 0;
+
+        return oc1 > oc2 ? 1 : -1;
+      }
+    });
+
+    for(int i = 0; i < coArr.length && cache.size() >= limit; i++)
+    {
+      CachedObject co = coArr[i];
+
+      if(co instanceof ArgoCachedObject)
+      {
+        ArgoCachedObject wco = (ArgoCachedObject) co;
+
+        // un oggetto non cancellabile non puo' essere rimosso dalla cache
+        if(!wco.isDeletable())
+          continue;
+
+        // segnala che sta per essere cancellato
+        deleteThese.add(wco);
+      }
+
+      c.remove(co);
+    }
+  }
+
+  /**
+   * Gets a cached object given its id (a String).
+   *
+   * @param id The String id for the object.
+   * @return A CachedObject.
+   * @exception ObjectExpiredException, if the object has expired in
+   * the cache.
+   */
+  @Override
+  public CachedObject getObject(String id)
+     throws ObjectExpiredException
+  {
+    return getObject(GENERIC_OBJ_CLASS, id);
+  }
+
+  /**
+   * Adds an object to the cache.
+   *
+   * @param id The String id for the object.
+   * @param o The object to add to the cache.
+   */
+  @Override
+  public void addObject(String id, CachedObject o)
+  {
+    addObject(GENERIC_OBJ_CLASS, id, o);
+  }
+
+  /**
+   * Removes an object from the cache.
+   *
+   * @param id The String id for the object.
+   */
+  @Override
+  public void removeObject(String id)
+  {
+    removeObject(GENERIC_OBJ_CLASS, id);
+  }
+
+  /**
+   * Ritorna un enumeratore ai nomi di classe
+   * contenuti nella cache.
+   * @return
+   */
+  @Override
+  public Enumeration classNames()
+  {
+    return htClasses.keys();
+  }
+
+  @Override
+  public Enumeration cachedObjects(String className)
+  {
+    Hashtable ht = getCache(className);
+    return ht.elements();
+  }
+
+  /**
+   * Esegue il dump del contenuto della cache sul PrintWriter indicato.
+   * Per ogni ogggetto viene stampata la chiave e il risultato della funzione toString()
+   * @param objClass
+   * @param out
+   * @throws Exception
+   */
+  @Override
+  public void dumpCache(String objClass, PrintWriter out)
+     throws Exception
+  {
+    Hashtable cache = getCache(objClass);
+    Enumeration enKeys = cache.keys();
+    while(enKeys.hasMoreElements())
+    {
+      String key = (String) enKeys.nextElement();
+      CachedObject obj = (CachedObject) cache.get(key);
+      if(obj == null)
+        continue;
+      Object content = obj.getContents();
+      if(content == null)
+        continue;
+
+      if(obj.isStale())
+        out.println(key + "[expired]=" + content);
+      else
+        out.println(key + "=" + content);
+    }
+  }
+
+  @Override
+  public boolean isLogSignaled(String codice)
+  {
+    return getSignaled().contains(codice);
+  }
+
+  @Override
+  public void addLogSignaled(String codice)
+  {
+    getSignaled().add(codice);
+  }
+
+  public static final String CACHE_SIGNALED = "StandardScanner:CACHE_SIGNALED";
+
+  protected Set<String> getSignaled()
+  {
+    try
+    {
+      return (Set<String>) CACHE.getObject(CACHE_SIGNALED).getContents();
+    }
+    catch(ObjectExpiredException ex)
+    {
+      HashSet<String> set = new HashSet<String>();
+      CACHE.addObject(CACHE_SIGNALED, new CachedObject(set, Costanti.ONE_DAY_MILLIS));
+      return set;
+    }
+  }
+}

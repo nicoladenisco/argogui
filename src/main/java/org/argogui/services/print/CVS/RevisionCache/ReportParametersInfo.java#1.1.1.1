@@ -1,0 +1,586 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.print;
+
+import java.io.*;
+import java.util.*;
+
+import org.rigel.SetupHolder;
+import org.rigel.db.sql.QueryBuilder;
+
+import org.apache.torque.util.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.workingdogs.village.*;
+
+import it.radimage.argo.services.formatter.DataFormatter;
+import java.sql.Timestamp;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.apache.turbine.services.TurbineServices;
+import org.commonlib.utils.StringOper;
+import it.radimage.argo.om.GenParstampe;
+import it.radimage.argo.om.GenParstampePeer;
+import it.radimage.argo.om.GenStampe;
+import it.radimage.argo.utils.DT;
+import it.radimage.argo.utils.SU;
+
+/**
+ * Oggetto report per le statistiche.
+ * Mantiene i parametri di un report sotto forma
+ * di un mapping fra i nomi e i tipi di parametro.
+ * Implementa DefaultHandler per eseguire il
+ * parsing di un report generato da JReport.
+ *
+ * @author Nicola De Nisco
+ */
+public class ReportParametersInfo extends DefaultHandler
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(ReportParametersInfo.class);
+  /** variabili locali */
+  private List filtriStatistiche = new ArrayList();
+  private File originalFile = null;
+  private String nomeStampa = null;
+  private boolean internal = false;
+  private PdfPrint pp = (PdfPrint) (TurbineServices.getInstance().
+     getService(PdfPrint.SERVICE_NAME));
+
+  public static final String LOCAL_JASPER_DTD = "jasperreport.dtd";
+
+  /**
+   * Costruttore per il parsing di un file report di jasper.
+   * @param originalFile file report jasper
+   * @param stat descrittore del database
+   */
+  public void initForJasper(String reportName, File originalFile) throws Exception
+  {
+    internal = false;
+    this.originalFile = originalFile;
+    this.nomeStampa = reportName;
+    loadJasperReport();
+  }
+
+  /**
+   * Legge il file XML del report jasper per estrarre
+   * i parametri con i loro tipi.
+   * @throws Exception
+   */
+  protected void loadJasperReport() throws Exception
+  {
+    SAXParserFactory spf = SAXParserFactory.newInstance();
+    spf.setValidating(false);
+    FileInputStream fis = null;
+
+    try
+    {
+      SAXParser parserReport = spf.newSAXParser();
+      XMLReader xmlReportReader = parserReport.getXMLReader();
+      xmlReportReader.setContentHandler(this);
+      xmlReportReader.setEntityResolver(new EntityResolver()
+      {
+        @Override
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
+        {
+          if(systemId.startsWith("http://jasperreports.sourceforge.net/dtds/"))
+          {
+            String nomeFile = systemId.substring(41);
+            File fDTD = pp.getConfReportFile(nomeFile);
+            if(fDTD.exists())
+              systemId = "file:" + fDTD.getAbsolutePath();
+          }
+
+          return new InputSource(systemId);
+        }
+
+      });
+
+      fis = new FileInputStream(originalFile);
+      xmlReportReader.parse(new InputSource(fis));
+    }
+    catch(Exception ex)
+    {
+      log.error("Report " + originalFile.getAbsolutePath(), ex);
+
+      try
+      {
+        if(fis != null)
+          fis.close();
+      }
+      catch(Exception e1)
+      {
+        e1.printStackTrace();
+      }
+
+      // risolleva l'eccezione per il chiamante
+      throw ex;
+    }
+  }
+
+  /**
+   * Costruttore per altri usi che non siano quelli di jasper.
+   * @param descriptor descrittore nella forma
+   *        INTERNAL|nomestampa|Dpar1|Ipar2
+   * @param stat descrittore del database
+   * @throws Exception
+   */
+  public void initGeneric(String reportName, String reportInfo)
+     throws Exception
+  {
+    internal = true;
+    originalFile = null;
+    nomeStampa = reportName;
+    buildFromDescriptor(reportInfo);
+  }
+
+  @Override
+  public void characters(char[] ch, int start, int length) throws SAXException
+  {
+  }
+
+  @Override
+  public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
+  {
+    try
+    {
+      if(StringOper.isEquNocase("parameter", qName))
+      {
+        String sTmp = null;
+
+        if((sTmp = atts.getValue("name")) == null)
+          return;
+        String nomeParametro = sTmp;
+
+        boolean isForPrompting = true;
+        if((sTmp = atts.getValue("isForPrompting")) != null)
+          isForPrompting = Boolean.valueOf(sTmp).booleanValue();
+
+        Class tipoPararmetro = String.class;
+        if((sTmp = atts.getValue("class")) != null)
+          tipoPararmetro = Class.forName(sTmp);
+
+        if(isForPrompting)
+        {
+          ParameterInfo fs = buildParametro(nomeParametro, tipoPararmetro);
+
+          if(nomeParametro.endsWith("In"))
+          {
+            // inizio intervallo: cerca un fine intervallo
+            String gemello =
+               nomeParametro.substring(0, nomeParametro.length() - 2) + "Fin";
+            ParameterInfo fsGemello = cercaFiltro(gemello);
+            if(fsGemello != null)
+            {
+              fs.setNomeGemello(gemello);
+              fs.setIntervalloInizio(true);
+              fsGemello.setIntervalloFine(true);
+              fsGemello.setNomeGemello(nomeParametro);
+            }
+          }
+          if(nomeParametro.endsWith("_i"))
+          {
+            // inizio intervallo: cerca un fine intervallo
+            String gemello =
+               nomeParametro.substring(0, nomeParametro.length() - 2) + "_f";
+            ParameterInfo fsGemello = cercaFiltro(gemello);
+            if(fsGemello != null)
+            {
+              fs.setNomeGemello(gemello);
+              fs.setIntervalloInizio(true);
+              fsGemello.setIntervalloFine(true);
+              fsGemello.setNomeGemello(nomeParametro);
+            }
+          }
+
+          if(nomeParametro.endsWith("Fin"))
+          {
+            // inizio intervallo: cerca un fine intervallo
+            String gemello =
+               nomeParametro.substring(0, nomeParametro.length() - 3) + "In";
+            ParameterInfo fsGemello = cercaFiltro(gemello);
+            if(fsGemello != null)
+            {
+              fs.setNomeGemello(gemello);
+              fs.setIntervalloFine(true);
+              fsGemello.setIntervalloInizio(true);
+              fsGemello.setNomeGemello(nomeParametro);
+            }
+          }
+          if(nomeParametro.endsWith("_f"))
+          {
+            // inizio intervallo: cerca un fine intervallo
+            String gemello =
+               nomeParametro.substring(0, nomeParametro.length() - 2) + "_i";
+            ParameterInfo fsGemello = cercaFiltro(gemello);
+            if(fsGemello != null)
+            {
+              fs.setNomeGemello(gemello);
+              fs.setIntervalloFine(true);
+              fsGemello.setIntervalloInizio(true);
+              fsGemello.setNomeGemello(nomeParametro);
+            }
+          }
+
+          filtriStatistiche.add(fs);
+        }
+      }
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      log.error("Parsing XML: " + originalFile.getAbsolutePath(), e);
+    }
+  }
+
+  /**
+   * Cerca un parametro per nome.
+   * @param nomeParametro
+   * @return
+   */
+  protected ParameterInfo cercaFiltro(String nomeParametro)
+  {
+    for(int i = 0; i < filtriStatistiche.size(); i++)
+    {
+      ParameterInfo fs = (ParameterInfo) filtriStatistiche.get(i);
+      if(StringOper.isEqu(nomeParametro, fs.getNome()))
+        return fs;
+    }
+    return null;
+  }
+
+  public void endElement(String name) throws SAXException
+  {
+  }
+
+  @Override
+  public void endDocument()
+  {
+  }
+
+  public List getFiltriStatistiche()
+  {
+    return filtriStatistiche;
+  }
+
+  public void setFiltriStatistiche(List filtriStatistiche)
+  {
+    this.filtriStatistiche = filtriStatistiche;
+  }
+
+  public File getFile()
+  {
+    return originalFile;
+  }
+
+  public String getNomeStampa()
+  {
+    return nomeStampa;
+  }
+
+  public boolean isInternal()
+  {
+    return internal;
+  }
+
+  /**
+   * Produce la lista valori utilizzata per popolare il combo
+   * quando richesta un parametro con scelta fra valori definiti
+   * da una tabella esistente.
+   * @param selectValPar
+   * @param fromValPar
+   * @param orderByValPar
+   * @return
+   * @throws java.lang.Exception
+   */
+  protected List populateComboData(String selectValPar, String fromValPar, String orderByValPar)
+     throws Exception
+  {
+    try
+    {
+      // primo tentativo: usa lo stato_rec per elimiare i cancellati
+      QueryBuilder qb = SetupHolder.getQueryBuilder();
+
+      qb.setSelect(selectValPar);
+      qb.setFrom(fromValPar);
+      qb.setWhere("((STATO_REC IS NULL) OR (STATO_REC<10))");
+      qb.setOrderby(orderByValPar);
+      qb.setLimit(100);
+
+      String queryString = qb.makeSQLstring();
+      return BasePeer.executeQuery(queryString);
+    }
+    catch(Exception e)
+    {
+      // secondo tentativo: ripete la query senza lo stato_rec
+      QueryBuilder qb = SetupHolder.getQueryBuilder();
+
+      qb.setSelect(selectValPar);
+      qb.setFrom(fromValPar);
+      qb.setOrderby(orderByValPar);
+      qb.setLimit(100);
+
+      String queryString = qb.makeSQLstring();
+      return BasePeer.executeQuery(queryString);
+    }
+  }
+
+  /**
+   * Costruisce i dati di un parametro della stampa.
+   * Viene interrogata la tabella sys_parametristatistiche
+   * per determinare come dovrà essere utilizzato questo
+   * parametro. Se è un combo vengono caricati tutti
+   * i valori possibili dalla relativa tabella oppure
+   * per i self-combo dal campo valore di sys_par...
+   * @param nomeParametro
+   * @param tipoParametro
+   * @return
+   * @throws java.lang.Exception
+   */
+  public ParameterInfo buildParametro(String nomeParametro, Class tipoParametro)
+     throws Exception
+  {
+    ParameterInfo fs = new ParameterInfo();
+    List valoriParametro = new ArrayList();
+
+    Criteria cParametri = new Criteria();
+    cParametri.add(GenParstampePeer.CODICE, nomeParametro);
+    List lParametri = GenParstampePeer.doSelect(cParametri);
+
+    if(lParametri.size() > 0)
+    {
+      GenParstampe parametro = (GenParstampe) lParametri.get(0);
+      String tabellaValori = parametro.getTabellaValori();
+      String valori = parametro.getValori();
+
+      // valori da tabella
+      String campoNome = parametro.getCodice();
+      String campoDescrizione = parametro.getDescrizione();
+
+      if(StringOper.isOkStr(tabellaValori))
+      {
+        String selectValPar =
+           parametro.getCampoChiave() + " , " + parametro.getCampoValore();
+        String fromValPar = tabellaValori;
+
+        List recordsValPar =
+           populateComboData(selectValPar, fromValPar, parametro.getCampoValore());
+
+        Iterator itrValParRec = recordsValPar.iterator();
+        while(itrValParRec.hasNext())
+        {
+          Record valParRec = (Record) (itrValParRec).next();
+          String valCampoChiave = valParRec.getValue(1).asString();
+          String valCampoDescrizione = valParRec.getValue(2).asString();
+          Map parametroCodDesc = new HashMap();
+          parametroCodDesc.put(valCampoChiave, valCampoDescrizione);
+          valoriParametro.add(parametroCodDesc);
+        }
+      }
+
+      if(StringOper.isOkStr(valori))
+      {
+        if(valori.indexOf(';') == -1)
+        {
+          // valore di default del parametro
+          fs.setValoreDefault(valori);
+        }
+        else
+        {
+          // valori statici
+          StringTokenizer stValori = new StringTokenizer(valori, ";");
+          while(stValori.hasMoreElements())
+          {
+            Map parametroCodDesc = new HashMap();
+            String valore = (String) stValori.nextElement();
+            // test per valore di default (incomincia con *)
+            if(valore.charAt(0) == '*')
+            {
+              valore = valore.substring(1);
+              fs.setValoreDefault(valore);
+            }
+            parametroCodDesc.put(valore, valore);
+            valoriParametro.add(parametroCodDesc);
+          }
+        }
+      }
+
+      fs.setDescrizione(campoDescrizione);
+      fs.setNome(campoNome);
+    }
+    else
+    {
+      // non presente in tabella parametri
+      fs.setDescrizione(nomeParametro);
+      fs.setNome(nomeParametro);
+    }
+
+    fs.setListaValori(valoriParametro);
+    fs.setTipo(tipoParametro);
+
+    return fs;
+  }
+
+  /**
+   * Parsing di un descrittore per stampa interna.
+   * @param descriptor descrittore nella forma
+   *        Dpar1|Ipar2
+   * @throws java.lang.Exception
+   */
+  public void buildFromDescriptor(String descriptor)
+     throws Exception
+  {
+    String[] params = SU.split(descriptor, '|');
+    for(int i = 0; i < params.length; i++)
+    {
+      String campo = params[i].trim();
+      char tipo = campo.charAt(0);
+      Class tiClass = null;
+      String nome = campo.substring(1);
+      String valDef = "";
+      int pos = nome.indexOf('=');
+      if(pos != -1)
+      {
+        valDef = nome.substring(pos + 1);
+        nome = nome.substring(0, pos);
+      }
+
+      switch(tipo)
+      {
+        case 'E':
+          tiClass = java.util.Date.class;
+          ParameterInfo fsInizio = buildParametro(nome + "_i", tiClass);
+          ParameterInfo fsFine = buildParametro(nome + "_f", tiClass);
+          fsInizio.setIntervalloInizio(true);
+          fsInizio.setNomeGemello(nome + "_f");
+          fsFine.setIntervalloFine(true);
+          fsFine.setNomeGemello(nome + "_i");
+          filtriStatistiche.add(fsInizio);
+          filtriStatistiche.add(fsFine);
+          continue;
+        case 'H':
+          tiClass = java.lang.String.class;
+          ParameterInfo fsHidden = buildParametro(nome, tiClass);
+          fsHidden.setHidden(true);
+          fsHidden.setValoreDefault(valDef);
+          filtriStatistiche.add(fsHidden);
+          continue;
+        case 'D':
+          tiClass = java.util.Date.class;
+          break;
+        case 'T':
+          tiClass = java.sql.Timestamp.class;
+          break;
+        case 'N':
+          tiClass = java.lang.Number.class;
+          break;
+        case 'S':
+          tiClass = java.lang.String.class;
+          break;
+        case 'I':
+          tiClass = java.lang.Integer.class;
+          break;
+        case 'B':
+          tiClass = java.lang.Boolean.class;
+          break;
+      }
+
+      ParameterInfo fs = buildParametro(nome, tiClass);
+      fs.setValoreDefault(valDef);
+      filtriStatistiche.add(fs);
+    }
+  }
+
+  /**
+   * Legge la map dei parametri HTML (quella generata da un POST)
+   * e ritorna una map con i parametri del report e il relativo
+   * tipo java opportunamente parsato dal valore string contenuto
+   * nella map di ingresso.
+   * @param params parametri della POST (solo stringhe)
+   * @return map parametro form abbinato al tipo java corrispondente
+   * @throws Exception
+   */
+  public Map parseParameter(Map params)
+     throws Exception
+  {
+    Map rvParams = new HashMap();
+    DataFormatter df = (DataFormatter) (TurbineServices.getInstance().
+       getService(DataFormatter.SERVICE_NAME));
+
+    Iterator itrFs = filtriStatistiche.iterator();
+    while(itrFs.hasNext())
+    {
+      ParameterInfo fs = (ParameterInfo) itrFs.next();
+      String val = (String) params.get(fs.getNome());
+      if(val == null)
+        continue;
+
+      Object obj = null;
+
+      if(fs.isDate() || fs.isTimeStamp())
+      {
+        Date d = df.parseData(val);
+        obj = d;
+
+        if(fs.isIntervalloInizio())
+        {
+          obj = DT.inizioGiorno(d);
+        }
+        else if(fs.isIntervalloFine())
+        {
+          obj = DT.fineGiorno(d);
+        }
+
+        if(fs.isTimeStamp())
+        {
+          long time = ((Date) (obj)).getTime();
+          obj = new Timestamp(time);
+        }
+      }
+      else if(fs.isInteger())
+      {
+        obj = Integer.valueOf(val);
+      }
+      else
+      {
+        obj = val;
+      }
+
+      rvParams.put(fs.getNome(), obj);
+    }
+
+    return rvParams;
+  }
+
+  @Override
+  public String toString()
+  {
+    return filtriStatistiche.toString();
+  }
+
+  protected GenStampe stampa = null;
+
+  public GenStampe getStampa()
+  {
+    return stampa;
+  }
+
+  public void setStampa(GenStampe stampa)
+  {
+    this.stampa = stampa;
+  }
+}

@@ -1,0 +1,140 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.cache;
+
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import org.apache.turbine.services.cache.CachedObject;
+import org.apache.turbine.services.cache.GlobalCacheService;
+import org.apache.turbine.services.cache.ObjectExpiredException;
+
+/**
+ * Cache globale con funzione avanzate.
+ * Gli oggetti inseriti possono essere associati a delle
+ * classi di appartenenza di cui è possibile fissare il
+ * limite massimo di oggetti in cache.
+ *
+ * @author Nicola De Nisco
+ */
+public interface ArgoCacheServices extends GlobalCacheService
+{
+  // ATTENZIONE il service name non e' specificato
+  // perche' si sovrappone a GlobalCacheService
+  //public String SERVICE_NAME = "NewstarCacheServices";
+  public static final int UNLIMITED = -1;
+  public static final String GENERIC_OBJ_CLASS = "GENERIC";
+  /** semaforo attivo per aggiornamento cache */
+  public static final Object semClear = new Object();
+  /** semaforo attivo per notifica cancellazione elementi */
+  public static final Object semDelete = new Object();
+  /** semaforo attivo per notifica refresh elementi */
+  public static final Object semUpdate = new Object();
+
+  /**
+   * Gets a cached object given its id (a String).
+   *
+   * @param objClass classe deglli oggetti
+   * @param id The String id for the object.
+   * @return A CachedObject.
+   * @exception ObjectExpiredException, if the object has expired in
+   * the cache.
+   */
+  CachedObject getObject(String objClass, String id)
+     throws ObjectExpiredException;
+
+  /**
+   * Adds an object to the cache.
+   *
+   * @param objClass classe deglli oggetti
+   * @param id The String id for the object.
+   * @param o The object to add to the cache.
+   */
+  void addObject(String objClass, String id, CachedObject o);
+
+  /**
+   * Removes an object from the cache.
+   *
+   * @param objClass classe deglli oggetti
+   * @param id The String id for the object.
+   */
+  void removeObject(String objClass, String id);
+
+  /**
+   * Imposta un limite (numero di oggetti) per una classe di oggetti.
+   * Per default le classi hanno una dimensione illimitata.
+   * @param objClass classe deglli oggetti
+   * @param limit
+   */
+  public void addLimit(String objClass, int limit);
+
+  /**
+   * Ritorna il limite associato alla classe.
+   * @param objClass classe deglli oggetti
+   * @return numero massimo di oggetti (-1 = non limitato)
+   */
+  public int getLimit(String objClass);
+
+  /**
+   * Ritorna il numero di oggetti di una determinata classe
+   * attualmente presenti nella cache.
+   * @param objClass classe deglli oggetti
+   * @return
+   */
+  public int getNumberOfObjects(String objClass);
+
+  /**
+   * Ritorna un enumeratore ai nomi di classe
+   * contenuti nella cache.
+   * @return
+   */
+  public Enumeration classNames();
+
+  /**
+   * Enumera il contenuto della cache.
+   * @param className classe di oggetti di cui si vuole l'enumerazione (null = GENERIC_OBJ_CLASS)
+   * @return
+   */
+  public Enumeration cachedObjects(String className);
+
+  /**
+   * Esegue il dump del contenuto della cache sul PrintWriter indicato.
+   * Per ogni ogggetto viene stampata la chiave e il risultato della funzione toString()
+   * @param objClass classe deglli oggetti
+   * @param out
+   * @throws Exception
+   */
+  public void dumpCache(String objClass, PrintWriter out)
+     throws Exception;
+
+  /**
+   * Elimina tutti gli oggetti della cache della classe specificata.
+   * @param objClass classe deglli oggetti
+   */
+  public void flushCache(String objClass);
+
+  /**
+   * Abbassamento messaggi di log/allarmi.
+   * Verifica se il codice indicato è già stato segnalato in log.
+   * @param codice codice da verificare
+   * @return vero se già loggato o generato allarme
+   */
+  public boolean isLogSignaled(String codice);
+
+  /**
+   * Abbassamento messaggi di log/allarmi.
+   * Segnala il codice come inviato a log/allarmi.
+   * @param codice codice da segnalare
+   */
+  public void addLogSignaled(String codice);
+}

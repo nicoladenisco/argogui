@@ -1,0 +1,227 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.xmlrpc;
+
+import java.util.Hashtable;
+
+/**
+ * Definizione dei metodi per gli agent esterni
+ * di comunicazione con gli strumenti.
+ *
+ * @author Nicola De Nisco
+ */
+public interface ExternalAgentXmlRpcInterface
+{
+  /**
+   * Apre canale con lo strumento.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable openPerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Chiude canale con lo strumento.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable closePerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Ritorna prametri di setup.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable getSetupPerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Esegue una query per SID.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable queryStrumento(Hashtable params)
+     throws Exception;
+
+  /**
+   * Esegue una query per SID.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable queryDiretta(Hashtable params)
+     throws Exception;
+
+  /**
+   * Esegue una query per SID.
+   * Ritorna tutti i grafici assocati ad un determinato sid.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable queryGrafici(Hashtable params)
+     throws Exception;
+
+  /**
+   * Recupera parametri batch.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable batchPopolaStrumento(Hashtable params)
+     throws Exception;
+
+  /**
+   * Segnalazione allarmi.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable segnalaAllarmi(Hashtable params)
+     throws Exception;
+
+  /**
+   * Salvataggio risultati per singolo SID.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable risultatiStrumento(Hashtable params)
+     throws Exception;
+
+  /**
+   * Salvataggio risultati in formato ASTM.
+   * Le stringhe ASTM vengono parsate direttamente da Perseo.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable risultatiStrumentoAstm(Hashtable params)
+     throws Exception;
+
+  /**
+   * Salvataggio mesaggi nella logPerseo di Perseo.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable logPerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Salvataggio stringhe monitoraggio comunicazione.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable monitorPerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Salva una proprietà permanente nel db di Perseo.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable setPropertyPerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Recupera una proprietà permanente dal db di Perseo.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable getPropertyPerseo(Hashtable params)
+     throws Exception;
+
+  /**
+   * Registra i grafici associati ad una provetta.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable graficiStrumento(Hashtable params)
+     throws Exception;
+
+  /**
+   * Inizializza strutture per download grafico.
+   * L'id del grafico viene recuperato con altre funzioni.
+   * @param idGrafico identificativo univoco del grafico da scaricare
+   * @param suggestBlockSize dimensione suggerita per i blocchi (0=auto)
+   * @return descrittore delle informazioni di download
+   * @throws Exception
+   */
+  public Hashtable preparaDownloadGrafico(int idGrafico, int suggestBlockSize)
+     throws Exception;
+
+  /**
+   * Recupera un blocco di download dal server PCSDM.
+   * @param idFile identificativo ritornato da preparaDownloadGrafico()
+   * @param block indice del blocco
+   * @return contenuto del blocco
+   * @throws Exception
+   */
+  public byte[] getFileBlock(String idFile, int block)
+     throws Exception;
+
+  /**
+   * Inizializza strutture per upload di file generico.
+   * Il nome del file verrà passato ad un'altra funzione dopo
+   * l'upload per contestualizzare l'invio.
+   * @param fileName nome del file
+   * @param fileSize dimensione del file
+   * @param suggestBlockSize dimensione suggerita per i blocchi (0=auto)
+   * @return descrittore delle informazioni di upload
+   * @throws Exception
+   */
+  public Hashtable preparaUpload(String fileName, int fileSize, int suggestBlockSize)
+     throws Exception;
+
+  /**
+   * Invia un blocco di upload verso il server PCSDM.
+   * @param idFile identificativo ritoranto da preparaUpload()
+   * @param block indice del blocco
+   * @param data contenuto del blocco
+   * @return sempre 0
+   * @throws Exception
+   */
+  public int putFileBlock(String idFile, int block, byte[] data)
+     throws Exception;
+
+  /**
+   * Conclude un trasferimento di upload o download.
+   * @param idFile identificativo ritoranto da preparaUpload() o preparaDownload()
+   * @return sempre 0
+   * @throws Exception
+   */
+  public int trasferimentoCompletato(String idFile)
+     throws Exception;
+
+  /**
+   * Funzione unificata di trasferimento.
+   * Riunisce tutte le funzionalità di prepara..() get/putFileBlock() e trasferimentoCompletato().
+   * Per compatibilità con implementazioni VB dei client.
+   * @param params map dei parametri
+   * @return map di risposta
+   * @throws Exception
+   */
+  public Hashtable transferFunc(Hashtable params)
+     throws Exception;
+}

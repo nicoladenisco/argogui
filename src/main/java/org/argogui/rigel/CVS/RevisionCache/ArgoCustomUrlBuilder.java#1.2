@@ -1,0 +1,276 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel;
+
+import it.radimage.argo.utils.LI;
+import it.radimage.argo.utils.SU;
+import java.util.Map;
+import org.rigel.HtmlUtils;
+import org.rigel.RigelCustomUrlBuilder;
+import org.rigel.table.RigelColumnDescriptor;
+import org.rigel.table.RigelTableModel;
+import org.rigel.table.html.wrapper.CustomButtonInfo;
+
+/**
+ * Implementazione per Argo.
+ *
+ * @author Nicola De Nisco
+ */
+public class ArgoCustomUrlBuilder implements RigelCustomUrlBuilder
+{
+  private String ctxPath, ctxPathTempl;
+  private String baseMainForm, baseMainList, basePopupForm, basePopupList;
+
+  public ArgoCustomUrlBuilder()
+  {
+    ctxPath = LI.getTurbineContextPath();
+    ctxPathTempl = ctxPath + "pgm/template/";
+  }
+
+  public ArgoCustomUrlBuilder(String ctxp)
+  {
+    if(ctxp.endsWith("/"))
+      ctxPath = ctxp;
+    else
+      ctxPath = ctxp + "/";
+
+    ctxPathTempl = ctxPath + "pgm/template/";
+  }
+
+  /**
+   * Imposta la url corretta a seconda se è una jsp o una vm.
+   *
+   * @param popup
+   * @param url
+   * @return
+   */
+  protected String adJustUrlForNewstar(boolean popup, String url)
+  {
+    // genera una path assoluta
+    if(HtmlUtils.isHttp(url))
+      return url;
+
+    url = parseMacro(popup, url);
+
+    if(url.toLowerCase().startsWith("javascript:"))
+      return url;
+
+    if(!url.contains(".vm"))
+    {
+      // non e' un link a template
+      url = ctxPath + url;
+    }
+    else
+    {
+      // e' un link a template
+      url = ctxPathTempl + url;
+    }
+
+    return url;
+  }
+
+  /**
+   * Sostituisce eventuali macro nella stringa input.
+   *
+   * @param input
+   * @return
+   */
+  protected String parseMacro(boolean popup, String input)
+  {
+    if(popup)
+    {
+      // se la maschera è in popup deve usare il form di popup ...
+      input = input.replaceAll("@form", basePopupForm);
+      input = input.replaceAll("@list", basePopupList);
+    }
+    else
+    {
+      // ... altrimenti usa quelli di primo livello
+      input = input.replaceAll("@form", baseMainForm);
+      input = input.replaceAll("@list", baseMainList);
+    }
+
+    // queste macro sono esplicite, non soggette al flag popup
+    input = input.replaceAll("@pform", basePopupForm);
+    input = input.replaceAll("@plist", basePopupList);
+    return input;
+  }
+
+  @Override
+  public String buildUrlForeginList(boolean popup,
+     RigelTableModel tableModel, RigelColumnDescriptor cd,
+     String fldName, int row, int col)
+     throws Exception
+  {
+    return makeUrlAbsolute(popup, cd.getForeignEditUrl());
+  }
+
+  @Override
+  public String buildUrlForeginForm(boolean popup,
+     RigelTableModel tableModel, RigelColumnDescriptor cd,
+     String fldName, int row, int col)
+     throws Exception
+  {
+    return makeUrlAbsolute(popup, cd.getForeignFormUrl());
+  }
+
+  @Override
+  public String buildUrlCustomButton(boolean popup,
+     RigelTableModel tableModel, RigelColumnDescriptor cd,
+     String fldName, int row, CustomButtonInfo cb)
+     throws Exception
+  {
+    String url = cb.makeUrlRiga((RigelTableModel) (tableModel), row);
+    return makeUrlAbsolute(popup, url);
+  }
+
+  @Override
+  public String buildUrlHeaderButton(boolean popup, CustomButtonInfo cb)
+     throws Exception
+  {
+    String url = cb.makeUrlTestata();
+    return makeUrlAbsolute(popup, url);
+  }
+
+  @Override
+  public String buildUrlHeaderButton(boolean popup,
+     RigelTableModel tableModel, int row, CustomButtonInfo cb)
+     throws Exception
+  {
+    String url = cb.makeUrlRiga((RigelTableModel) (tableModel), row);
+    return makeUrlAbsolute(popup, url);
+  }
+
+  @Override
+  public String buildImageCustomButton(boolean popup,
+     RigelTableModel tableModel, RigelColumnDescriptor cd,
+     String fldName, int row, CustomButtonInfo cb)
+     throws Exception
+  {
+    String icon = cb.getIcon();
+    if(icon.startsWith("glyphicon:"))
+      return getImgGlyphicon(SU.okStr(icon.substring(10)), cb.getText());
+
+    return LI.getIconHtml(icon, cb.getText());
+  }
+
+  public String getImgGlyphicon(String name, String title)
+  {
+    return "<span class=\"glyphicon glyphicon-" + name + "\" aria-hidden=\"true\" title=\"" + title + "\"></span>";
+  }
+
+  @Override
+  public String buildUrlEditRecord(boolean popup,
+     String inputUrl, RigelTableModel tableModel, RigelColumnDescriptor cd,
+     String fldName, int row, Map<String, String> extraParams)
+     throws Exception
+  {
+    String url = makeUrlAbsolute(popup, inputUrl);
+
+    if(!url.contains("ridx=") && row != -1)
+      url = HtmlUtils.mergeUrl(url, "rdix", row);
+
+    return HtmlUtils.mergeUrlTestUnique(url, extraParams);
+  }
+
+  @Override
+  public String buildUrlNewRecord(boolean popup,
+     String inputUrl, RigelTableModel tableModel, Map<String, String> extraParams)
+     throws Exception
+  {
+    String url = makeUrlAbsolute(popup, inputUrl);
+    url = LI.mergeUrl(url, "new", 1);
+    return HtmlUtils.mergeUrlTestUnique(url, extraParams);
+  }
+
+  @Override
+  public String buildUrlLineEdit(boolean popup,
+     String inputUrl, RigelTableModel tableModel, RigelColumnDescriptor cd,
+     String fldName, int row, Map<String, String> extraParams)
+     throws Exception
+  {
+    return buildUrlEditRecord(popup, inputUrl, tableModel, cd, fldName, row, extraParams);
+  }
+
+  @Override
+  public String makeUrlAbsolute(boolean popup, String url)
+     throws Exception
+  {
+    return adJustUrlForNewstar(popup, url);
+  }
+
+  @Override
+  public String buildUrlLineSelezione(boolean popup, String inputUrl,
+     RigelTableModel tableModel, RigelColumnDescriptor cd, String fldName, int row, Map<String, String> extraParams)
+     throws Exception
+  {
+    return "javascript:imposta(" + inputUrl + ")";
+  }
+
+  @Override
+  public String buildUrlSelezionaRecord(boolean popup, String inputUrl,
+     RigelTableModel tableModel, RigelColumnDescriptor cd, String fldName, int row, Map<String, String> extraParams)
+     throws Exception
+  {
+    return "javascript:imposta(" + inputUrl + ")";
+  }
+
+  @Override
+  public String buildUrlCancellaRecord(boolean popup, String inputUrl,
+     RigelTableModel tableModel, RigelColumnDescriptor cd, String fldName, int row, Map<String, String> extraParams)
+     throws Exception
+  {
+    return "javascript:cancellaElemento('" + inputUrl + "')";
+  }
+
+  public String getBaseMainForm()
+  {
+    return baseMainForm;
+  }
+
+  public void setBaseMainForm(String baseMainForm)
+  {
+    this.baseMainForm = baseMainForm;
+  }
+
+  public String getBaseMainList()
+  {
+    return baseMainList;
+  }
+
+  public void setBaseMainList(String baseMainList)
+  {
+    this.baseMainList = baseMainList;
+  }
+
+  public String getBasePopupForm()
+  {
+    return basePopupForm;
+  }
+
+  public void setBasePopupForm(String basePopupForm)
+  {
+    this.basePopupForm = basePopupForm;
+  }
+
+  public String getBasePopupList()
+  {
+    return basePopupList;
+  }
+
+  public void setBasePopupList(String basePopupList)
+  {
+    this.basePopupList = basePopupList;
+  }
+}

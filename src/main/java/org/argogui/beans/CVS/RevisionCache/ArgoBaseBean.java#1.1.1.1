@@ -1,0 +1,145 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.beans;
+
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+import java.util.Date;
+import java.util.Map;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.services.Service;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.pull.TurbinePull;
+import org.apache.turbine.services.pull.tools.UITool;
+
+/**
+ * Classe base di tutti i bean persistenti in sessione.
+ *
+ * @author Nicola De Nisco
+ */
+public class ArgoBaseBean implements HttpSessionBindingListener
+{
+  protected Date today = new Date();
+  protected String currJspName = null;
+  protected UITool ui = null;
+  public static final String sColHeader = "td class=\"cls-header\"";
+  public String tagTabelleForm = null;
+  public String tagTabelleList = null;
+  // loggin
+  protected Log log = LogFactory.getLog(this.getClass());
+
+  /** Creates a new instance of PcsdmBaseBeans */
+  public ArgoBaseBean()
+  {
+  }
+
+  public void init(ArgoRunData data)
+     throws Exception
+  {
+    ui = (UITool) TurbinePull.getTool(TurbinePull.getGlobalContext(), "ui");
+
+    tagTabelleForm = TR.getString("tag.tabelle.form", // NOI18N
+       "TABLE WIDTH=100%"); // NOI18N
+
+    tagTabelleList = TR.getString("tag.tabelle.list", // NOI18N
+       "TABLE WIDTH=100%"); // NOI18N
+  }
+
+  /**
+   * Data una url relativa torna l'url completa a seconda dell'ambiente.
+   * La stringa si riferisce a una risorsa JSP
+   * ES url=jsmia.jsp -> http://localhost:8080/src/jsmia.jsp
+   * oppure http://mio.server.it:8080/miaapp/servlet/miaapp/template/jsmia.jsp
+   */
+  public String getServerUrl(String url)
+  {
+    if(url.startsWith("/"))
+      url = url.substring(1);
+
+    return Turbine.getContextPath() + "/pgm/template/" + url;
+  }
+
+  public String getImgGeneric(String imgName, String tip)
+     throws Exception
+  {
+    return "<img src=\"" + ui.image(imgName) + "\" alt=\"" + tip
+       + "\" title=\"" + tip + "\" border=\"0\">";
+  }
+
+  public String getCurrJspName()
+  {
+    return currJspName;
+  }
+
+  public void setCurrJspName(String currJspName)
+  {
+    this.currJspName = currJspName;
+  }
+
+  public Service getService(String service)
+  {
+    return TurbineServices.getInstance().getService(service);
+  }
+
+  public String getEsercizio()
+     throws Exception
+  {
+    return Integer.toString(today.getYear());
+  }
+
+  /**
+   * Esecuzione di comandi. Il form invia un parametro speciale chiamato
+   * 'command' con una stringa identificativa dell'operazione richiesta
+   * dall'utente. Questa stringa diviene parte di un metodo doCmd_stringa
+   * ricercato a runtime e se presente eseguito. Vedi doCmd_... per ulteriori
+   * dettagli.
+   *
+   * @param command comando da eseguire
+   * @param data parametri generali della richiesta
+   * @param params mappa di tutti i parametri request più eventuali parametri
+   * permanenti
+   * @throws Exception
+   */
+  public void doCommand(String command, ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    SU.doCommand(this, command, data, params, args);
+  }
+
+  /**
+   * Notifica inserimento in sessione.
+   * Viene chiamata quando questo bean viene inserito in una sessione.
+   * @param hsbe
+   */
+  @Override
+  public void valueBound(HttpSessionBindingEvent hsbe)
+  {
+  }
+
+  /**
+   * Notifica rimozione da sessione.
+   * Viene chiamata quando questo bean viene rimosso da una sessione.
+   * Questo include il caso di una sessione scaduta per timeout.
+   * @param hsbe
+   */
+  @Override
+  public void valueUnbound(HttpSessionBindingEvent hsbe)
+  {
+  }
+}

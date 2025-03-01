@@ -1,0 +1,3761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LANGPACK>
+  <LANGUAGES>
+    <LANG name="Italiano" language="it" country="IT" key="DEFAULT" />
+    <LANG name="English (United Kingdom)" language="en" country="UK" key="en_UK" />
+    <LANG name="English (United States)" language="en" country="US" key="en_US" alternate="en_UK" />
+    <LANG name="Espagnol (Espagna)" language="es" country="ES" key="es_ES" />
+  </LANGUAGES>
+  <MESSAGES>
+    <MSG>
+      <DEFAULT><![CDATA[%s esiste ma non e' una directory.]]></DEFAULT>
+      <en_UK><![CDATA[%s exist but is not a directory.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[%s settimane]]></DEFAULT>
+      <en_UK><![CDATA[%s weeks]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[(seleziona)]]></DEFAULT>
+      <en_UK><![CDATA[(select)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[<p>
+            Inserire una descrizione <i>possibilmente dettagliata</i> delle operazioni
+            che si stavano effettuando al momento dell'errore.<br>
+            Quindi clicca su
+            Invia per recapitare direttamente agli sviluppatori queste informazioni sull'errore verificatosi.
+            <br>
+            Quanto più saranno dettagliate le informazioni fornite,
+            <b>tanto maggiore sarà la velocità</b>
+            di individuazione e correzione dell'eventuale errore.
+          </p>
+          <p>
+            <b>Grazie</b>
+          </p>]]></DEFAULT>
+      <en_UK><![CDATA[<p>
+            Please insert a description <i>as much detailed as possible</i> of the pending operation before the error occurred.<br>
+            Thereafter click on 'Send' to send directly to our developers the error information.
+            <br>
+            The more information you detail about the error, <b>the more speedily</b> it will be corrected.
+          </p>
+          <p>
+            <b>Thank you</b>
+          </p>]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[<p><b>ATTENZIONE. Questa funzione disinnesca tutti gli allarmi attivi.</b></p>]]></DEFAULT>
+      <en_UK><![CDATA[<p><b>ATTENTION. This function clear all active alarms.</b></p>]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[<p>Per utilizzare alcune componenti è necessario installare questo<br>
+          certificato nella propria Java Virtual Machine.</p>
+              <p>Utilizzare il link dell'immagine a sinistra per salvare <b>in una directory del proprio hard disk</b><br>
+                il certificato collegato.<br></p>
+              <p>Utilizzare quindi il pannello di controllo di Java per importarlo come indicato<br>
+                nell'immagine sottostante.</p>]]></DEFAULT>
+      <en_UK><![CDATA[<p>To use some componets is necessary to instal this<br>
+                certificate in the Java Virtual Machine.</p>
+                <p>Use the link on left immage to save <b>in a directory of your hard disk</b> the link certifcate.<br></p>
+                <p>Use the java control panel to import them follow the instruction in the below image.</p>]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ABORT]]></DEFAULT>
+      <en_UK><![CDATA[ABORT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACC]]></DEFAULT>
+      <en_UK><![CDATA[ORD]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACCESSION NUMBER]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACCETTATO]]></DEFAULT>
+      <en_UK><![CDATA[ORDERED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACCETTAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[ORDER INSERTION]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACCETTAZIONI]]></DEFAULT>
+      <en_UK><![CDATA[ORDER INSERTION]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACCORPAMENTO VIS.]]></DEFAULT>
+      <en_UK><![CDATA[COLLECTING VIEW]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ACCOUNT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ADMISSION ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[AETITLE]]></DEFAULT>
+      <en_UK><![CDATA[AETITLE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ALTEZZA]]></DEFAULT>
+      <en_UK><![CDATA[HEIGHT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ANAGRAFICHE]]></DEFAULT>
+      <en_UK><![CDATA[DATA]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ANAMNESI]]></DEFAULT>
+      <en_UK><![CDATA[ANAMNESIS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[APPLICATION]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ASL]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ATTENZIONE]]></DEFAULT>
+      <en_UK><![CDATA[ATTENTION]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ATTIVO]]></DEFAULT>
+      <en_UK><![CDATA[ACTIVE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ATTORE IHE]]></DEFAULT>
+      <en_UK><![CDATA[IHE ACTOR]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Abbandona]]></DEFAULT>
+      <en_UK><![CDATA[Leave]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Abilita nuovamente uso password]]></DEFAULT>
+      <en_UK><![CDATA[Enable password again]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Abilitazione all'accesso]]></DEFAULT>
+      <en_UK><![CDATA[Enable account to login]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accesso al programma]]></DEFAULT>
+      <en_UK><![CDATA[Application access]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazione %d inviata attraverso il link.]]></DEFAULT>
+      <en_UK><![CDATA[Order %d has been sent through link.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazione con id %d non presente nel database.]]></DEFAULT>
+      <en_UK><![CDATA[Order id %d not found inside the database.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazione finale dopo fusione %d: %s]]></DEFAULT>
+      <en_UK><![CDATA[Final order id after merge %d: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazione pulita e pronta per ripetere generazione dati.]]></DEFAULT>
+      <en_UK><![CDATA[Order clear ready for repeat data computing.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazione rielaborata: generazione dati avvenuta.]]></DEFAULT>
+      <en_UK><![CDATA[Order processed: intermediate data generated.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazioni]]></DEFAULT>
+      <en_UK><![CDATA[Orders]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Accettazioni di pazienti ed esami]]></DEFAULT>
+      <en_UK><![CDATA[Order on patient and study.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account associazione ruoli/permessi]]></DEFAULT>
+      <en_UK><![CDATA[Account to roles/permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account associazione singolo permesso a ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Account to single permission to roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account associazione singolo ruolo a permessi]]></DEFAULT>
+      <en_UK><![CDATA[Account to single role to permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account associazione singolo ruolo a utenti]]></DEFAULT>
+      <en_UK><![CDATA[Account to single role to users]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account associazione singolo utente a ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Account to single user to roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account associazione utenti/ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Account to users/roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account permessi]]></DEFAULT>
+      <en_UK><![CDATA[Account to permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Account ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Account to roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Aggiorna]]></DEFAULT>
+      <en_UK><![CDATA[Update]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Agosto]]></DEFAULT>
+      <en_UK><![CDATA[August]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Allarmi]]></DEFAULT>
+      <en_UK><![CDATA[Alarms]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Altezza]]></DEFAULT>
+      <en_UK><![CDATA[Height]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Altezza (cm)]]></DEFAULT>
+      <en_UK><![CDATA[Height (cm)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Analisi automatica dei log]]></DEFAULT>
+      <en_UK><![CDATA[Log parsing]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Analizza logs]]></DEFAULT>
+      <en_UK><![CDATA[Log parsing]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Annulla]]></DEFAULT>
+      <en_UK><![CDATA[Cancel]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Applica]]></DEFAULT>
+      <en_UK><![CDATA[Apply]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Applicativi esterni]]></DEFAULT>
+      <en_UK><![CDATA[External applications]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Apri finestra]]></DEFAULT>
+      <en_UK><![CDATA[Open window]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Apri strumento]]></DEFAULT>
+      <en_UK><![CDATA[Open instrument]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Aprile]]></DEFAULT>
+      <en_UK><![CDATA[April]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Argo binary]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Argo lib]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Arquery]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Arresta strumento]]></DEFAULT>
+      <en_UK><![CDATA[Stop instrument]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Arresta task in background]]></DEFAULT>
+      <en_UK><![CDATA[Stop background task]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Asl]]></DEFAULT>
+      <en_UK><![CDATA[Healt district]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associa]]></DEFAULT>
+      <en_UK><![CDATA[Link]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione degli utenti ai ruoli selezionati]]></DEFAULT>
+      <en_UK><![CDATA[Link users to selected roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione degli utenti al ruolo]]></DEFAULT>
+      <en_UK><![CDATA[Link users to role]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei permessi ai rispettivi ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Link permissions to related roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei permessi ai ruoli selezionati]]></DEFAULT>
+      <en_UK><![CDATA[Link permissions to selected roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei permessi al ruolo]]></DEFAULT>
+      <en_UK><![CDATA[Link permissions to role]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei ruoli a utenti selezionati]]></DEFAULT>
+      <en_UK><![CDATA[Link roles to selected users]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei ruoli agli utenti]]></DEFAULT>
+      <en_UK><![CDATA[Link roles to users]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei ruoli ai permessi selezionati]]></DEFAULT>
+      <en_UK><![CDATA[Link roles to selected permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei ruoli al permesso]]></DEFAULT>
+      <en_UK><![CDATA[Link roles to permission]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Associazione dei ruoli all'utente]]></DEFAULT>
+      <en_UK><![CDATA[Link roles to user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Attenzione: ci sono %d allarmi che richiedono attenzione.]]></DEFAULT>
+      <en_UK><![CDATA[Attention: some alarms have to be considered (%d)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Attiva monitor]]></DEFAULT>
+      <en_UK><![CDATA[Monitor activation]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Attiva strumento]]></DEFAULT>
+      <en_UK><![CDATA[Instrument activation]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Attivata connessione %s.]]></DEFAULT>
+      <en_UK><![CDATA[Connection activated %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Autenticazione fallita per l'utente %s:]]></DEFAULT>
+      <en_UK><![CDATA[Authentication failed for user %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Autenticazione utente %s avvenuta.]]></DEFAULT>
+      <en_UK><![CDATA[Successful authentication for user %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Avvia ricerca campione]]></DEFAULT>
+      <en_UK><![CDATA[Start sample search]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Avvisare un operatore per la risoluzione degli allarmi.]]></DEFAULT>
+      <en_UK><![CDATA[Contact operator for alarms]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Azioni]]></DEFAULT>
+      <en_UK><![CDATA[Actions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BARCODE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BAUD (0=Unix domain socket)]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BELFIORE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BRANCA]]></DEFAULT>
+      <en_UK><![CDATA[BRANCH]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BRANCHE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BUILDER]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[BUILDER INFO]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Branche]]></DEFAULT>
+      <en_UK><![CDATA[Branches]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Buffer messaggi HL7]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message buffer]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CAMPIONI]]></DEFAULT>
+      <en_UK><![CDATA[SAMPLES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CAMPO CHIAVE]]></DEFAULT>
+      <en_UK><![CDATA[KEY FIELD]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CAMPO VALORE]]></DEFAULT>
+      <en_UK><![CDATA[VALUE FIELD]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CANCELLATO]]></DEFAULT>
+      <en_UK><![CDATA[DELETED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CAP]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CARICATO]]></DEFAULT>
+      <en_UK><![CDATA[LOADED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CATEGORIA]]></DEFAULT>
+      <en_UK><![CDATA[CATEGORY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CATEGORIE]]></DEFAULT>
+      <en_UK><![CDATA[CATEGORIES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CELLULARE]]></DEFAULT>
+      <en_UK><![CDATA[CELLULAR]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CHAR SET]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CHIAVE]]></DEFAULT>
+      <en_UK><![CDATA[KEY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CITTA]]></DEFAULT>
+      <en_UK><![CDATA[CITY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COD ESAMI]]></DEFAULT>
+      <en_UK><![CDATA[EXAM COD]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COD ESAMI NUMERICI]]></DEFAULT>
+      <en_UK><![CDATA[NUMERIC EXAM COD]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COD ICD9CM]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COD LOCATION]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICE]]></DEFAULT>
+      <en_UK><![CDATA[CODE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICE ESAME]]></DEFAULT>
+      <en_UK><![CDATA[EXAME CODE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICE FISCALE]]></DEFAULT>
+      <en_UK><![CDATA[TAX CODE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICE FISCALE (0=AUTO)]]></DEFAULT>
+      <en_UK><![CDATA[TAX CODE (0=AUTO)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICE SANITARIO]]></DEFAULT>
+      <en_UK><![CDATA[HEALTH CODE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICEASLREGIONE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODICEREGIONE]]></DEFAULT>
+      <en_UK><![CDATA[REGION CODE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CODMIN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COGNOME]]></DEFAULT>
+      <en_UK><![CDATA[SURNAME]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COMPLETO]]></DEFAULT>
+      <en_UK><![CDATA[COMPLETE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COMUNE NASCITA]]></DEFAULT>
+      <en_UK><![CDATA[BIRTH MUNIC.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[COMUNI]]></DEFAULT>
+      <en_UK><![CDATA[MUNICIPALITIES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CONF CONST ONPAT DATA]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CONFERMATO]]></DEFAULT>
+      <en_UK><![CDATA[CONFIRMED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CONNESSIONE]]></DEFAULT>
+      <en_UK><![CDATA[CONNECTION]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CONTRASTALLERGIES]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CQ CONVALIDA]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CQ PATH]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CQ TIPO]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CURRPATLOC]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[CUVETTA]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Calendario]]></DEFAULT>
+      <en_UK><![CDATA[Calendar]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cambia password]]></DEFAULT>
+      <en_UK><![CDATA[Change password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cambio password]]></DEFAULT>
+      <en_UK><![CDATA[Change password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cambio password avvenuto con successo.]]></DEFAULT>
+      <en_UK><![CDATA[Password successfully changed]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Campioni]]></DEFAULT>
+      <en_UK><![CDATA[Samples]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Campo]]></DEFAULT>
+      <en_UK><![CDATA[Field]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Campo su cui applicare la regola di filtro.]]></DEFAULT>
+      <en_UK><![CDATA[Field to apply filer rule.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Can't find the requested action!]]></DEFAULT>
+      <en_UK><![CDATA[Can't find the requested action!]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cancella anagrafiche]]></DEFAULT>
+      <en_UK><![CDATA[Delete records]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cancella record]]></DEFAULT>
+      <en_UK><![CDATA[Delete record]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cancellati %d anagrafiche dal db; cancellati rack e risultati.]]></DEFAULT>
+      <en_UK><![CDATA[%d records deleted from DB (rack and results)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cancellati %d esami dal setup.]]></DEFAULT>
+      <en_UK><![CDATA[%d exams deleted from setup]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Carico il plugin %s]]></DEFAULT>
+      <en_UK><![CDATA[Loding plugin %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Categorie]]></DEFAULT>
+      <en_UK><![CDATA[Categories]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cerca]]></DEFAULT>
+      <en_UK><![CDATA[Find]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cerca Paziente]]></DEFAULT>
+      <en_UK><![CDATA[Search for patient]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cerca paziente]]></DEFAULT>
+      <en_UK><![CDATA[Search for patient]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cerca paziente in anagrafica]]></DEFAULT>
+      <en_UK><![CDATA[Search for patient]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cerca!]]></DEFAULT>
+      <en_UK><![CDATA[Search!]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Certificati digitali associati all'utente]]></DEFAULT>
+      <en_UK><![CDATA[Digital certifications linked to user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Certificati digitali attualmente utilizzati per la connessione]]></DEFAULT>
+      <en_UK><![CDATA[Digital certifications in use for connection]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Certificati forniti dal server non validi o scaduti (consultare log per i dettagli).]]></DEFAULT>
+      <en_UK><![CDATA[Server certifications not valid or expired (look at logfile for detail)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Certificato non valido: %s]]></DEFAULT>
+      <en_UK><![CDATA[Invalid certification: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Certificato scaduto: %s]]></DEFAULT>
+      <en_UK><![CDATA[Expired certification: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Checkin campione]]></DEFAULT>
+      <en_UK><![CDATA[Sample check-in]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Checkin campioni]]></DEFAULT>
+      <en_UK><![CDATA[Sample check-in]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Chiudi]]></DEFAULT>
+      <en_UK><![CDATA[Close]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Chiudi questa finestra]]></DEFAULT>
+      <en_UK><![CDATA[Close window]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Chiusura]]></DEFAULT>
+      <en_UK><![CDATA[Close]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Circoscrizioni]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Classe %s non trovata o non istanziabile.]]></DEFAULT>
+      <en_UK><![CDATA[Class not found: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Coda permanente codice plugin %s non trovato.]]></DEFAULT>
+      <en_UK><![CDATA[Permanent queue plugin code not found: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice]]></DEFAULT>
+      <en_UK><![CDATA[Code]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice accettazione da fondere non specificato.]]></DEFAULT>
+      <en_UK><![CDATA[Merging Order Id not provided]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice assistito]]></DEFAULT>
+      <en_UK><![CDATA[Patient health code]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice errore [%s]; codice hl7 [%s]; errore remoto [%s].]]></DEFAULT>
+      <en_UK><![CDATA[Error code [%s]; hl7 code [%s]; remote errore remot [%s]]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice fiscale]]></DEFAULT>
+      <en_UK><![CDATA[Tax code]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice fiscale, cognome, nome, data di nascita]]></DEFAULT>
+      <en_UK><![CDATA[Tax code, last name, first name, date of birth]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Codice ordine]]></DEFAULT>
+      <en_UK><![CDATA[Order Id]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cognome]]></DEFAULT>
+      <en_UK><![CDATA[Last name]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Cognome e nome]]></DEFAULT>
+      <en_UK><![CDATA[Last name and first name]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Collegamento non disponibile (%s).]]></DEFAULT>
+      <en_UK><![CDATA[Connection not available]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Commento all'esame]]></DEFAULT>
+      <en_UK><![CDATA[Comment to exam]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Componente]]></DEFAULT>
+      <en_UK><![CDATA[Component]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Componenti]]></DEFAULT>
+      <en_UK><![CDATA[Components]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Comuni]]></DEFAULT>
+      <en_UK><![CDATA[Municipalities]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Condizione non possibile.]]></DEFAULT>
+      <en_UK><![CDATA[Condition impossible]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Conferma questo esame come completato.]]></DEFAULT>
+      <en_UK><![CDATA[Confirm this exam as completed]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Config Argo]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Configurazione server ricaricata.]]></DEFAULT>
+      <en_UK><![CDATA[Server configurazione reloaded]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Connessione]]></DEFAULT>
+      <en_UK><![CDATA[Connection]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Connettore HL7]]></DEFAULT>
+      <en_UK><![CDATA[HL7 connector]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Connettore X1V1]]></DEFAULT>
+      <en_UK><![CDATA[X1V1 connector]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Consultare separatamente le logs dal menù LOGS per l'elenco dettagliato dei messaggi.]]></DEFAULT>
+      <en_UK><![CDATA[Detail message list available inside LOGS menu]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Contatori]]></DEFAULT>
+      <en_UK><![CDATA[Counters]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Context]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Crea nuovo paziente]]></DEFAULT>
+      <en_UK><![CDATA[Create new patient]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Creato]]></DEFAULT>
+      <en_UK><![CDATA[Created]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Creazione nuovi oggetti non consentita.]]></DEFAULT>
+      <en_UK><![CDATA[New object creation not allowed]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[D.ACC.]]></DEFAULT>
+      <en_UK><![CDATA[ORD.D]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DA ASSEGNARE]]></DEFAULT>
+      <en_UK><![CDATA[TO BE ASSIGN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA]]></DEFAULT>
+      <en_UK><![CDATA[DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA ACCETTAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[ORDERING DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA ESECUZIONE]]></DEFAULT>
+      <en_UK><![CDATA[EXECUTION DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA NASCITA]]></DEFAULT>
+      <en_UK><![CDATA[BIRTH DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA PRELIEVO]]></DEFAULT>
+      <en_UK><![CDATA[S.TAKING DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA QUERY]]></DEFAULT>
+      <en_UK><![CDATA[QUERY DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA RICEZIONE]]></DEFAULT>
+      <en_UK><![CDATA[RECEIVING DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA ULT MEST]]></DEFAULT>
+      <en_UK><![CDATA[LAST MESTR. DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATA ULTIMO RISULTATO]]></DEFAULT>
+      <en_UK><![CDATA[LAST RESULT DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DATATX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DB password]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DB url]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DB user]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DCE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DEBUG]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DESCRIZIONE]]></DEFAULT>
+      <en_UK><![CDATA[DESCRIPTION]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DESCRIZIONE (0=Auto)]]></DEFAULT>
+      <en_UK><![CDATA[DESCRIPTION (0=Auto)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DESINENZA]]></DEFAULT>
+      <en_UK><![CDATA[DESINENCE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DICOM Port]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DICOM TLS Port]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DICOM dictionary]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DICOM toolkit]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DISEGNO]]></DEFAULT>
+      <en_UK><![CDATA[DESIGN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DISTRETTI]]></DEFAULT>
+      <en_UK><![CDATA[DISTRICTS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[DIURESI]]></DEFAULT>
+      <en_UK><![CDATA[DIURESIS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Da %d a %d anni]]></DEFAULT>
+      <en_UK><![CDATA[%d to %d years]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dall'inizio dell'anno]]></DEFAULT>
+      <en_UK><![CDATA[Since the start of the year]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data]]></DEFAULT>
+      <en_UK><![CDATA[Date]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data Accettazione]]></DEFAULT>
+      <en_UK><![CDATA[Ordering date]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data accettazione]]></DEFAULT>
+      <en_UK><![CDATA[Ordering date]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data creazione]]></DEFAULT>
+      <en_UK><![CDATA[Creation date]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data di nascita]]></DEFAULT>
+      <en_UK><![CDATA[Date of birth]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data ordine]]></DEFAULT>
+      <en_UK><![CDATA[Ordering date]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data ultima modifica]]></DEFAULT>
+      <en_UK><![CDATA[Last modification]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Data ultimo logon]]></DEFAULT>
+      <en_UK><![CDATA[Last login]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Database]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dati allarme]]></DEFAULT>
+      <en_UK><![CDATA[Alarm data]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dati anagrafici]]></DEFAULT>
+      <en_UK><![CDATA[Record data]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dati generali utente]]></DEFAULT>
+      <en_UK><![CDATA[User data]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dati incompleti in invioRisultati(): ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[Lack of result data ignored]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dati per l'utente]]></DEFAULT>
+      <en_UK><![CDATA[Data for user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dati utente salvati con successo.]]></DEFAULT>
+      <en_UK><![CDATA[User date successfully saved]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Descrittore del rack di provette da inserire nello strumento]]></DEFAULT>
+      <en_UK><![CDATA[Rack descriptor]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Descrizione]]></DEFAULT>
+      <en_UK><![CDATA[Description]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Descrizione operazioni:]]></DEFAULT>
+      <en_UK><![CDATA[Operation description:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Descrizione:]]></DEFAULT>
+      <en_UK><![CDATA[Description:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Deseleziona tutti]]></DEFAULT>
+      <en_UK><![CDATA[Unselect all]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dettagli stampa]]></DEFAULT>
+      <en_UK><![CDATA[Print detail]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Dicembre]]></DEFAULT>
+      <en_UK><![CDATA[December]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Directory]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Directory DICOM]]></DEFAULT>
+      <en_UK><![CDATA[DICOM Directory]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Directory Reject]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disabilita]]></DEFAULT>
+      <en_UK><![CDATA[Disable]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disabilita Allarme]]></DEFAULT>
+      <en_UK><![CDATA[Disable alarm]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disabilita tutti gli allarmi attivi]]></DEFAULT>
+      <en_UK><![CDATA[Disable all active alarms]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disabilita uso password]]></DEFAULT>
+      <en_UK><![CDATA[Disable password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disattiva monitor]]></DEFAULT>
+      <en_UK><![CDATA[Disable monitor]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disattivazione multipla]]></DEFAULT>
+      <en_UK><![CDATA[Multiple disable]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disinnesco Allarme]]></DEFAULT>
+      <en_UK><![CDATA[Alarm shut down]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Distretti]]></DEFAULT>
+      <en_UK><![CDATA[Districts]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Distruggo il file %s]]></DEFAULT>
+      <en_UK><![CDATA[Destroying file %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Diuresi (ml)]]></DEFAULT>
+      <en_UK><![CDATA[Diuresis (ml)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Documenti Allegati]]></DEFAULT>
+      <en_UK><![CDATA[Attached documents]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Duplica]]></DEFAULT>
+      <en_UK><![CDATA[Duplicate]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Durata sessione (secondi)]]></DEFAULT>
+      <en_UK><![CDATA[Session time (seconds)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[E]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[E' necessario effettuare la logon!]]></DEFAULT>
+      <en_UK><![CDATA[You have to log on!]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[E' stata definita una funzione 'imposta' ma manca la direttiva foreign-server nella lista '%s'.]]></DEFAULT>
+      <en_UK><![CDATA[Missing foreign-server guideline inside the list '%s'.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[E-mail]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ELABORATO]]></DEFAULT>
+      <en_UK><![CDATA[DONE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[EMAIL]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[EMail]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ENTEREDBY]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[EPISODIO]]></DEFAULT>
+      <en_UK><![CDATA[VISIT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE]]></DEFAULT>
+      <en_UK><![CDATA[ERROR]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE DI CONFIGURAZIONE: il plugin deve essere una istanza di ExternalAgentPlugin.]]></DEFAULT>
+      <en_UK><![CDATA[CONFIGURATION ERROR: plugin must be ExternalAgentPlugin instance]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE DI CONFIGURAZIONE: il protocol deve essere una istanza di ExternalAgentProtocol.]]></DEFAULT>
+      <en_UK><![CDATA[CONFIGURATION ERROR: protocol must be ExternalAgentProtocol instance]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE DI CONFIGURAZIONE: il runner deve essere una istanza di ExternalAgentRunner.]]></DEFAULT>
+      <en_UK><![CDATA[CONFIGURATION ERROR: runner must be ExternalAgentRunner instance]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE DI SETUP: lo strumento %s indica una dimensione rack di 0 provette (impossibile).]]></DEFAULT>
+      <en_UK><![CDATA[SETUP ERROR: 0 rack tube dimension from device %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE FATALE nell'invio di %s (%s): eliminato dalla coda permanente.]]></DEFAULT>
+      <en_UK><![CDATA[FATAL ERROR: sending %s (%s) - removed from permanent queue]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ERRORE: tentativo di aggiungere un risultato senza SID o strumento.]]></DEFAULT>
+      <en_UK><![CDATA[ERROR: trying to add result without SID or device]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ESAME]]></DEFAULT>
+      <en_UK><![CDATA[EXAM]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ESAMETX]]></DEFAULT>
+      <en_UK><![CDATA[EXAMTX]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ESAMI]]></DEFAULT>
+      <en_UK><![CDATA[EXAMS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ESEGUITO]]></DEFAULT>
+      <en_UK><![CDATA[DONE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ESERCIZIO]]></DEFAULT>
+      <en_UK><![CDATA[MANAGEMENT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ETA]]></DEFAULT>
+      <en_UK><![CDATA[AGE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ETHNIC GROUP]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ETICHETTE]]></DEFAULT>
+      <en_UK><![CDATA[LABELS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[EXAMPRIORITY]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Elaborazione automatica attiva.]]></DEFAULT>
+      <en_UK><![CDATA[Automatic job active]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Elaborazione stampa in corso]]></DEFAULT>
+      <en_UK><![CDATA[Printing...]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Elenco dei campioni da analizzare]]></DEFAULT>
+      <en_UK><![CDATA[Specimen list]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Elenco pazienti]]></DEFAULT>
+      <en_UK><![CDATA[Patient list]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Entità HL7]]></DEFAULT>
+      <en_UK><![CDATA[HL7 entity]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Episodio]]></DEFAULT>
+      <en_UK><![CDATA[Visit]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore]]></DEFAULT>
+      <en_UK><![CDATA[Error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore (non fatale) durante il salvataggio dei risulati:]]></DEFAULT>
+      <en_UK><![CDATA[Error saving results:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore (non fatale) durante la notifica:]]></DEFAULT>
+      <en_UK><![CDATA[Notify Error:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore applicazione durante elaborazione messaggio %s:]]></DEFAULT>
+      <en_UK><![CDATA[Application error parsing message %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore caricamento dati esterni: il SID %s non ha una corrispettiva entry in INF.IN_ACCETTAZIONI; ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[Loading Error: SID %s has no entry in INF.IN_ACCETTAZIONI; ignored.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore caricamento dati esterni: il SID %s non ha una corrispettiva entry in INF.IN_CAMPIONI; ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[Loading Error: SID %s has no entry in INF_IN_CAMPIONI; ignored.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore caricamento dati esterni: il SID %s non ha una corrispettiva entry in INF.RUN_CAMPIONI; ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[Loading Error: SID %s has no entry in INF.RUN_CAMPIONI; ignored.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore caricando l'handler per il messaggio %s/%s^%s]]></DEFAULT>
+      <en_UK><![CDATA[Error loading message handler %s/%s^%s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore di lettura dall'agent %s:]]></DEFAULT>
+      <en_UK><![CDATA[Error reading agent %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore di protocollo HL7 messaggio %s:]]></DEFAULT>
+      <en_UK><![CDATA[HL7 protocol Error %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore di scrittura dall'agent %s:]]></DEFAULT>
+      <en_UK><![CDATA[Error writing agent %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore di setup: lo strumento %s non ha uno screen specifico.]]></DEFAULT>
+      <en_UK><![CDATA[Setup Error: no screen for device %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante deserializzazione messaggio (%s): lo elimino dal db.]]></DEFAULT>
+      <en_UK><![CDATA[Error unserializing message (%s): remove messagge from db.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante l'elaborazione di una sessione:]]></DEFAULT>
+      <en_UK><![CDATA[Session computing error:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante l'elaborazione:]]></DEFAULT>
+      <en_UK><![CDATA[Processing error:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante l'inizializzazione di ModiStatiTool: %s]]></DEFAULT>
+      <en_UK><![CDATA[Error initializing ModiStatiTool: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante l'invio del messaggio; ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[Error sending message]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante la spedizione di messaggio:]]></DEFAULT>
+      <en_UK><![CDATA[Error sending message:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore durante lo scan della directoy %s.]]></DEFAULT>
+      <en_UK><![CDATA[Error parsing directory]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore fatale nel servizio scanner:]]></DEFAULT>
+      <en_UK><![CDATA[Fatal Error in scanner service:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore fatale nel servizio sender:]]></DEFAULT>
+      <en_UK><![CDATA[Fatal Error in sender service:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore fatale nell'arresto elaborazione automatica.]]></DEFAULT>
+      <en_UK><![CDATA[Fatal Error stopping automatic process]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore fatale nell'inizializzazione del parser:]]></DEFAULT>
+      <en_UK><![CDATA[Fatal Error initializing parser:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno. Visualizzazione non possibile: rivedere flusso.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - unable to show detail]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: certificato non specificato.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - certificate not specified]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: id=0; impossibile continuare.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - id=0; unable to continue]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: idAcc=0 su ValidaRisultatiBean; impossibile continuare.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - idAcc=0 on ValidaRisultatiBean; unable to continue]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: manca il parametro 'command'.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error: missing 'command' parameter.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: manca il parametro idvis.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error: missing idvis parameter.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: nessun parametro per id=%d; impossibile continuare.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - no parameter for id=%d; unable to continue.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: nessun risultato per id=%d; impossibile continuare.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - no result for id=%d; unable to continue.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: non riesco ad identificare il certificato dal serialnumber.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - unable to identify serial number certificate.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: parameto idacc non specificato nella richiesta.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - idacc parameter not specified for the order.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: parametro idacc non specificato.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - idacc parameter not specified.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore interno: strumento non specificato nella richiesta.]]></DEFAULT>
+      <en_UK><![CDATA[Internal Error - driver not specified for the order.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore leggendo il file %s:]]></DEFAULT>
+      <en_UK><![CDATA[Error reading file %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore lettura file %s: probabilmente un file danneggiato.]]></DEFAULT>
+      <en_UK><![CDATA[Error reading file %s: probably damaged.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore logico in accettazione %s/%s: il campione %d non è associato a questa accettazione.]]></DEFAULT>
+      <en_UK><![CDATA[Error in order %s/%s: sample %d not in this order.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore logico in accettazione %s/%s: il campione %d è associato a più strumenti.]]></DEFAULT>
+      <en_UK><![CDATA[Error in order %s/%s: sample %d refers to more than one device.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore logico in accettazione %s/%s: il campione %s di tipo %s dovrebbe essere assegnato a più strumenti.]]></DEFAULT>
+      <en_UK><![CDATA[Error in order %s/%s: sample %s type %s should be assigned to more than one device.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore logico in accettazione %s/%s: nessun campione in ingresso è di tipo %s.]]></DEFAULT>
+      <en_UK><![CDATA[Error in order %s/%s: no input sample of type %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore logico in accettazione %s/%s: parametro con nessun campione associato.]]></DEFAULT>
+      <en_UK><![CDATA[Error in order %s/%s: no sample for the parameter.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore logico in accettazione %s/%s: sono troppo pochi i campioni di tipo %s.]]></DEFAULT>
+      <en_UK><![CDATA[Error in order %s/%s: not enough sample of type %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nel login di %s]]></DEFAULT>
+      <en_UK><![CDATA[Login Error for %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nel logout di %s]]></DEFAULT>
+      <en_UK><![CDATA[Logout Error for %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nel loop link:]]></DEFAULT>
+      <en_UK><![CDATA[Loop link Error:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nel thread di scansione.]]></DEFAULT>
+      <en_UK><![CDATA[Parsing thread Error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nel thread di sincronizzazione:]]></DEFAULT>
+      <en_UK><![CDATA[Sinchronizing thread Error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nel thread monitoraggio strumento %s]]></DEFAULT>
+      <en_UK><![CDATA[Device monitor thread Error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nell'esecuzione di arquery.]]></DEFAULT>
+      <en_UK><![CDATA[Error processing arquery]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nell'inizializzazione del LinkAgent %s:]]></DEFAULT>
+      <en_UK><![CDATA[Error initializing LinkAgent %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nella costruzione messaggi HL7 di errore:]]></DEFAULT>
+      <en_UK><![CDATA[Error building HL7 ERR msg]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nella lettura del blocco risultati STR=%d SID=%s]]></DEFAULT>
+      <en_UK><![CDATA[Error reading result block STR=%d SID=%s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore nella trasmissione del messaggio %s verso %s: impossibile concludere l'operazione.]]></DEFAULT>
+      <en_UK><![CDATA[Error sending message %s to %s: unable to close action.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore non fatale: riprovo in seguito.]]></DEFAULT>
+      <en_UK><![CDATA[General error - task scheduled later.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore recuperando lista di transcodifica gruppi.]]></DEFAULT>
+      <en_UK><![CDATA[Error reading map code list for groups.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Errore salvando lo stato della coda e del campione (%s).]]></DEFAULT>
+      <en_UK><![CDATA[Error saving queue state and sample state (%s).]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esame]]></DEFAULT>
+      <en_UK><![CDATA[Exam]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esame validato.]]></DEFAULT>
+      <en_UK><![CDATA[Exam has been validated]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esami]]></DEFAULT>
+      <en_UK><![CDATA[Exams]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esami di chimica clinica]]></DEFAULT>
+      <en_UK><![CDATA[Biochemistry exams]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esami di radiologia]]></DEFAULT>
+      <en_UK><![CDATA[Radiology exams]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esami di spirometria]]></DEFAULT>
+      <en_UK><![CDATA[Epirometry exams]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Esami richiesti per accettazione]]></DEFAULT>
+      <en_UK><![CDATA[Request study per order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Eta]]></DEFAULT>
+      <en_UK><![CDATA[Age]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Etnia]]></DEFAULT>
+      <en_UK><![CDATA[Ethnic group]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Età]]></DEFAULT>
+      <en_UK><![CDATA[Age]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[F]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FACILITY]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FATTORE RH]]></DEFAULT>
+      <en_UK><![CDATA[RH Factor]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FAX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FILLER NUM]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FILTER]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FLAG ERRORE]]></DEFAULT>
+      <en_UK><![CDATA[ERROR FLAG]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FLAGTX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[FUMATORE]]></DEFAULT>
+      <en_UK><![CDATA[SMOKER]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Fallito login verso x1v1: %s [Codice errore %d] consultare la log per maggiori dettagli.]]></DEFAULT>
+      <en_UK><![CDATA[x1v1 login failed: %s [Error Code %d] - read logs for more detail.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Febbraio]]></DEFAULT>
+      <en_UK><![CDATA[February]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[File XML non valido: nessun root document.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid XML file: no root document.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[File XML non valido: sezioni roles, permissions, grants sono obbligatorie.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid XLM file: role, permission and grant sections are mandatory.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Fine verifica certificati per %s:%d]]></DEFAULT>
+      <en_UK><![CDATA[Certification test ended %s:%d]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Flush cache]]></DEFAULT>
+      <en_UK><![CDATA[Flushing cache]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Formato carta non supportato.]]></DEFAULT>
+      <en_UK><![CDATA[Unsupported paper format.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Found 44 matches of i18n( in 13 files.]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Fumatore]]></DEFAULT>
+      <en_UK><![CDATA[Smoker]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Fun.]]></DEFAULT>
+      <en_UK><![CDATA[Fun.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Funzione di trasferimento inesistente.]]></DEFAULT>
+      <en_UK><![CDATA[Transfer function unavailable.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Fusione con paziente %s %s %s.]]></DEFAULT>
+      <en_UK><![CDATA[Merging with patient %s %s %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[GRAFICI]]></DEFAULT>
+      <en_UK><![CDATA[GRAPHICS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[GRAVE ERRORE nella funzione di invio coda permanete: %s.]]></DEFAULT>
+      <en_UK><![CDATA[ERROR sending permanent queue: %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[GRUPPO SANGUIGNO]]></DEFAULT>
+      <en_UK><![CDATA[BLOOD TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Generale]]></DEFAULT>
+      <en_UK><![CDATA[General]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Generazione file %s con dati.]]></DEFAULT>
+      <en_UK><![CDATA[Creating data file %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Generazione file %s con risultati.]]></DEFAULT>
+      <en_UK><![CDATA[Creating result file %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Gennaio]]></DEFAULT>
+      <en_UK><![CDATA[January]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Gestione delle strumentazioni per la casa della salute.]]></DEFAULT>
+      <en_UK><![CDATA[Instrument management for medial office.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Giornale]]></DEFAULT>
+      <en_UK><![CDATA[Journal]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Giornale di login]]></DEFAULT>
+      <en_UK><![CDATA[Login journal]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Giugno]]></DEFAULT>
+      <en_UK><![CDATA[June]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Già associato]]></DEFAULT>
+      <en_UK><![CDATA[Already linked]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Grafici del risultato]]></DEFAULT>
+      <en_UK><![CDATA[Graphic results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Grafici risultato]]></DEFAULT>
+      <en_UK><![CDATA[Graphic results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Grafico %d (%s) inesistente o non leggibile.]]></DEFAULT>
+      <en_UK><![CDATA[Unreadable or non existent graphic %d (%s).]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Grafico %d inesistente in database.]]></DEFAULT>
+      <en_UK><![CDATA[Graphic %d not found inside the database.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Grave errore non recuperabile.]]></DEFAULT>
+      <en_UK><![CDATA[Unrecoverable error.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HANDSHAKE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7 Port]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7 Sending Application]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7 Sending Facility]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7 TLS Port]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7 buffer file]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7message %s inviato correttamente a %s]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message %s sent to %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7message %s non inviato correttamente (%s): rimane nella coda permanente.]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message %s not sent correctly (%s): stay in permanent queue.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7message %s rifiutato da %s: rimane nella coda permanente.]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message %s refused by %s: stay in the permanent queue]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7message: %s accodato per invio a %s.]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message: %s queued to be sent to %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[HL7message: %s errore fatale (%s) durante l'inserimento nella coda permanente.]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message %s fatal error (%s) during insertion in the permanent queue.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Handle '%s' non valido.]]></DEFAULT>
+      <en_UK><![CDATA[HL7 message %s not valid.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[I campi PID-2 e PID-3 sono entrambi vuoti. Non posso determinare il Patient ID.]]></DEFAULT>
+      <en_UK><![CDATA[Fields PID-2 and PID-3 are both null. Patient ID undefined.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[I files del keystore e/o del truststore non sono presenti o leggibili; uso settaggi di default della JVM.]]></DEFAULT>
+      <en_UK><![CDATA[Using default JVM setup because of unreadable keysore/truststore files.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[I risultati di un esame (ogni esame può avere più risultati)]]></DEFAULT>
+      <en_UK><![CDATA[Results for study (every study can have more results)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[IGNORATO]]></DEFAULT>
+      <en_UK><![CDATA[IGNORED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[IMG]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[IMPOSTAZIONI]]></DEFAULT>
+      <en_UK><![CDATA[SETUP]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[IN CARICO]]></DEFAULT>
+      <en_UK><![CDATA[READY TO RUN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[IN ELABORAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[PROCESSING]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[IN LAVORAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[WORKING]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[INDIRIZZO]]></DEFAULT>
+      <en_UK><![CDATA[ADDRESS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[INFO]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[INVIATO]]></DEFAULT>
+      <en_UK><![CDATA[SENT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ISCIRCOSCRIZIONE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ISSUER ADMISSION ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ISSUER PAT ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ISTAT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campione %s risulta associato ad una accettazione diversa.]]></DEFAULT>
+      <en_UK><![CDATA[Sample %s linked to another order Id.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campione %s è già presente in archivio campioni.]]></DEFAULT>
+      <en_UK><![CDATA[Sample %s already inserted in samples table.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campione %s è già stato richiesto all'host.]]></DEFAULT>
+      <en_UK><![CDATA[Host had already asked for sample %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campione %s è stato schedulato per la richiesta dati.]]></DEFAULT>
+      <en_UK><![CDATA[Sample %s scheduled for data query host.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campione rappresenta un raggruppamento rispetto agli esami]]></DEFAULT>
+      <en_UK><![CDATA[The specimen is a group belong study]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campo OBR-4 deve contenere un codice esame e una descrizione validi.]]></DEFAULT>
+      <en_UK><![CDATA[Valid exam code/description needed inside field OBR-4.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campo OBX-3 deve contenere un codice parametro e una descrizione validi.]]></DEFAULT>
+      <en_UK><![CDATA[Valid test code/description needed inside field OBX-4.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campo PV1-19 deve contenere un codice accettazione valido.]]></DEFAULT>
+      <en_UK><![CDATA[Valid visit code needed inside field PV1-19.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campo SAC-3 deve contenere il SID (codice univoco) della provetta.]]></DEFAULT>
+      <en_UK><![CDATA[Valid tube code (SID) needed inside field SAC-3.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il campo codice fiscale è obbligatorio.]]></DEFAULT>
+      <en_UK><![CDATA[Tax code is mandatory.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il certificato fornito per %s non e' valido: %s.]]></DEFAULT>
+      <en_UK><![CDATA[The given certificate for %s is not valid: $s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il certificato indicato non è associato all'utente %s.]]></DEFAULT>
+      <en_UK><![CDATA[The given certificate for %s is not linked to user %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il certificato è stato associato all'utente %s.]]></DEFAULT>
+      <en_UK><![CDATA[The certificate has been linked to user %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il certificato è stato rimosso all'utente %s.]]></DEFAULT>
+      <en_UK><![CDATA[The certificate has been removed from user %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il file %s non contiene accension number: non può essere associato a nessun esame.]]></DEFAULT>
+      <en_UK><![CDATA[No accession number inside file %s - file discard.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il file %s non contiene il PID del paziente nel segmento P: scartato.]]></DEFAULT>
+      <en_UK><![CDATA[No Patient ID inside P segment of file %s - file rejected.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il file %s non contiene il nome del paziente nel segmento P: scartato.]]></DEFAULT>
+      <en_UK><![CDATA[No Patient name inside P segment of file %s - file rejected.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il file %s non è un file DICOM leggibile: viene rigettato.]]></DEFAULT>
+      <en_UK><![CDATA[File %s is not in DICOM format - file rejected.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il parametro '%s' non ha una metodica per lo strumento %d: ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[No procedure for test %s on device %d - test ignored.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il parametro con chiave [%s] non implementa 'Serializable': salvataggio in coda permanente non possibile.]]></DEFAULT>
+      <en_UK><![CDATA[Test key %s not 'Serializable': unable to save in permanent queue.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il parametro con valore [%s] non implementa 'Serializable': salvataggio in coda permanente non possibile.]]></DEFAULT>
+      <en_UK><![CDATA[Test value %s not 'Serializable': unable to save in permanent queue.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il parametro idres non è specificato.]]></DEFAULT>
+      <en_UK><![CDATA[idres parameter not specified.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il parametro time non e' coerente con l'ora attuale (max +/- 10 minuti): %s]]></DEFAULT>
+      <en_UK><![CDATA[Time parameter not congruent to current time (+/- 10 minutes): %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il rack con id %d non esiste]]></DEFAULT>
+      <en_UK><![CDATA[Rack id %d unavailable]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il servizio di sincronizzazione non è attivo.]]></DEFAULT>
+      <en_UK><![CDATA[Sinchronization service not active.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Il singolo esame eseguito da uno strumento]]></DEFAULT>
+      <en_UK><![CDATA[The study executed by a strument]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Immagine allegato]]></DEFAULT>
+      <en_UK><![CDATA[Image in attached]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Immissione manuale di un risultato]]></DEFAULT>
+      <en_UK><![CDATA[Manual result insertion]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Immissione manuale risultato]]></DEFAULT>
+      <en_UK><![CDATA[Manual result insertion]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Impossibile aggiungere menù per monitor comunicazioni.]]></DEFAULT>
+      <en_UK><![CDATA[Communication monitor menu unavailable.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Impossibile attivare il plugin %s.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to activate plugin %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Impossibile calcolare il codice fiscale: %s.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to evaluate tax code: %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Impossibile creare la directory %s.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to create directory %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Impossibile istanziare la tabella custom '%s':]]></DEFAULT>
+      <en_UK><![CDATA[Unable to instantiate custom table %s:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Impossibile spostare %s in %s.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to move %s to %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Indice]]></DEFAULT>
+      <en_UK><![CDATA[Index]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Indietro]]></DEFAULT>
+      <en_UK><![CDATA[Back]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Informazioni di setup]]></DEFAULT>
+      <en_UK><![CDATA[Setup information]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Informazioni generali applicazione]]></DEFAULT>
+      <en_UK><![CDATA[General application information]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Informazioni setup]]></DEFAULT>
+      <en_UK><![CDATA[Setup information]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inizializzazione connettore %s %s non riuscita: %s]]></DEFAULT>
+      <en_UK><![CDATA[Connector initialization fault %s %s: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inizializzazione non corretta.]]></DEFAULT>
+      <en_UK><![CDATA[Initialization fault]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inizio lettura del file %s]]></DEFAULT>
+      <en_UK><![CDATA[Reading file %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inizio verifica certificati per %s:%d]]></DEFAULT>
+      <en_UK><![CDATA[Verifying certificate for %s: %d]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inserimento dati estesi per il risultato.]]></DEFAULT>
+      <en_UK><![CDATA[Wide data insertion for test]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inserimento testo esteso per il risultato.]]></DEFAULT>
+      <en_UK><![CDATA[Wide text insertion for test.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inserimento valore risultato]]></DEFAULT>
+      <en_UK><![CDATA[Value insertion]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inserire correttamente la data di nascita; non può essere nel futuro.]]></DEFAULT>
+      <en_UK><![CDATA[Please insert birth date]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inserire il comune di nascita.]]></DEFAULT>
+      <en_UK><![CDATA[Please insert birth municipality]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Inserire la data di nascita.]]></DEFAULT>
+      <en_UK><![CDATA[Please insert date of birth]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Interfaccia spirometro MIR]]></DEFAULT>
+      <en_UK><![CDATA[MIR Spirometer interface]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Invio del CDA2 di %s non riuscito (%s); consultare x1v1.log per i dettagli.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to send CDA-2 (%s) - please read x1v1.log for detail]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Invio del referto di %s non riuscito (%s); consultare x1v1.log per i dettagli.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to send report for patient %s (%s) - please read x1v1.log for detail]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'accettazione %s risulta associata ad una anagrafica diversa.]]></DEFAULT>
+      <en_UK><![CDATA[Order Id %s linked to another patient]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'accettazione associata al risultato non ha campioni. Impossibile salvare risulati.]]></DEFAULT>
+      <en_UK><![CDATA[Result order without samples]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'esame %s non è presente nel setup: ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[Exam %s does not exists]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'url deve essere nella forma https://host:port/other ; altre forme non sono ammesse!]]></DEFAULT>
+      <en_UK><![CDATA[Please give url in format https://host:port/other]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'uso della password in questo momento è attivo.]]></DEFAULT>
+      <en_UK><![CDATA[Inactive password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'uso della password in questo momento è disattivato.]]></DEFAULT>
+      <en_UK><![CDATA[Password disabled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'utente %s e il certificato sono già stati associati.]]></DEFAULT>
+      <en_UK><![CDATA[Certificate already linked to user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'utente ha disabilitato l'uso delle password (eventualmente rivolgersi all'amministratore di sistema).]]></DEFAULT>
+      <en_UK><![CDATA[User has disabled password usage]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'utente indicato non è valido.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[LABEL GRUPPO]]></DEFAULT>
+      <en_UK><![CDATA[GROUP LABEL]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[LETTO]]></DEFAULT>
+      <en_UK><![CDATA[READ]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[LISTINO]]></DEFAULT>
+      <en_UK><![CDATA[CATALOG]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[LOG]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[LOGIN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La Global cache è stata svuotata.]]></DEFAULT>
+      <en_UK><![CDATA[Global cache empty]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La combinazione del messaggio %s e dell'evento %d non è consentita.]]></DEFAULT>
+      <en_UK><![CDATA[Message %s unlinkable to event %d.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La comunicazione con il server remoto %s ha bloccato l'operazione.]]></DEFAULT>
+      <en_UK><![CDATA[Operation stopped by remote server communication.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La configurazione degli strumenti è stata ricaricata.]]></DEFAULT>
+      <en_UK><![CDATA[Drivers configuration reloaded.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La frame %d ha prodotto un checksum non corretto.]]></DEFAULT>
+      <en_UK><![CDATA[Wrong checksum for frame %d.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La frame %d non contiene il carattere ETX/ETB.]]></DEFAULT>
+      <en_UK><![CDATA[ETX/ETB missed in frame %d.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La frame %d non è corretta: non termina con checksum e cr/lf.]]></DEFAULT>
+      <en_UK><![CDATA[Checksum/cr/lf missed in frame %d.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La funzionalità solo operatore richiede uno screen personalizzato.]]></DEFAULT>
+      <en_UK><![CDATA[Custom screen required for single operator mode.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La nuova password deve contenere almeno 8 caratteri.]]></DEFAULT>
+      <en_UK><![CDATA[At least 8 characters required.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La path non è una path assoluta cygwin (deve iniziare per /cygwin/x/...).]]></DEFAULT>
+      <en_UK><![CDATA[Full path needed (/cygwin/x/...)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La path non è una path assoluta windows (deve iniziare per x:\\...).]]></DEFAULT>
+      <en_UK><![CDATA[Full path needed (x:\\...)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La porta %s indicata non esiste.]]></DEFAULT>
+      <en_UK><![CDATA[Port %s does not exist.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[La vecchia password fornita non corrisponde.]]></DEFAULT>
+      <en_UK><![CDATA[Old password does not match.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Layer SSL/TLS inizializzato.]]></DEFAULT>
+      <en_UK><![CDATA[Layer SSL/TLS initialized.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Le due nuove password non coincidono. Rivedere input dati.]]></DEFAULT>
+      <en_UK><![CDATA[Inserted passwords must not be different.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Le due password inserite non coincidono: correggere per renderle uguali.]]></DEFAULT>
+      <en_UK><![CDATA[Inserted passwords must not be different.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Le note di disinnesco sono obbligatorie.]]></DEFAULT>
+      <en_UK><![CDATA[Shutting down notes are mandatory.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lettura file %s con dati.]]></DEFAULT>
+      <en_UK><![CDATA[Reading data file %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lista %s non trovata. Controllare lista.xml.]]></DEFAULT>
+      <en_UK><![CDATA[List %s not found. Please check lista.xml.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lista Ordini]]></DEFAULT>
+      <en_UK><![CDATA[Order list]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lista dettaglio %s non trovata. Controllare lista.xml.]]></DEFAULT>
+      <en_UK><![CDATA[Detail list not found. Please check lista.xml.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lista ordini]]></DEFAULT>
+      <en_UK><![CDATA[Order list]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lo strumento %d risulta già aperto dall'indirizzo %s.]]></DEFAULT>
+      <en_UK><![CDATA[Device %d already opened at address %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lo strumento '%d' è stato chiuso.]]></DEFAULT>
+      <en_UK><![CDATA[Device %d has been closed.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lo strumento non ha accettato la frame %c dopo %d tentativi.]]></DEFAULT>
+      <en_UK><![CDATA[Frame %c rejected by device after %d tries.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Log invio HL7]]></DEFAULT>
+      <en_UK><![CDATA[HL7 send log]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Login]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Login journal failed:]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Logon normale con password fallito:]]></DEFAULT>
+      <en_UK><![CDATA[Normal password logon failed:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Luglio]]></DEFAULT>
+      <en_UK><![CDATA[July]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[M.O.]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MACHINE DESCRIPTION]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MACHINE ENCODING]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MACHINE NAME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MAINT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MASCHERA ORDINI]]></DEFAULT>
+      <en_UK><![CDATA[ORDER MASK]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MAT. BIO.]]></DEFAULT>
+      <en_UK><![CDATA[SPECIMEN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MAT.BIO.]]></DEFAULT>
+      <en_UK><![CDATA[SPECIMEN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MATERIALIBIOLOGICI]]></DEFAULT>
+      <en_UK><![CDATA[SPECIMEN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MEDICALALERTS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[METODICHE]]></DEFAULT>
+      <en_UK><![CDATA[PROCEDURES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MICROBIOLOGIA]]></DEFAULT>
+      <en_UK><![CDATA[MICROBIOLOGY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MILITARY RANK]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODALITA]]></DEFAULT>
+      <en_UK><![CDATA[MODALITY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODALITA PREVISTE]]></DEFAULT>
+      <en_UK><![CDATA[EXPECTED MODALITIES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODALITA TXRX]]></DEFAULT>
+      <en_UK><![CDATA[TXRX MODALITY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODALITY]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODELLI STRUMENTI]]></DEFAULT>
+      <en_UK><![CDATA[DEVICE MODELS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MODELLO]]></DEFAULT>
+      <en_UK><![CDATA[MODEL]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MONITOR]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[MULTIESAME]]></DEFAULT>
+      <en_UK><![CDATA[MULTIEXAM]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Maggio]]></DEFAULT>
+      <en_UK><![CDATA[May]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Manca dettaglio nella definizione master-detail. Controllare lista.xml.]]></DEFAULT>
+      <en_UK><![CDATA[Master-detail definition uncompleted. Please check lista.xml.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Mancano parametri indispensabili per il keystore.]]></DEFAULT>
+      <en_UK><![CDATA[Keystore parameters not found.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Materiali bio]]></DEFAULT>
+      <en_UK><![CDATA[Specimens]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Memoria]]></DEFAULT>
+      <en_UK><![CDATA[Memory]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Mese corrente]]></DEFAULT>
+      <en_UK><![CDATA[Current month]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Messaggio]]></DEFAULT>
+      <en_UK><![CDATA[Message]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Messaggio originale: %s]]></DEFAULT>
+      <en_UK><![CDATA[Original message: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Modelli di strumento]]></DEFAULT>
+      <en_UK><![CDATA[Device models]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Modelli etichette]]></DEFAULT>
+      <en_UK><![CDATA[Label models]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Modello]]></DEFAULT>
+      <en_UK><![CDATA[Model]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Modifica record]]></DEFAULT>
+      <en_UK><![CDATA[Modify record]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Modificato]]></DEFAULT>
+      <en_UK><![CDATA[Modified]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Modo]]></DEFAULT>
+      <en_UK><![CDATA[Modality]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Monitor per lo strumento %s disattivato.]]></DEFAULT>
+      <en_UK><![CDATA[Device %s: monitor disabled.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NASCITA]]></DEFAULT>
+      <en_UK><![CDATA[BIRTH DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NAZIONI]]></DEFAULT>
+      <en_UK><![CDATA[NATIONS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NCUVERACK]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NOME]]></DEFAULT>
+      <en_UK><![CDATA[NAME]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NOME HOST]]></DEFAULT>
+      <en_UK><![CDATA[HOST NAME]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NOTE]]></DEFAULT>
+      <en_UK><![CDATA[NOTES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NPRIMORACK]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NUM ESAMI]]></DEFAULT>
+      <en_UK><![CDATA[EXAM #]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NUM ETICHETTE]]></DEFAULT>
+      <en_UK><![CDATA[LABEL #]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NUM IMMAGINI]]></DEFAULT>
+      <en_UK><![CDATA[IMAGE #]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[NVIDEARACK]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nazioni]]></DEFAULT>
+      <en_UK><![CDATA[Nations]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun campione da inviare allo strumento.]]></DEFAULT>
+      <en_UK><![CDATA[No sample to send to the device.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun certificato valido associato alla connessione HTTPS.]]></DEFAULT>
+      <en_UK><![CDATA[No valid certificate with HTTPS connection.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun elemento trovato!]]></DEFAULT>
+      <en_UK><![CDATA[No record found!]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun oggetto di riferimento per il tipo %s]]></DEFAULT>
+      <en_UK><![CDATA[No objects for type %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun parametro per il campione %s. Hai programmato correttamente i parametri per lo strumento?]]></DEFAULT>
+      <en_UK><![CDATA[No parameters for sample %s. Please check device parameters.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun paziente destinazione esiste in anagrafica. Messaggio ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[No patient record. Message ignored.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun precedente da visualizzare.]]></DEFAULT>
+      <en_UK><![CDATA[No previous result to be shown.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun rack specificato nella richiesta]]></DEFAULT>
+      <en_UK><![CDATA[No rack for order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun risulato per i parametri specificati.]]></DEFAULT>
+      <en_UK><![CDATA[No results for specified parameters.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun risultato pronto.]]></DEFAULT>
+      <en_UK><![CDATA[Not ready results.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun valore specificato da ricercare.]]></DEFAULT>
+      <en_UK><![CDATA[No searching values.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuna accettazione da fondere associata al codice %s. Messaggio ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[No order to merge related to id %s. Message ignored.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuna colonna stampabile nella lista.]]></DEFAULT>
+      <en_UK><![CDATA[No printable column in list.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuna corrispondenza batch per il codice parametro %s.]]></DEFAULT>
+      <en_UK><![CDATA[No match for parameter %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuna immagine.]]></DEFAULT>
+      <en_UK><![CDATA[No image.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuna log contiene messaggi di errore.]]></DEFAULT>
+      <en_UK><![CDATA[No error messages inside logs.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuno strumento assistito per questo esame.]]></DEFAULT>
+      <en_UK><![CDATA[No device for this exam.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuno strumento associato all'ID %d.]]></DEFAULT>
+      <en_UK><![CDATA[No device for Id %d.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessuno/indefinito]]></DEFAULT>
+      <en_UK><![CDATA[Nothing/undefined]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nodi DICOM]]></DEFAULT>
+      <en_UK><![CDATA[DICOM nodes]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nome]]></DEFAULT>
+      <en_UK><![CDATA[Name]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nome del soggetto]]></DEFAULT>
+      <en_UK><![CDATA[Subject name]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nome di login]]></DEFAULT>
+      <en_UK><![CDATA[Login name]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nome reale]]></DEFAULT>
+      <en_UK><![CDATA[Actual name]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Non puoi selezionare lo stesso strumento che stiamo modificando.]]></DEFAULT>
+      <en_UK><![CDATA[Cannot select device with ongoing updates.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Non riesco a inviare i dati allo strumento %s.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to send data to device %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Non riesco a inviare i dati allo strumento id %s.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to send data to device id %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Note]]></DEFAULT>
+      <en_UK><![CDATA[Notes]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Note di Disabilitazione]]></DEFAULT>
+      <en_UK><![CDATA[Disabling notes]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Note di disattivazione]]></DEFAULT>
+      <en_UK><![CDATA[Disabling notes]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Notizie cliniche]]></DEFAULT>
+      <en_UK><![CDATA[Clinical information]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Novembre]]></DEFAULT>
+      <en_UK><![CDATA[November]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Numero di cuve per rack e/o numero di rack visualizzati non specificato.]]></DEFAULT>
+      <en_UK><![CDATA[Tube count and/or rack count unknown.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Numero di frame %d fuori sequenza (era aspettato %d).]]></DEFAULT>
+      <en_UK><![CDATA[Out of sequence frame number %d (expected %d).]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nuova password]]></DEFAULT>
+      <en_UK><![CDATA[New password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nuova password (ripetere)]]></DEFAULT>
+      <en_UK><![CDATA[Replay new password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nuovo]]></DEFAULT>
+      <en_UK><![CDATA[New]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nuovo ordine]]></DEFAULT>
+      <en_UK><![CDATA[New order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[OLDASL]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[OLDDISTRETTI]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[OLDIDPROVINCE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[OLDISTAT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ORDER CALLBACK]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ORDER ENT LOCAT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ORDINE]]></DEFAULT>
+      <en_UK><![CDATA[ORDER]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Operazione in corso; attendere ...]]></DEFAULT>
+      <en_UK><![CDATA[Working...]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Order id:]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ordinamento]]></DEFAULT>
+      <en_UK><![CDATA[Sort order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ordini]]></DEFAULT>
+      <en_UK><![CDATA[Orders]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ordini - Seleziona o crea anagrafica]]></DEFAULT>
+      <en_UK><![CDATA[Orders - Select or generate record]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ottobre]]></DEFAULT>
+      <en_UK><![CDATA[October]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PARAMETRI]]></DEFAULT>
+      <en_UK><![CDATA[PARAMETERS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PARAMETRI DES]]></DEFAULT>
+      <en_UK><![CDATA[PARAMETERS DESCR.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PARAMETRO]]></DEFAULT>
+      <en_UK><![CDATA[PARAMETER]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PARITA]]></DEFAULT>
+      <en_UK><![CDATA[PARITY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAROLA]]></DEFAULT>
+      <en_UK><![CDATA[WORD]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAT ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAT NAME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAT NASCITA]]></DEFAULT>
+      <en_UK><![CDATA[PAT BIRTH]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAT SEX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAT STATUS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PAT TRANSPORT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PATH RX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PATH TX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PERMISSION]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PESO]]></DEFAULT>
+      <en_UK><![CDATA[WEIGHT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PLACER NUM]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PLUGIN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PLUGIN NAME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PORTA]]></DEFAULT>
+      <en_UK><![CDATA[PORT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PORTA SERIALE]]></DEFAULT>
+      <en_UK><![CDATA[SERIAL PORT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PREF TRANSFER SYNTAX]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PREGNANCY STATUS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PRESTAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[ORDER]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PRESTAZIONI]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PRIORITA]]></DEFAULT>
+      <en_UK><![CDATA[PRIORITY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PROG]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PROGRESSIVO]]></DEFAULT>
+      <en_UK><![CDATA[COUNTER]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PROVINCE]]></DEFAULT>
+      <en_UK><![CDATA[PROVINCIES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[PROVINCIA]]></DEFAULT>
+      <en_UK><![CDATA[PROVINCE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri]]></DEFAULT>
+      <en_UK><![CDATA[Parameters]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri delle stampe]]></DEFAULT>
+      <en_UK><![CDATA[Print parameters]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri di sistema]]></DEFAULT>
+      <en_UK><![CDATA[System Parameters]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri non corretti.]]></DEFAULT>
+      <en_UK><![CDATA[Wrong parameters]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri non validi nella richiesta.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid parameters inside the order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri per l'esame]]></DEFAULT>
+      <en_UK><![CDATA[Exam parameters]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametri relativi alle prestazioni di una accettazione]]></DEFAULT>
+      <en_UK><![CDATA[Parameters for the studies in the order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametro]]></DEFAULT>
+      <en_UK><![CDATA[Parameter]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametro 'idAcc' non specificato o non valido: rivedere flusso.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid parameter 'idAcc']]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametro ID non specificato nella richiesta.]]></DEFAULT>
+      <en_UK><![CDATA[Parameter ID missed in the order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Password]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Password X1V1]]></DEFAULT>
+      <en_UK><![CDATA[X1V1 Password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Paziente finale dopo fusione %s %s %s.]]></DEFAULT>
+      <en_UK><![CDATA[Final patient after merge %s %s %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pazienti]]></DEFAULT>
+      <en_UK><![CDATA[Patients]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Per aumentare la sicurezza puoi disattivare il tradizionale logon con password]]></DEFAULT>
+      <en_UK><![CDATA[To enhance security you can deactivate traditional user/password logon]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Per saperne di più]]></DEFAULT>
+      <en_UK><![CDATA[New]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Permessi]]></DEFAULT>
+      <en_UK><![CDATA[Permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Permessi insufficienti]]></DEFAULT>
+      <en_UK><![CDATA[Insufficient permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Permessi insufficienti per i dati richiesti. Contattare l'amministratore.]]></DEFAULT>
+      <en_UK><![CDATA[Insufficient permissions for requested data]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Peso]]></DEFAULT>
+      <en_UK><![CDATA[Weight]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Peso (kg)]]></DEFAULT>
+      <en_UK><![CDATA[Weight (kg)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Plugin '%s' fa riferimento alla classe '%s' non presente; rivedere setup.]]></DEFAULT>
+      <en_UK><![CDATA[Plugin '%s' referring to unknown class $s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Plugin '%s' non definito nel setup.]]></DEFAULT>
+      <en_UK><![CDATA[Plugin '%s' undefined]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Plugins]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Porta %s aperta con successo.]]></DEFAULT>
+      <en_UK><![CDATA[Opening port succeed]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Precedenti]]></DEFAULT>
+      <en_UK><![CDATA[Previous results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Prestazioni erogate e da erogare]]></DEFAULT>
+      <en_UK><![CDATA[Study supplied and to supply]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Primo semestre]]></DEFAULT>
+      <en_UK><![CDATA[First half year]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Primo trimestre]]></DEFAULT>
+      <en_UK><![CDATA[First quarter]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Problemi con il database.]]></DEFAULT>
+      <en_UK><![CDATA[Database Error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Profilo dell'utente - informazioni sull'account]]></DEFAULT>
+      <en_UK><![CDATA[User profile - account information]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Profilo utente]]></DEFAULT>
+      <en_UK><![CDATA[User profile]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Protocollo '%s' fa riferimento alla classe '%s' non presente; rivedere setup.]]></DEFAULT>
+      <en_UK><![CDATA[Protocol '%s' referring to unknown class '%s']]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Protocollo '%s' non definito nel setup.]]></DEFAULT>
+      <en_UK><![CDATA[Protocol '%s' unknown]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Protocollo tipo %d non definito: rivedere setup.]]></DEFAULT>
+      <en_UK><![CDATA[Unknown protocol type %d]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Provetta]]></DEFAULT>
+      <en_UK><![CDATA[Tube]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Province]]></DEFAULT>
+      <en_UK><![CDATA[Provincies]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pulisci]]></DEFAULT>
+      <en_UK><![CDATA[Clear]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pulisci filtro]]></DEFAULT>
+      <en_UK><![CDATA[Clear filter]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pulisci ricerca]]></DEFAULT>
+      <en_UK><![CDATA[Clear search]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pulisci risultati accettazioni]]></DEFAULT>
+      <en_UK><![CDATA[Clear order results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pulisci setup esami]]></DEFAULT>
+      <en_UK><![CDATA[Clear exam setup]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Pulisci tutto]]></DEFAULT>
+      <en_UK><![CDATA[VClear all]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[QTA]]></DEFAULT>
+      <en_UK><![CDATA[QTY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[QTY]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[QUESITO]]></DEFAULT>
+      <en_UK><![CDATA[QUERY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Quarto trimestre]]></DEFAULT>
+      <en_UK><![CDATA[Fourth quarter]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Questo esame è stato confermato. Verrà inoltrato come previsto.]]></DEFAULT>
+      <en_UK><![CDATA[Order validated]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RACK]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RACKS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RAZZA]]></DEFAULT>
+      <en_UK><![CDATA[RACE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REASON]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REFER PHYSICIAN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REFERENCEPHYSICIAN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REGION OF RESIDENCE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REGIONI]]></DEFAULT>
+      <en_UK><![CDATA[REGIONS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RELIGIONE]]></DEFAULT>
+      <en_UK><![CDATA[RELIGION]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REPARTI]]></DEFAULT>
+      <en_UK><![CDATA[WARDS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REQ PHYSICIAN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REQ PROC CODE MEANING]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REQ PROC CODE SCHEME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REQ PROC CODE VALUE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REQ PROC DESC]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[REQ PROC ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RICOPRI VALIDATI]]></DEFAULT>
+      <en_UK><![CDATA[OVERRIDE VALIDATED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RIS NUMERICI]]></DEFAULT>
+      <en_UK><![CDATA[RESULTS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RISULTATI]]></DEFAULT>
+      <en_UK><![CDATA[RESULTS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RISULTATO]]></DEFAULT>
+      <en_UK><![CDATA[RESULT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Rack]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Rack %d (con id %d) forzato a stato completato.]]></DEFAULT>
+      <en_UK><![CDATA[Rack %d id %d forced to be completed]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Rack cancellati.]]></DEFAULT>
+      <en_UK><![CDATA[Racks cancelled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Rack con id %d è stato soppresso.]]></DEFAULT>
+      <en_UK><![CDATA[Rack id %d cancelled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Rack schedulati per l'invio ai corrispettivi strumenti.]]></DEFAULT>
+      <en_UK><![CDATA[Racks scheduled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Razze]]></DEFAULT>
+      <en_UK><![CDATA[Races]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Receiving application %s non valida (MSH-5-1). Deve essere una di questi: %s.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid receiving application %s (MSH-5-1). Must be one of these: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Receiving facility %s non valida (MSH-6-1). Deve essere una di questi: %s.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid receiving facility %s (MSH-6-1). Must be one of these: %s]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Regioni]]></DEFAULT>
+      <en_UK><![CDATA[Regions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Religioni]]></DEFAULT>
+      <en_UK><![CDATA[Religions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[RemoteAgent]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Riavvia task in background]]></DEFAULT>
+      <en_UK><![CDATA[Start background task]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ricarica liste]]></DEFAULT>
+      <en_UK><![CDATA[Reload list]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ricerca Paziente]]></DEFAULT>
+      <en_UK><![CDATA[Patient search]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ricerca avanzata]]></DEFAULT>
+      <en_UK><![CDATA[Advanced search]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ricevo messaggi HL7 destinati ad una applicazione %s che non sono io.\nDitegli di smettere o di chiamarmi con il mio nome (%s).]]></DEFAULT>
+      <en_UK><![CDATA[I'm receiving HL7 messages for an unknow application %s.\nApplication must be %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ricevo messaggi HL7 destinati ad una facility %s che non conosco.\nDitegli di smettere o di usare una di queste: %s.]]></DEFAULT>
+      <en_UK><![CDATA[I'm receiving HL7 messages for an unknow facility %s.\Facility must be one of this: %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Rilevata frame anomala [%s]: ignorata.]]></DEFAULT>
+      <en_UK><![CDATA[Abnormal frame %s ignored]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risposta inaspettata dallo strumento: doveva rispondere ACK ha risposto %d (%s)]]></DEFAULT>
+      <en_UK><![CDATA[Unexpected msg from device instead ACK msg (%s)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risposta non corretta dallo strumento Coulter]]></DEFAULT>
+      <en_UK><![CDATA[Uncorrected response form Coulter instrument]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risposta non corretta dallo strumento: è veramente uno strumento ASTM?]]></DEFAULT>
+      <en_UK><![CDATA[Wrong msg from device]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risultati]]></DEFAULT>
+      <en_UK><![CDATA[Results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risultati cancellati.]]></DEFAULT>
+      <en_UK><![CDATA[Results cancelled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risultato]]></DEFAULT>
+      <en_UK><![CDATA[Result]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Risultato %s aggiunto manualmente.]]></DEFAULT>
+      <en_UK><![CDATA[Result %s manually inserted]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ritorna a pagina principale]]></DEFAULT>
+      <en_UK><![CDATA[Back to home page]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Runner '%s' fa riferimento alla classe '%s' non presente; rivedere setup.]]></DEFAULT>
+      <en_UK><![CDATA[Runner '%s' referring to unknown class '%s'. Correct setup.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Runner '%s' non definito nel setup.]]></DEFAULT>
+      <en_UK><![CDATA[Unknown runner '%s']]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Runner tipo %d non definito: rivedere setup.]]></DEFAULT>
+      <en_UK><![CDATA[Unknown runner type %s: correct setup.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ruoli-permessi]]></DEFAULT>
+      <en_UK><![CDATA[Roles-permissions]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCADENZA]]></DEFAULT>
+      <en_UK><![CDATA[EXPIRY DATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROC STEP DESC]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROC STEP ID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROC STEP LOCATION]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROC STEP START DATE TIME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROT CODE MEANING]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROT CODE SCHEME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED PROT CODE VALUE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED STATION AE TITLE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCHED STATION NAME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SCREEN PERSONALIZZATO]]></DEFAULT>
+      <en_UK><![CDATA[CUSTOMIZED SCREEN]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SEP. COGNNOME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SERVERS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SESSO]]></DEFAULT>
+      <en_UK><![CDATA[SEX]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SIGLA]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SITI]]></DEFAULT>
+      <en_UK><![CDATA[SITES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SOCKET LOCAL PORT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SOCKET REMOTE SERVER]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SOCKET TIPO]]></DEFAULT>
+      <en_UK><![CDATA[SOCKET TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SOLO OPERATORE]]></DEFAULT>
+      <en_UK><![CDATA[OPERATOR]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[SOSPESO]]></DEFAULT>
+      <en_UK><![CDATA[SUSPENDED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ST.NAME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STAMPANTI]]></DEFAULT>
+      <en_UK><![CDATA[PRINTERS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STATION NAME]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STATO]]></DEFAULT>
+      <en_UK><![CDATA[STATE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STOPBIT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STRUMENTI]]></DEFAULT>
+      <en_UK><![CDATA[DEVICES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STRUMENTO]]></DEFAULT>
+      <en_UK><![CDATA[DEVICE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[STUDY INSTANCE UID]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva dati]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva dati utente]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva e concludi]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva e nuovo]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva e procedi]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salva ed esci]]></DEFAULT>
+      <en_UK><![CDATA[Save]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salvataggio giornale (logout) non possibile.]]></DEFAULT>
+      <en_UK><![CDATA[Unable to save journal]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Salvataggio non consentito.]]></DEFAULT>
+      <en_UK><![CDATA[Save not allowed]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Secondo semestre]]></DEFAULT>
+      <en_UK><![CDATA[Second half year]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Secondo trimestre]]></DEFAULT>
+      <en_UK><![CDATA[Second quarter]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di chiudere definitivamente questo rack incompleto?]]></DEFAULT>
+      <en_UK><![CDATA[Closing uncompleted rack. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di convalidare i risultati visualizzati?]]></DEFAULT>
+      <en_UK><![CDATA[Validating results. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di disattivare questo strumento?]]></DEFAULT>
+      <en_UK><![CDATA[Disabling device. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di riattivare questo strumento?]]></DEFAULT>
+      <en_UK><![CDATA[Enabling device. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di sopprimere questo rack?]]></DEFAULT>
+      <en_UK><![CDATA[Deleting rack. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di voler cancellare]]></DEFAULT>
+      <en_UK><![CDATA[Deleting. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di voler cancellare il permesso con codice]]></DEFAULT>
+      <en_UK><![CDATA[Deleting permission. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di voler cancellare il ruolo con codice]]></DEFAULT>
+      <en_UK><![CDATA[Deleting role. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di voler cancellare l'utente con codice]]></DEFAULT>
+      <en_UK><![CDATA[Deleting user. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sei sicuro di voler inviare tutti i rack selezionati ai corrispettivi strumenti?]]></DEFAULT>
+      <en_UK><![CDATA[Sending selected racks to devices. Confirm?]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Selezinare uno più rack per inviarli agli strumenti.]]></DEFAULT>
+      <en_UK><![CDATA[Select one or more rack]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Seleziona tutti]]></DEFAULT>
+      <en_UK><![CDATA[Select all]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Selezionare un campione ...]]></DEFAULT>
+      <en_UK><![CDATA[Select a sample...]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Selezionare un esame ...]]></DEFAULT>
+      <en_UK><![CDATA[Select a study...]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Selezionare un parametro ...]]></DEFAULT>
+      <en_UK><![CDATA[Select a parameter...]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Server Comunicazioni]]></DEFAULT>
+      <en_UK><![CDATA[Communication server]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Server DICOM]]></DEFAULT>
+      <en_UK><![CDATA[DICOM server]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Server Info]]></DEFAULT>
+      <en_UK><![CDATA[Info server]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Server Link applicazioni]]></DEFAULT>
+      <en_UK><![CDATA[Application server]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Server Worklist]]></DEFAULT>
+      <en_UK><![CDATA[Worklist server]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Servizio]]></DEFAULT>
+      <en_UK><![CDATA[Service]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sessione di lettura da strumento non conclusa:]]></DEFAULT>
+      <en_UK><![CDATA[Reading device session uncompleted]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sessione di spedizione abortita dopo %d tentativi.]]></DEFAULT>
+      <en_UK><![CDATA[Sending session aborted after %d tries]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sessione non valida.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid session]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sesso]]></DEFAULT>
+      <en_UK><![CDATA[Sex]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Settembre]]></DEFAULT>
+      <en_UK><![CDATA[September]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Setup override]]></DEFAULT>
+      <en_UK><![CDATA[Override setup]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Setup strumenti]]></DEFAULT>
+      <en_UK><![CDATA[Device Setup]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Setup strumento]]></DEFAULT>
+      <en_UK><![CDATA[Device setup]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Severita']]></DEFAULT>
+      <en_UK><![CDATA[Severity]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Si]]></DEFAULT>
+      <en_UK><![CDATA[Yes]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Simula errore]]></DEFAULT>
+      <en_UK><![CDATA[Simulate error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sincronizza da caleido]]></DEFAULT>
+      <en_UK><![CDATA[Sync data with Caleido]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Sincronizzazione avviata. Le operazioni procedono in background.]]></DEFAULT>
+      <en_UK><![CDATA[Background sinchronization started]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Spirometro MIR]]></DEFAULT>
+      <en_UK><![CDATA[Spirometer (MIR)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stabilisce se il campo partecipa all'ordinamento dei risultati ed in quale ordine.]]></DEFAULT>
+      <en_UK><![CDATA[Choose if the field is in sorter action and the relative order.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stai utilizzando un certificato digitale per l'accesso all'applicazione.]]></DEFAULT>
+      <en_UK><![CDATA[You are using a digital certificate for application access]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stampa]]></DEFAULT>
+      <en_UK><![CDATA[Print]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stampa in elaborazione.]]></DEFAULT>
+      <en_UK><![CDATA[Printing...]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stampanti etichette]]></DEFAULT>
+      <en_UK><![CDATA[Label printers]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stampe]]></DEFAULT>
+      <en_UK><![CDATA[Prints]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Statistica]]></DEFAULT>
+      <en_UK><![CDATA[Statistics]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Stato]]></DEFAULT>
+      <en_UK><![CDATA[State]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumenti]]></DEFAULT>
+      <en_UK><![CDATA[Devices]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumenti installati]]></DEFAULT>
+      <en_UK><![CDATA[Installed devices]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento]]></DEFAULT>
+      <en_UK><![CDATA[Device]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento %s disattivato da setup.]]></DEFAULT>
+      <en_UK><![CDATA[Device %s disabled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento attivato.]]></DEFAULT>
+      <en_UK><![CDATA[Device enabled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento attivo ma comunicazioni non presenti.]]></DEFAULT>
+      <en_UK><![CDATA[Device enabled - no communication]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento con id '%d' sconosciuto o non attivo.]]></DEFAULT>
+      <en_UK><![CDATA[Unknown device id %d]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento disattivato.]]></DEFAULT>
+      <en_UK><![CDATA[Device disabled]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento non accessibile o non specificato.]]></DEFAULT>
+      <en_UK><![CDATA[Device unreachable]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento non attivo.]]></DEFAULT>
+      <en_UK><![CDATA[Device not active]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Strumento on-line.]]></DEFAULT>
+      <en_UK><![CDATA[Device on-line]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[T.CAMP.]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[T.ETI.]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TABELLA VALORI]]></DEFAULT>
+      <en_UK><![CDATA[VALUE TABLE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TABELLE VARIE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TELEFONO]]></DEFAULT>
+      <en_UK><![CDATA[PHONE NUMEBR]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TENTATIVI]]></DEFAULT>
+      <en_UK><![CDATA[TRIES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIMEOUT (secondi)]]></DEFAULT>
+      <en_UK><![CDATA[TIMEOUT (seconds)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIMING]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIP ACC]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPICAMPIONI]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPIETICHETTE]]></DEFAULT>
+      <en_UK><![CDATA[LABEL TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPO CESTINO]]></DEFAULT>
+      <en_UK><![CDATA[BASKET TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPO GRAFICI]]></DEFAULT>
+      <en_UK><![CDATA[GRAPHIC TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPO RACK]]></DEFAULT>
+      <en_UK><![CDATA[RACK TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPO VISUALIZZAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[VIEW TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPOCAMPIONE]]></DEFAULT>
+      <en_UK><![CDATA[SAMPLE TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPORACK]]></DEFAULT>
+      <en_UK><![CDATA[RACK TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TIPORECORD]]></DEFAULT>
+      <en_UK><![CDATA[RECORD TYPE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TLOGIN]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TLOGOUT]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TLS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TLS KEYSTORE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TROPPO ALTO: ERRORE DI STRUMENTAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[DEVICE ERROR: TOO HIGH]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[TROPPO BASSO: ERRORE DI STRUMENTAZIONE]]></DEFAULT>
+      <en_UK><![CDATA[DEVICE ERROR: TOO LOW]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tabella Branche]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tabella dei Tipi Campioni]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tabella delle Stampanti etichette]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tabella delle categorie prestazioni]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Task in background arrestati.]]></DEFAULT>
+      <en_UK><![CDATA[Background tasks stopped]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Task in background avviati.]]></DEFAULT>
+      <en_UK><![CDATA[Background tasks started]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Terzo trimestre]]></DEFAULT>
+      <en_UK><![CDATA[Third quarter]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Thread di monitoraggio strumento %s arrestato.]]></DEFAULT>
+      <en_UK><![CDATA[Device thread monitor %s stopped]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Thread di monitoraggio strumento %s avviato.]]></DEFAULT>
+      <en_UK><![CDATA[Device thread monitor %s started]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipi campione]]></DEFAULT>
+      <en_UK><![CDATA[Sample type]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipi di etichetta LIS]]></DEFAULT>
+      <en_UK><![CDATA[Label type for LIS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipi etichetta]]></DEFAULT>
+      <en_UK><![CDATA[Label type]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipo di file non valido.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid file type]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipo di filtro da applicare al campo.]]></DEFAULT>
+      <en_UK><![CDATA[Filter type for the field.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipo di generatore non dichiarato in file di setup.]]></DEFAULT>
+      <en_UK><![CDATA[Generatione type not declared in setup file]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tipo filtro]]></DEFAULT>
+      <en_UK><![CDATA[Filter type]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Tutte le accettazioni sono pulite e pronte per ripetere generazione dati.]]></DEFAULT>
+      <en_UK><![CDATA[All orders ready to reply data generation]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[U]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[UE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ULTIMO RISULTATO]]></DEFAULT>
+      <en_UK><![CDATA[LAST RESULT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[UNITA]]></DEFAULT>
+      <en_UK><![CDATA[UNIT]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[URGENZA]]></DEFAULT>
+      <en_UK><![CDATA[URGENCY]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ultima settimana]]></DEFAULT>
+      <en_UK><![CDATA[Last week]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Ultimo acc.]]></DEFAULT>
+      <en_UK><![CDATA[Last acc.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Uso %s come file keyStore.]]></DEFAULT>
+      <en_UK><![CDATA[%s used as keyStore file]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Uso %s come file trustStore.]]></DEFAULT>
+      <en_UK><![CDATA[%s used as trustStore file]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente X1V1]]></DEFAULT>
+      <en_UK><![CDATA[X1V1 user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente creazione]]></DEFAULT>
+      <en_UK><![CDATA[Creation user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente inesistente: nome utente e password sono corretti?]]></DEFAULT>
+      <en_UK><![CDATA[Wrong user / password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente non autorizzato! Eseguire la logon con un utente valido.]]></DEFAULT>
+      <en_UK><![CDATA[Uncertified user]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente ultima modifica]]></DEFAULT>
+      <en_UK><![CDATA[Last user update]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utenti]]></DEFAULT>
+      <en_UK><![CDATA[Users]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utenti-ruoli]]></DEFAULT>
+      <en_UK><![CDATA[Users-roles]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VAL1]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VAL2]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VALIDATO]]></DEFAULT>
+      <en_UK><![CDATA[VALIDATED]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VALORE]]></DEFAULT>
+      <en_UK><![CDATA[VALUE]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VALORI]]></DEFAULT>
+      <en_UK><![CDATA[VALUES]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VINT1]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VINT2]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[VIS]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valida esame.]]></DEFAULT>
+      <en_UK><![CDATA[Validation]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Validazione risultati]]></DEFAULT>
+      <en_UK><![CDATA[Result validation]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valido solo se il tipo di filtro e' <b>compreso</b>: rappresenta il valore finale.]]></DEFAULT>
+      <en_UK><![CDATA[Valid only if the filter is <b>between</b>: representees the final value.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore]]></DEFAULT>
+      <en_UK><![CDATA[Value]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore alto patologico]]></DEFAULT>
+      <en_UK><![CDATA[High pathological value]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore basso patologico]]></DEFAULT>
+      <en_UK><![CDATA[Low pathological value]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore del filtro; se il tipo di filtro e' <b>compreso</b> rappresenta il valore iniziale.]]></DEFAULT>
+      <en_UK><![CDATA[Valid only if the filter is <b>between</b>: representees the initial value.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore filtro]]></DEFAULT>
+      <en_UK><![CDATA[Filter value]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore non consentito per tipo formato.]]></DEFAULT>
+      <en_UK><![CDATA[Value not allowed (format fault)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore normale]]></DEFAULT>
+      <en_UK><![CDATA[Normal value]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore parametro ID non dichiarato in richiesta. Rivedere flusso.]]></DEFAULT>
+      <en_UK><![CDATA[ID parameter value not declared in order]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Valore senza corrispondenza di limiti.]]></DEFAULT>
+      <en_UK><![CDATA[Value without limits]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Vecchia password]]></DEFAULT>
+      <en_UK><![CDATA[Old password]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Visualizza allarme]]></DEFAULT>
+      <en_UK><![CDATA[Show alarm]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Visualizzazione precedenti]]></DEFAULT>
+      <en_UK><![CDATA[Show previous results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Visualizzazione risultati precedenti]]></DEFAULT>
+      <en_UK><![CDATA[Show previous results]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Warning caricamento dati esterni: il SID %s non ha una corrispettiva entry in INF.RUN_RACKS; ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[SID %s has no entry in INF.RUN_RACKS]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Worklist]]></DEFAULT>
+      <en_UK><![CDATA[Worklist]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Workrule]]></DEFAULT>
+      <en_UK><![CDATA[Workrule]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[XML-RPC]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[XML-RPC port]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ZONE]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Zoom]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[account utente bloccato]]></DEFAULT>
+      <en_UK><![CDATA[User account locked]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ascoltaSeriale:]]></DEFAULT>
+      <en_UK><![CDATA[ascoltaSeriale:]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[ascoltaSeriale: tento riapertura del socket.]]></DEFAULT>
+      <en_UK><![CDATA[ascoltaSeriale: trying to open socket]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[axis.log]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[compreso]]></DEFAULT>
+      <en_UK><![CDATA[between]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[comunication.log]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[connessione rifiutata]]></DEFAULT>
+      <en_UK><![CDATA[Connection refused]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[contiene]]></DEFAULT>
+      <en_UK><![CDATA[contain]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[credenziali non valide]]></DEFAULT>
+      <en_UK><![CDATA[Invalid credentials]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[default.log]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[delayRegen]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[dirSpool]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[disattivato da amministratore]]></DEFAULT>
+      <en_UK><![CDATA[Disabled by administrator]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[diverso (<>)]]></DEFAULT>
+      <en_UK><![CDATA[different (<>)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[errore generico di connessione (client)]]></DEFAULT>
+      <en_UK><![CDATA[General connection error (client)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[errore generico di login]]></DEFAULT>
+      <en_UK><![CDATA[General login error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[errore non definito]]></DEFAULT>
+      <en_UK><![CDATA[Undefined error]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[errore non identificato (client)]]></DEFAULT>
+      <en_UK><![CDATA[Unidentificated error (client)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[expireResultCacheMillis]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[giorniRegen]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[hl7.log]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[jmdns.log]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[maggiore (>)]]></DEFAULT>
+      <en_UK><![CDATA[greater (>)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[maggiore o uguale (>=)]]></DEFAULT>
+      <en_UK><![CDATA[greater or equal (>=)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[mainDelayMillis]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[mille.log]]></DEFAULT>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[minore (<)]]></DEFAULT>
+      <en_UK><![CDATA[less (<)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[minore o uguale (<=)]]></DEFAULT>
+      <en_UK><![CDATA[less or equal (<)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[nessun errore]]></DEFAULT>
+      <en_UK><![CDATA[no errors]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[non nullo]]></DEFAULT>
+      <en_UK><![CDATA[not null]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[nullo]]></DEFAULT>
+      <en_UK><![CDATA[null]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[password utente scaduta]]></DEFAULT>
+      <en_UK><![CDATA[password expired]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[timestamp del login non valido]]></DEFAULT>
+      <en_UK><![CDATA[Invalid login timestamp]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[uguale (=)]]></DEFAULT>
+      <en_UK><![CDATA[equal (=)]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Import eseguito correttamente: nuovi ruoli e permessi importati.]]></DEFAULT>
+      <en_UK><![CDATA[Import successful completed: new role and permission imported.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lista %s non trovata o non inizializzabile.]]></DEFAULT>
+      <en_UK><![CDATA[List %s not found or error in init.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Lista edit %s non trovata o non inizializzabile.]]></DEFAULT>
+      <en_UK><![CDATA[Edit list %s not found or error in init.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Form %s non trovato o non inizializzabile.]]></DEFAULT>
+      <en_UK><![CDATA[Form %s not found or error in init.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Disp %s non trovata o non inizializzabile.]]></DEFAULT>
+      <en_UK><![CDATA[Disp %s not found or error in init.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[L'esame %s non contiene parametri: non possibile salvare grafici.]]></DEFAULT>
+      <en_UK><![CDATA[The study %s don't have paremeters: cannot save images.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Login anonimo non permesso: occorre una sessione oppure utente e password.]]></DEFAULT>
+      <en_UK><![CDATA[Anonimous logon not permitted: must use a session or user and password.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente per login anonimo non impostato a setup.]]></DEFAULT>
+      <en_UK><![CDATA[Anonimous logon user not specified in setup.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente sconosciuto. Rivedere nome e/o password.]]></DEFAULT>
+      <en_UK><![CDATA[Unknow user. Correct username and/or password.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Utente per login anonimo non valido.]]></DEFAULT>
+      <en_UK><![CDATA[Invalid anonimous login user.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Nessun utente associato alla sessione %s.]]></DEFAULT>
+      <en_UK><![CDATA[No user linked to session %s.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Autenticazione fallita o timeout della connessione.]]></DEFAULT>
+      <en_UK><![CDATA[Authentication failed or connession timeout.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Richiesta non elaborabile: %s]]></DEFAULT>
+      <en_UK><![CDATA[The request %s is not computable.]]></en_UK>
+    </MSG>
+    <MSG>
+      <DEFAULT><![CDATA[Parametro %s (%s) ha un valore nullo; ignorato.]]></DEFAULT>
+      <en_UK><![CDATA[The parameter %s (%s) have a null value; ignored.]]></en_UK>
+    </MSG>
+  </MESSAGES>
+</LANGPACK>

@@ -1,0 +1,612 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.utils;
+
+import it.radimage.argo.ErrorMessageException;
+import it.radimage.argo.om.TurbineUser;
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.services.formatter.DataFormatter;
+import it.radimage.argo.services.formatter.NumFormatter;
+import it.radimage.argo.services.formatter.ValutaFormatter;
+import it.radimage.argo.services.modellixml.modelliXML;
+import java.util.*;
+import java.lang.reflect.*;
+
+import org.apache.turbine.services.*;
+import org.apache.turbine.services.rundata.DefaultTurbineRunData;
+import org.apache.turbine.util.BrowserDetector;
+
+import org.apache.turbine.util.uri.TemplateURI;
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.services.cache.UsersDataCache;
+import org.apache.turbine.services.localization.LocalizationService;
+
+/**
+ * Estende la classe rundata di default aggiungendo una
+ * serie di funzioni utilissime per la costruzione dei
+ * template vm.
+ *
+ * FILENOI18N
+ * @author Nicola De Nisco
+ */
+public class ArgoRunData extends DefaultTurbineRunData
+{
+  private LocalizationService lsrv = null;
+  private modelliXML modXML = null;
+  private String refresh = null;
+  private static String homeLink = null;
+
+  public ArgoRunData()
+  {
+    super();
+  }
+
+  public Service getService(String serviceName)
+     throws Exception
+  {
+    return TurbineServices.getInstance().getService(serviceName);
+  }
+
+  public String formatData(Date data)
+     throws Exception
+  {
+    return data == null ? "&nbsp;"
+              : ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatData(data);
+  }
+
+  public String formatDataFull(Date data)
+     throws Exception
+  {
+    return data == null ? "&nbsp;"
+              : ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatDataFull(data);
+  }
+
+  public String formatDataOra(Date data)
+     throws Exception
+  {
+    if(data == null)
+      return "&nbsp;";
+
+    String s = ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatDataFull(data);
+    return s.substring(0, s.length() - 3);
+  }
+
+  public String formatDataOggi(Date data)
+     throws Exception
+  {
+    return data == null || !(data instanceof Date)
+              ? ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatData(new Date())
+              : ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatData(data);
+  }
+
+  public String formatDataFullOggi(Date data)
+     throws Exception
+  {
+    return data == null || !(data instanceof Date)
+              ? ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatDataFull(new Date())
+              : ((DataFormatter) (getService(DataFormatter.SERVICE_NAME))).formatDataFull(data);
+  }
+
+  public String formatValuta(double valuta)
+     throws Exception
+  {
+    return ((ValutaFormatter) (getService(ValutaFormatter.SERVICE_NAME))).fmtValuta(valuta);
+  }
+
+  public String formatNumero(double numero, int nInteri, int nDecimali)
+     throws Exception
+  {
+    return ((NumFormatter) (getService(NumFormatter.SERVICE_NAME))).format(numero, nInteri, nDecimali);
+  }
+
+  public String formatQta(double qta)
+     throws Exception
+  {
+    return ((NumFormatter) (getService(NumFormatter.SERVICE_NAME))).format(qta, 0, 2);
+  }
+
+  public String formatSINO(boolean value)
+     throws Exception
+  {
+    return value ? I.I("Si") : I.I("No");
+  }
+
+  public boolean isOkStr(Object o)
+  {
+    if(o == null)
+      return false;
+
+    String s = o.toString().trim();
+    if(s.length() == 0 || s.startsWith("java.lang.Object"))
+      return false;
+
+    return true;
+  }
+
+  public String okStr(Object o)
+  {
+    if(o == null)
+      return "&nbsp;";
+
+    String s = o.toString().trim();
+    if(s.length() == 0 || s.startsWith("java.lang.Object"))
+      return "&nbsp;";
+
+    return s;
+  }
+
+  public String okStr2(Object o)
+  {
+    if(o == null)
+      return "";
+
+    String s = o.toString().trim();
+    if(s.length() == 0 || s.startsWith("java.lang.Object"))
+      return "";
+
+    return s;
+  }
+
+  public String okDescrizione(Object o)
+  {
+    try
+    {
+      if(o == null)
+        return "&nbsp;";
+
+      Method m = o.getClass().getMethod("getDescrizione", (Class[]) null);
+      if(m == null)
+        return "&nbsp;";
+
+      return okStr(m.invoke(o, (Object[]) null));
+    }
+    catch(Exception ex)
+    {
+      return "&nbsp;";
+    }
+  }
+
+  public String getFormScript()
+     throws Exception
+  {
+    String sOut = "";
+
+    // mappa invio a submit del form standard
+    sOut += "function getKeySite(keyStroke)\r\n"
+       + "{\r\n"
+       + (isMozilla() ? "  eventChooser = keyStroke.which;\r\n"
+             : "  eventChooser = event.keyCode;\r\n")
+       + "  if(eventChooser == 13)\r\n"
+       + "    document.fo.submit();\r\n"
+       + "}\r\n"
+       + "\r\n"
+       + "document.onkeypress = getKeySite;\r\n"
+       + "\r\n";
+
+    sOut += "function moveKey(campoup, campodown, keyStroke)\r\n"
+       + "{\r\n"
+       + (isMozilla() ? "  eventChooser = keyStroke.which;\r\n"
+             : "  eventChooser = event.keyCode;\r\n")
+       + "  switch(eventChooser) {\r\n"
+       + "    case 37: // freccia sx\r\n"
+       + "    case 39: // freccia dx\r\n"
+       + "      break;\r\n"
+       + "    case 38: // freccia su\r\n"
+       + "      campoup.focus();\r\n"
+       + "      campoup.select();\r\n"
+       + "      return false;\r\n"
+       + "    case 40: // freccia giu\r\n"
+       + "      campodown.focus();\r\n"
+       + "      campodown.select();\r\n"
+       + "      return false;\r\n"
+       + "  }\r\n"
+       + "  return true;\r\n"
+       + "}\r\n"
+       + "";
+
+    return sOut;
+  }
+
+  public String getFormScriptNoInvio()
+     throws Exception
+  {
+    String sOut = "";
+
+    // mappa invio a submit del form standard
+    sOut += "function getKeySite(keyStroke)\r\n"
+       + "{\r\n"
+       + (isMozilla() ? "  eventChooser = keyStroke.which;\r\n"
+             : "  eventChooser = event.keyCode;\r\n")
+       + /*
+        "  if(eventChooser == 13)\r\n"+
+        "    document.fo.submit();\r\n"+
+        */ "}\r\n"
+       + "\r\n"
+       + "document.onkeypress = getKeySite;\r\n"
+       + "\r\n";
+
+    sOut += "function moveKey(campoup, campodown, keyStroke)\r\n"
+       + "{\r\n"
+       + (isMozilla() ? "  eventChooser = keyStroke.which;\r\n"
+             : "  eventChooser = event.keyCode;\r\n")
+       + "  switch(eventChooser) {\r\n"
+       + "    case 37: // freccia sx\r\n"
+       + "    case 39: // freccia dx\r\n"
+       + "      break;\r\n"
+       + "    case 38: // freccia su\r\n"
+       + "      campoup.focus();\r\n"
+       + "      campoup.select();\r\n"
+       + "      return false;\r\n"
+       + "    case 40: // freccia giu\r\n"
+       + "      campodown.focus();\r\n"
+       + "      campodown.select();\r\n"
+       + "      return false;\r\n"
+       + "  }\r\n"
+       + "  return true;\r\n"
+       + "}\r\n"
+       + "";
+
+    return sOut;
+  }
+
+  /**
+   * Ritorna informazioni sul browser dell'utente.
+   * @return l'oggetto BrowserDetector
+   */
+  public BrowserDetector getBrowserInfo()
+     throws Exception
+  {
+    // tenta di recuperare il browserInfo dalla sessione utente
+    BrowserDetector browserInfo = (BrowserDetector) (getSession().getAttribute("browserInfo"));
+
+    if(browserInfo == null)
+    {
+      browserInfo = new BrowserDetector(this);
+      if(!browserInfo.isCssOK() || !browserInfo.isJavascriptOK())
+        throw new Exception("Spiacente: la versione del browser che stai usando "
+           + "non e' compatibile con Pcsdm. Ti consigliamo di "
+           + "aggiornarla ad una versione piu' recente.");
+
+      getSession().setAttribute("browserInfo", browserInfo);
+    }
+
+    return browserInfo;
+  }
+
+  /**
+   * Ritorna vero se il browser dell'utente e' Netscape/Mozilla.
+   * @return
+   */
+  public boolean isMozilla()
+     throws Exception
+  {
+    return getBrowserInfo().getBrowserName().equals(BrowserDetector.MOZILLA);
+  }
+
+  /**
+   * Ritorna vero se il browser dell'utente e' Microsoft Internet Explorere.
+   * @return
+   */
+  public boolean isMsie()
+     throws Exception
+  {
+    return getBrowserInfo().getBrowserName().equals(BrowserDetector.MSIE);
+  }
+
+  /**
+   * Ritorna vero se il browser dell'utente e' Opera.
+   * @return
+   */
+  public boolean isOpera()
+     throws Exception
+  {
+    return getBrowserInfo().getBrowserName().equals(BrowserDetector.OPERA);
+  }
+
+  /**
+   * Ritorna vero se il browser dell'utente e' Chrome.
+   * @return
+   */
+  public boolean isChrome()
+     throws Exception
+  {
+    return getBrowserInfo().getUserAgentString().toLowerCase().contains("chrome");
+  }
+
+  /**
+   * Ritorna vero se il browser supporta le dialog modali (showDialog()).
+   * @throws Exception
+   */
+  public boolean haveDialog()
+     throws Exception
+  {
+    return !isChrome();
+  }
+
+  public String getCompleteUrl(String url)
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append(getServerScheme()).
+       append("://").
+       append(getServerName()).
+       append(":").
+       append(getServerPort()).
+       append(getContextPath()).
+       append("/").
+       append(url.charAt(0) == '/' ? url.substring(1) : url);
+    return sb.toString();
+  }
+
+  public String getHttpCompleteUrl(String url)
+  {
+    int httpPort = 8080;
+    if(SU.isEqu("http", getServerScheme()))
+      httpPort = getServerPort();
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("http://").
+       append(getServerName()).
+       append(":").
+       append(httpPort).
+       append(getContextPath()).
+       append("/").
+       append(url.charAt(0) == '/' ? url.substring(1) : url);
+
+    return sb.toString();
+  }
+
+  public String getHttpsCompleteUrl(String url)
+  {
+    int httpPort = 8443;
+    if(SU.isEqu("https", getServerScheme()))
+      httpPort = getServerPort();
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("https://").
+       append(getServerName()).
+       append(":").
+       append(httpPort).
+       append(getContextPath()).
+       append("/").
+       append(url.charAt(0) == '/' ? url.substring(1) : url);
+
+    return sb.toString();
+  }
+
+  public String getAbsoluteUrl(String url)
+  {
+    return getRequest().getContextPath() + "/" + url;
+  }
+  private static String appletCodeBase = null;
+
+  public String getAppletCodebase()
+     throws Exception
+  {
+    if(appletCodeBase == null)
+    {
+      appletCodeBase = getResource("path.applet.codebase", "AUTO");
+
+      if(appletCodeBase == null || appletCodeBase.equals("AUTO"))
+      {
+        // recupera il nome del server da TurbineResource.properties
+        String serverName = TR.getString("serverdata.default.serverName", "localhost");
+
+        int httpPort = 8080;
+        if(SU.isEqu("http", getServerScheme()))
+          httpPort = getServerPort();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://").
+           append(serverName).
+           append(":").
+           append(httpPort).
+           append(getContextPath()).
+           append("/applets");
+
+        appletCodeBase = sb.toString();
+      }
+    }
+
+    return appletCodeBase;
+  }
+
+  public boolean haveRefresh()
+  {
+    return refresh != null;
+  }
+
+  public String getRefresh()
+  {
+    String rv = refresh;
+    refresh = null;
+    return rv;
+  }
+
+  public void setRefresh(int tref)
+  {
+    refresh = Integer.toString(tref);
+  }
+
+  /**
+   * Ritorna vero se l'utente è l'amministratore di sistema.
+   * @return vero se utente 'turbine'
+   * @throws Exception
+   */
+  public boolean isAdmin()
+     throws Exception
+  {
+    return SEC.isAdmin(this);
+  }
+
+  /**
+   * Ritorna l'ID univoco dell'utente loggato.
+   * @return ID utente (intero)
+   */
+  public int getUserID()
+  {
+    return SEC.getUserID(this);
+  }
+
+  /**
+   * Verifica tutte le permission specificate.
+   * Verifica una o un gruppo di permission separate da virgola.
+   * @param permissions una o più permission da verificare
+   * @return vero se TUTTE le permission sono verificate per l'utente corrente
+   * @throws Exception
+   */
+  public boolean isAuthorizedAll(String permissions)
+     throws Exception
+  {
+    return SEC.checkAllPermission(this, permissions);
+  }
+
+  /**
+   * Verifica una delle permission specificate.
+   * Verifica una o un gruppo di permission separate da virgola.
+   * @param permissions una o più permission da verificare
+   * @return vero se ALMENO UNA delle permission sono verificate per l'utente corrente
+   * @throws Exception
+   */
+  public boolean isAuthorizedAny(String permissions)
+     throws Exception
+  {
+    return SEC.checkAnyPermission(this, permissions);
+  }
+
+  public TurbineUser getUsersInfo(int idUser)
+     throws Exception
+  {
+    return UsersDataCache.getInstance().getUser(idUser);
+  }
+
+  public String getResource(String key, String defval)
+  {
+    return TR.getString(key, defval);
+  }
+
+  public String getCampoData(String nomeCampo, String nomeForm, String valore, int size)
+  {
+    try
+    {
+      if(modXML == null)
+        modXML = (modelliXML) getService(modelliXML.SERVICE_NAME);
+
+      return modXML.getCampoData(nomeCampo, nomeForm, valore, size);
+    }
+    catch(Exception ex)
+    {
+      return "ERRORE: " + ex.getMessage();
+    }
+  }
+
+  public String getCampoDataIntervalloInizio(String nomeCampoInizio, String nomeCampoFine,
+     String nomeForm, String valore, int size)
+  {
+    try
+    {
+      if(modXML == null)
+        modXML = (modelliXML) getService(modelliXML.SERVICE_NAME);
+
+      return modXML.getCampoDataIntervalloInizio(nomeCampoInizio, nomeCampoFine, nomeForm, valore, size);
+    }
+    catch(Exception ex)
+    {
+      return "ERRORE: " + ex.getMessage();
+    }
+  }
+
+  public String getCampoDataIntervalloFine(String nomeCampoInizio, String nomeCampoFine,
+     String nomeForm, String valore, int size)
+  {
+    try
+    {
+      if(modXML == null)
+        modXML = (modelliXML) getService(modelliXML.SERVICE_NAME);
+
+      return modXML.getCampoDataIntervalloFine(nomeCampoInizio, nomeCampoFine, nomeForm, valore, size);
+    }
+    catch(Exception ex)
+    {
+      return "ERRORE: " + ex.getMessage();
+    }
+  }
+
+  /**
+   * Ritorna il link alla home page come da setup.
+   */
+  public String getHomeLink()
+  {
+    if(homeLink == null)
+    {
+      String tmplHome = TR.getString("template.homepage");
+      TemplateURI tui = new TemplateURI(this, tmplHome);
+      homeLink = tui.getRelativeLink();
+    }
+    return homeLink;
+  }
+
+  public Locale getUserLocale()
+  {
+    if(lsrv == null)
+      lsrv = (LocalizationService) TurbineServices.getInstance().
+         getService(LocalizationService.SERVICE_NAME);
+
+    Locale userLocale = (Locale) getSession().getAttribute("userLocale");
+
+    if(userLocale == null)
+    {
+      userLocale = lsrv.getLocale(getRequest());
+      getSession().setAttribute("userLocale", userLocale);
+    }
+
+    return userLocale;
+  }
+
+  public String i18n(String key)
+  {
+    if(lsrv == null)
+      lsrv = (LocalizationService) TurbineServices.getInstance().
+         getService(LocalizationService.SERVICE_NAME);
+
+    return lsrv.getString(null, getUserLocale(), key);
+  }
+
+  public String i18n(String key, Object... params)
+  {
+    String value = i18n(key);
+    return String.format(value, params);
+  }
+
+  public void throwMessagei18n(String key)
+     throws ErrorMessageException
+  {
+    throw new ErrorMessageException(i18n(key));
+  }
+
+  public void throwMessagei18n(String key, Object... params)
+     throws ErrorMessageException
+  {
+    throw new ErrorMessageException(i18n(key, params));
+  }
+
+  public void setMessagei18n(String key)
+  {
+    setMessage(i18n(key));
+  }
+
+  public void setMessagei18n(String key, Object... params)
+  {
+    setMessage(i18n(key, params));
+  }
+}

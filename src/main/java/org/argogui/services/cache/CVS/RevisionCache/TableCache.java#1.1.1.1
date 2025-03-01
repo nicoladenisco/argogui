@@ -1,0 +1,197 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.cache;
+
+import it.radimage.argo.services.SERVICE;
+import it.radimage.argo.utils.SU;
+import java.lang.reflect.Method;
+import java.util.*;
+import org.apache.commons.collections.IteratorUtils;
+import org.apache.torque.map.TableMap;
+import org.apache.torque.om.BaseObject;
+import org.apache.torque.om.NumberKey;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.util.Criteria;
+import org.apache.turbine.services.cache.CachedObject;
+import org.apache.turbine.services.cache.ObjectExpiredException;
+
+/**
+ * Cache generica di oggetti Peer.
+ * Carica una intera tabella nella cache offrendo
+ * i metodi per accedere ai singoli record.
+ * Da utilizzare solo per tabelle con pochi record (COD_..., SYS_...).
+ * Utilizza la GlobalCache per memorizzare i dati.
+ *
+ * @author Nicola De Nisco
+ */
+public class TableCache<T extends BaseObject>
+{
+  private Class cls;
+  private String tableName;
+  private static final String TABLE_CACHE_CLASS = "TableCache";
+
+  public static class TableCacheData
+  {
+    public List lsValues = null;
+    public Map<ObjectKey, BaseObject> mapValues = null;
+
+    /**
+     * Carica i dati dalla tabella.
+     * @throws Exception
+     */
+    private void populateData(Class cls)
+       throws Exception
+    {
+      // estrae metodo doSelect dalla class del peer
+      Method doSelectM = cls.getMethod("doSelect", Criteria.class);
+      lsValues = (List) doSelectM.invoke(null, new Criteria());
+      mapValues = new HashMap<ObjectKey, BaseObject>(lsValues.size());
+
+      for(int i = 0; i < lsValues.size(); i++)
+      {
+        BaseObject val = (BaseObject) lsValues.get(i);
+        mapValues.put(val.getPrimaryKey(), val);
+      }
+    }
+  }
+
+  /**
+   * Costruisce selettore dei dati.
+   * @param cls classe del peer dell'oggetto di ritorno (ES: se AnAnagrafiche sarà AnAnagrafichePeer.class)
+   * @throws Exception
+   */
+  public TableCache(Class cls)
+  {
+    try
+    {
+      this.cls = cls;
+      SERVICE.ASSERT(cls.getName().endsWith("Peer"), "Deve essere un oggetto Peer.");
+
+      Method getTableMapM = cls.getMethod("getTableMap");
+      TableMap tm = (TableMap) getTableMapM.invoke(null);
+      tableName = tm.getName();
+    }
+    catch(Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  /**
+   * Recupera il record richiesto.
+   * @param id chiave primaria
+   * @return oggetto oppure null
+   * @throws Exception
+   */
+  public T findByPrimaryKey(int id)
+     throws Exception
+  {
+    return findByPrimaryKey(new NumberKey(id));
+  }
+
+  /**
+   * Recupera il record richiesto.
+   * @param toSearch chiave primaria
+   * @return oggetto oppure null
+   * @throws Exception
+   */
+  public T findByPrimaryKey(ObjectKey toSearch)
+     throws Exception
+  {
+    TableCacheData tc = getFromCache();
+    return (T) tc.mapValues.get(toSearch);
+  }
+
+  /**
+   * Recupera il record per codice.
+   * Il valore è valido solo se esiste un campo 'CODICE' sulla tabella.
+   * @param codice codice associato all'oggetto
+   * @return oggetto oppure null
+   * @throws Exception
+   */
+  public T findByCodice(String codice)
+     throws Exception
+  {
+    TableCacheData tc = getFromCache();
+    for(Iterator itr = tc.lsValues.iterator(); itr.hasNext();)
+    {
+      BaseObject val = (BaseObject) itr.next();
+
+      if(SU.parse(val.getByName("StatoRec"), 0) >= 10)
+        continue;
+
+      if(SU.isEqu(codice, val.getByName("Codice")))
+        return (T) val;
+    }
+
+    return null;
+  }
+
+  /**
+   * Recupera iteratore sui dati in cache.
+   * @return iteratore non modificabile
+   * @throws Exception
+   */
+  public Iterator<T> iterator()
+     throws Exception
+  {
+    TableCacheData tc = getFromCache();
+    return IteratorUtils.unmodifiableIterator(tc.lsValues.iterator());
+  }
+
+  /**
+   * Recupera contenuto della cache.
+   * @return lista non modificabile
+   * @throws Exception
+   */
+  public List<T> getList()
+     throws Exception
+  {
+    TableCacheData tc = getFromCache();
+    return Collections.unmodifiableList(tc.lsValues);
+  }
+
+  public TableCacheData reload()
+     throws Exception
+  {
+    TableCacheData data = new TableCacheData();
+    data.populateData(cls);
+    CACHE.addObject(TABLE_CACHE_CLASS, tableName, new CachedObject(data));
+    return data;
+  }
+
+  /**
+   * Recupera dalla GlobalCache una precedente istanza di questa classe.
+   * Se nella GlobalCache è già presente una istanza collegata alla
+   * stessa tabella ritorna quella, altrimenti ritorna se stessa.
+   * @return l'istanza in cache o se stessa
+   * @throws Exception
+   */
+  private TableCacheData getFromCache()
+     throws Exception
+  {
+    // qui ci andrebbe un semaforo, ma il massimo che può succedere
+    // e di prelevare inutilmente una tabella in quanto il salvataggio
+    // in cache sovrascrive comunque correttamente il valore precedente
+    // quindi ci risparmiamo l'acquisizone e il rilascio del semaforo
+    try
+    {
+      return (TableCacheData) CACHE.getObject(TABLE_CACHE_CLASS, tableName).getContents();
+    }
+    catch(ObjectExpiredException ei)
+    {
+      return reload();
+    }
+  }
+}

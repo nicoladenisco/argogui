@@ -1,0 +1,133 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.actions;
+
+import it.radimage.argo.rigel.RigelUtils;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import java.util.*;
+import org.apache.velocity.context.*;
+import org.rigel.exceptions.MissingListException;
+import org.rigel.glue.pager.PeerTablePagerEditApp;
+import org.rigel.table.html.AbstractHtmlTablePager;
+import org.rigel.table.html.wrapper.HtmlWrapperBase;
+import org.rigel.table.peer.html.PeerWrapperEditHtml;
+
+/**
+ * Salvataggio dei dati per i forms XML.
+ *
+ * @author Nicola De Nisco
+ */
+public class ListaEditSave extends RigelEditBaseAction
+{
+  @Override
+  protected void doWork(ArgoRunData data, Context context, String type,
+     boolean saveDB, boolean saveTmp, boolean nuovoDetail, boolean cancellaDetail)
+     throws Exception
+  {
+    doWork(data, context, SU.getParMap(data), type, saveDB, saveTmp, nuovoDetail, cancellaDetail);
+  }
+
+  protected void doWork(ArgoRunData data, Context context, Map params, String type,
+     boolean saveDB, boolean saveTmp, boolean nuovoDetail, boolean cancellaDetail)
+     throws Exception
+  {
+    HtmlWrapperBase eh = getLista(data, type);
+    if(eh == null)
+      throw new MissingListException(data.i18n("Lista %s non trovata. Controllare lista.xml.", type));
+
+    if(!RigelUtils.checkPermessiLettura(data, eh))
+    {
+      // permessi della lista non posseduti dall'utente
+      redirectUnauthorized(data);
+      return;
+    }
+
+    if(saveDB)
+    {
+      if(!eh.isSaveEnabled())
+        throw new Exception(data.i18n("Salvataggio non consentito."));
+
+      if(!RigelUtils.checkPermessiScrittura(data, eh))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    if(SU.isOkStr(data.getParameters().getString("new"))) // NOI18N
+    {
+      if(!eh.isNewEnabled())
+        throw new Exception(data.i18n("Creazione nuovi oggetti non consentita."));
+
+      if(!RigelUtils.checkPermessiCreazione(data, eh))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    if(nuovoDetail)
+    {
+      if(!eh.isNewEnabled())
+        throw new Exception(data.i18n("Creazione nuovi oggetti non consentita."));
+
+      if(!RigelUtils.checkPermessiCreazione(data, eh))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    if(cancellaDetail)
+    {
+      if(!eh.isSaveEnabled())
+        throw new Exception("Salvataggio non consentito.");
+
+      if(!RigelUtils.checkPermessiCancellazione(data, eh))
+      {
+        // permessi cancellazione lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+
+      String sKey = data.getParameters().getString("key");
+      RigelUtils.deleteRecord(data, sKey, eh);
+      doClear(data, type);
+    }
+
+    AbstractHtmlTablePager peh = (AbstractHtmlTablePager) (eh.getPager());
+
+    // aggiorna e salva i dati sul db
+    if(peh instanceof PeerTablePagerEditApp)
+      ((PeerTablePagerEditApp) peh).aggiornaDati(data.getSession(),
+         params, nuovoDetail, saveDB, data, null);
+  }
+
+  @Override
+  protected void doClear(ArgoRunData data, String type)
+     throws Exception
+  {
+    PeerWrapperEditHtml eh = (PeerWrapperEditHtml) getLista(data, type);
+    if(eh != null)
+    {
+      PeerTablePagerEditApp peh = (PeerTablePagerEditApp) (eh.getPager());
+      peh.clearStore(data.getSession());
+      peh.rebindAllRecords(data.getSession());
+    }
+  }
+}

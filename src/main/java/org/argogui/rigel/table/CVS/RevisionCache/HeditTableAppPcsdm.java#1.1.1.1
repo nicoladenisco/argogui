@@ -1,0 +1,104 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel.table;
+
+import org.rigel.glue.table.HeditTableApp;
+import org.rigel.table.html.wrapper.HtmlWrapperBase;
+
+/**
+ * Tabella di edit multi riga.
+ * Versione specializzata per PCSDM.
+ *
+ * @author Nicola De Nisco
+ */
+public class HeditTableAppPcsdm extends HeditTableApp
+{
+  public HeditTableAppPcsdm()
+  {
+  }
+
+  public HeditTableAppPcsdm(String sID, HtmlWrapperBase we)
+  {
+    super(sID, we);
+  }
+
+  /**
+   * Produce l'header della tabella
+   */
+  @Override
+  public String doHeader()
+     throws Exception
+  {
+    String sOut = "<THEAD>\r\n<TR>"
+       + preHeader();
+
+    for(int i = 0; i < tableModel.getColumnCount(); i++)
+    {
+      sOut += doCellHeader(i);
+    }
+
+    sOut += postHeader()
+       + "</TR>\r\n"
+       + "</THEAD>";
+
+    return sOut;
+  }
+
+  @Override
+  protected String cellBegin(int row, int col)
+     throws Exception
+  {
+    String align = doAlign(row, col);
+    String color = doColor(row, col);
+    String style = doStyle(row, col);
+
+    if(row == -1)
+    {
+      // header della tabella
+      if(nosize)
+        return "<TH "
+           + align + " " + color + " " + style + ">";
+      else
+        return "<TH WIDTH=\"" + normWidth[col] + "%\""
+           + align + " " + color + " " + style + ">";
+    }
+
+    // corpo della tabella
+    if(nosize)
+      return "<" + colStatement + " "
+         + align + " " + color + " " + style + ">";
+    else
+      return "<" + colStatement + " WIDTH=\"" + normWidth[col] + "%\""
+         + align + " " + color + " " + style + ">";
+  }
+
+  @Override
+  protected String cellEnd(int row, int col)
+     throws Exception
+  {
+    if(row == -1)
+      return "</TH>\r\n";
+    else
+      return "</TD>\r\n";
+  }
+
+  @Override
+  public synchronized String doRows(int rStart, int numRec)
+     throws Exception
+  {
+    return "<TBODY>\n"
+       + super.doRows(rStart, numRec)
+       + "</TBODY>\n";
+  }
+}

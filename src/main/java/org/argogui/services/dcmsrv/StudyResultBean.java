@@ -1,0 +1,228 @@
+/*
+ *  StudyResultBean.java
+ *  Creato il 23-apr-2016, 10.17.41
+ *
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ */
+package org.argogui.services.dcmsrv;
+
+import com.pixelmed.dicom.Attribute;
+import com.pixelmed.dicom.AttributeTag;
+import com.pixelmed.dicom.DicomAttributeList;
+import com.pixelmed.dicom.DicomException;
+import com.pixelmed.dicom.TagFromName;
+import org.argogui.utils.SU;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Bean per incapsulamento dati esame.
+ *
+ * @author Nicola De Nisco
+ */
+public class StudyResultBean implements Cloneable
+{
+  public String StudyInstanceUID, accno, modalita, storageAetitle;
+  public DicomAttributeList al = new DicomAttributeList();
+  public ArrayList<File> arFiles = new ArrayList<>();
+  public ArrayList<SerieResultBean> arSeries = new ArrayList<>();
+
+  public SerieResultBean findSerie(String serieUID)
+  {
+    for(SerieResultBean ser : arSeries)
+    {
+      if(SU.isEqu(serieUID, ser.SerieInstanceUID))
+        return ser;
+    }
+    return null;
+  }
+
+  public InstanceResultBean findInstance(String serieUID, String instUID)
+  {
+    SerieResultBean ser = findSerie(serieUID);
+    return ser == null ? null : ser.findInstance(instUID);
+  }
+
+  public boolean addInstance(InstanceResultBean ib)
+     throws Exception
+  {
+    Attribute tagStudyUID = ib.al.get(TagFromName.StudyInstanceUID);
+    Attribute tagSerieUID = ib.al.get(TagFromName.SeriesInstanceUID);
+    Attribute tagAccessio = ib.al.get(TagFromName.AccessionNumber);
+    Attribute tagModalita = ib.al.get(TagFromName.Modality);
+
+    if(tagStudyUID == null || tagSerieUID == null)
+      return false;
+
+    // ricarica lo study UID dall'immagine
+    StudyInstanceUID = tagStudyUID.getSingleStringValueOrNull();
+
+    // imposta accno se non impostato
+    if(accno == null && tagAccessio != null)
+      accno = tagAccessio.getSingleStringValueOrNull();
+
+    // accumula le modalita dell'esame
+    if(tagModalita != null)
+    {
+      String sMod = tagModalita.getSingleStringValueOrNull();
+      if(sMod != null)
+      {
+        if(modalita == null)
+          modalita = sMod;
+        else if(!modalita.contains(sMod))
+          modalita += "/" + sMod;
+      }
+    }
+
+    SerieResultBean eb = findSerie(tagSerieUID.getSingleStringValueOrNull());
+    if(eb == null)
+    {
+      eb = new SerieResultBean();
+      eb.addInstance(ib);
+
+      // popola i tag se è la prima serie
+      if(arSeries.isEmpty())
+        al.putAll(ib.al);
+
+      // aggiunge serie all'esame
+      arSeries.add(eb);
+    }
+    else
+      eb.addInstance(ib);
+
+    // aggiunge fileDicom all'array
+    arFiles.add(ib.fileDicom);
+
+    return true;
+  }
+
+  public String getTagAsString(AttributeTag tag)
+  {
+    return al.getStringValue(tag, null);
+  }
+
+  public String getTagAsStringNotNull(AttributeTag tag)
+  {
+    return al.getStringValue(tag, "");
+  }
+
+  public String getTagAsStringFromName(String tag)
+     throws DicomException
+  {
+    return al.getStringValue(tag, "");
+  }
+
+  public String getStudyInstanceUID()
+  {
+    return SU.okStr(StudyInstanceUID);
+  }
+
+  public String getAccno()
+  {
+    return SU.okStr(accno);
+  }
+
+  public String getModalita()
+  {
+    return SU.okStr(modalita);
+  }
+
+  public String getStudyDesc()
+  {
+    return getTagAsStringNotNull(TagFromName.StudyDescription);
+  }
+
+  public Date getStudyDate()
+  {
+    return al.getStudyDate();
+  }
+
+  public Date getPatientBirth()
+  {
+    return al.getPatientBirth();
+  }
+
+  public String getStudyDateAsString()
+  {
+    return getTagAsStringNotNull(TagFromName.StudyDate);
+  }
+
+  public String getStudyTimeAsString()
+  {
+    return getTagAsStringNotNull(TagFromName.StudyTime);
+  }
+
+  public List<SerieResultBean> getSeries()
+  {
+    return arSeries;
+  }
+
+  public int compareTo(StudyResultBean sb)
+  {
+    Date d1 = getStudyDate();
+    Date d2 = sb.getStudyDate();
+
+    if(d1 != null && d2 != null)
+      return d1.compareTo(d2);
+
+    String s1 = SU.okStrNull(StudyInstanceUID);
+    String s2 = SU.okStrNull(sb.StudyInstanceUID);
+
+    if(s1 != null && s2 != null)
+      return s1.compareTo(s2);
+
+    return 0;
+  }
+
+  public void sort()
+  {
+    arSeries.sort((s1, s2) -> s1.compareTo(s2));
+    arSeries.forEach((s) -> s.sort());
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if(this == obj)
+      return true;
+    if(obj == null)
+      return false;
+    if(getClass() != obj.getClass())
+      return false;
+    StudyResultBean other = (StudyResultBean) obj;
+    if(!Objects.equals(this.StudyInstanceUID, other.StudyInstanceUID))
+      return false;
+    return true;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return StudyInstanceUID.hashCode();
+  }
+
+  @Override
+  public String toString()
+  {
+    return "StudyResultBean{" + StudyInstanceUID + "/" + getStudyDesc() + '}';
+  }
+
+  @Override
+  public Object clone()
+     throws CloneNotSupportedException
+  {
+    StudyResultBean sb = (StudyResultBean) super.clone();
+    return sb;
+  }
+}

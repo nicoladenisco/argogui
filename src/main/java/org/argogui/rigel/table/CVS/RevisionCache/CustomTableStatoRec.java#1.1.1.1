@@ -1,0 +1,123 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel.table;
+
+import org.rigel.db.sql.SqlRecord;
+import org.rigel.table.RigelTableModel;
+import org.commonlib.utils.StringOper;
+import it.radimage.argo.Costanti;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Tabella custom per la visualizzazione dei campioni in ingresso.
+ *
+ * @author Nicola De Nisco
+ */
+public class CustomTableStatoRec extends AlternateColorTableMaint
+{
+  private SqlRecord rec = null;
+  private int idxStatoRec = 0, statoRec = 0;
+  private String eviStyle = null;
+  private static Map<Integer, String> statoDesc = new HashMap<>();
+
+  static
+  {
+    String skinName = TR.getString("tool.ui.skin", "default");
+
+    if(skinName.equals("perseo"))
+    {
+      // denominazione stati per PERSEO
+      statoDesc.put(Costanti.STATO_REC_OK, "ACCETTATO");
+      statoDesc.put(Costanti.STATO_REC_RUNNING, "IN ELABORAZIONE");
+      statoDesc.put(Costanti.STATO_REC_PROCESSED, "ELABORATO");
+      statoDesc.put(Costanti.STATO_REC_ORDER_SENT, "IN LAVORAZIONE");
+      statoDesc.put(Costanti.STATO_REC_RESULT_RECEIVED, "RISULTATI");
+      statoDesc.put(Costanti.STATO_REC_USER_SUSPEND, "SOSPESO");
+      statoDesc.put(Costanti.STATO_REC_USER_CONFIRMED, "CONFERMATO");
+      statoDesc.put(Costanti.STATO_REC_USER_ABORT, "ABORT");
+      statoDesc.put(Costanti.STATO_REC_DATA_SENT, "INVIATO");
+      statoDesc.put(Costanti.STATO_REC_ERROR, "ERRORE");
+      statoDesc.put(Costanti.STATO_REC_DELETED, "CANCELLATO");
+    }
+    else
+    {
+      // denominazione stati per PCSDM
+      statoDesc.put(Costanti.STATO_REC_OK, "ACCETTATO");
+      statoDesc.put(Costanti.STATO_REC_RUNNING, "DA ASSEGNARE");
+      statoDesc.put(Costanti.STATO_REC_PROCESSED, "IN CARICO");
+      statoDesc.put(Costanti.STATO_REC_ORDER_SENT, "CARICATO");
+      statoDesc.put(Costanti.STATO_REC_RESULT_RECEIVED, "ESEGUITO");
+      statoDesc.put(Costanti.STATO_REC_USER_SUSPEND, "SOSPESO");
+      statoDesc.put(Costanti.STATO_REC_USER_CONFIRMED, "VALIDATO");
+      statoDesc.put(Costanti.STATO_REC_USER_ABORT, "ABORT");
+      statoDesc.put(Costanti.STATO_REC_DATA_SENT, "INVIATO");
+      statoDesc.put(Costanti.STATO_REC_ERROR, "ERRORE");
+      statoDesc.put(Costanti.STATO_REC_DELETED, "CANCELLATO");
+    }
+  }
+
+  public CustomTableStatoRec()
+  {
+  }
+
+  @Override
+  public String doRows(int rStart, int numRec)
+     throws Exception
+  {
+    RigelTableModel rtm = getTM();
+    idxStatoRec = rtm.findColumn("STATO");
+    return super.doRows(rStart, numRec);
+  }
+
+  @Override
+  public String doRow(int row)
+     throws Exception
+  {
+    if(idxStatoRec != -1)
+    {
+      RigelTableModel rtm = getTM();
+      rec = (SqlRecord) rtm.getRowRecord(row);
+      eviStyle = null;
+      statoRec = StringOper.parse(rec.getData(idxStatoRec), 0);
+      if(statoRec > Costanti.STATO_REC_OK)
+        eviStyle = "rec-stato-" + statoRec;
+    }
+    return super.doRow(row);
+  }
+
+  @Override
+  public String doStyle(int row, int col)
+     throws Exception
+  {
+    if(col == idxStatoRec && eviStyle != null)
+    {
+      return "class=\"" + eviStyle + "\"";
+    }
+
+    return super.doStyle(row, col);
+  }
+
+  @Override
+  public String formatCell(int row, int col, Object value)
+     throws Exception
+  {
+    if(col == idxStatoRec)
+      return i18n.msg(SU.okStr(statoDesc.get(statoRec)));
+
+    return super.formatCell(row, col, value);
+  }
+}

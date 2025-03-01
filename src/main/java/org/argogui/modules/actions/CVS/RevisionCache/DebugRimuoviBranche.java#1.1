@@ -1,0 +1,63 @@
+/*
+ *  DebugRimuoviBranche.java
+ *  Creato il Mar 16, 2017, 7:57:59 PM
+ *
+ *  Copyright (C) 2017 Informatica Medica s.r.l.
+ *
+ *  Questo software è proprietà di Informatica Medica s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  Informatica Medica s.r.l.
+ *  Viale dei Tigli, 19
+ *  Casalnuovo di Napoli (NA)
+ */
+package it.radimage.argo.modules.actions;
+
+import it.radimage.argo.om.StpBranche;
+import it.radimage.argo.om.StpBranchePeer;
+import it.radimage.argo.om.utils.LambdaTransactAgent;
+import it.radimage.argo.utils.ArgoRunData;
+import java.sql.Connection;
+import java.util.List;
+import org.apache.torque.util.Criteria;
+import org.apache.torque.util.SqlEnum;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+
+/**
+ * Cancella fisicamente tutte le branche cancellate logicamente.
+ * La cancellazione fisica si ripercuote su tutti i dati collegati.
+ *
+ * @author Nicola De Nisco
+ */
+public class DebugRimuoviBranche extends ArgoBaseAction
+{
+  @Override
+  public void doPerform2(ArgoRunData data, Context context)
+     throws Exception
+  {
+    LambdaTransactAgent.execute((dbCon, transactionSupported) -> cancellaBranche(dbCon));
+    data.setMessagei18n("Le branche cancellate logicamente sono state rimosse fisicamente dal db.");
+  }
+
+  @Override
+  protected boolean isAuthorized(RunData data)
+     throws Exception
+  {
+    return super.isAuthorizedAll(data, "DebugRimuoviBranche"); // NOI18N
+  }
+
+  private boolean cancellaBranche(Connection dbCon)
+     throws Exception
+  {
+    Criteria c = new Criteria();
+    c.add(StpBranchePeer.STATO_REC, 10, SqlEnum.GREATER_EQUAL);
+    List<StpBranche> lsBranche = StpBranchePeer.doSelect(c, dbCon);
+
+    for(StpBranche b : lsBranche)
+      b.deleteCascade(dbCon);
+
+    return true;
+  }
+}

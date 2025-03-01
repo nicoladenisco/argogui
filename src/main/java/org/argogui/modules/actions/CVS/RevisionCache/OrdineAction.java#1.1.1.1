@@ -1,0 +1,86 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.actions;
+
+import it.radimage.argo.beans.OrdineBean;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import java.util.Map;
+import org.apache.velocity.context.Context;
+
+/**
+ * Azioni per la gestione dell'ordine.
+ *
+ * @author Nicola De Nisco
+ */
+public class OrdineAction extends ArgoBaseAction
+{
+  @Override
+  public void doPerform2(ArgoRunData data, Context context)
+     throws Exception
+  {
+    OrdineBean bean = OrdineBean.getFromSession(data);
+
+    String command = SU.okStr(data.getParameters().getString("command")).toLowerCase(); // NOI18N
+
+    if(!command.isEmpty())
+    {
+      Map params = SU.getParMap(data);
+      bean.doCommand(command, data, params, context);
+      doCommand(command, data, params, context);
+    }
+  }
+
+  public void doCmd_nuova_anagrafica(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    data.setScreenTemplate("OrdineAnagrafica.vm"); // NOI18N
+  }
+
+  public void doCmd_seleziona_anagrafica(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    data.setScreenTemplate("OrdineAnagrafica.vm"); // NOI18N
+  }
+
+  public void doCmd_salva_anagrafica(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    data.setScreenTemplate("Ordine.vm"); // NOI18N
+  }
+
+  public void doCmd_salva_accettazione(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    // accettazione conclusa: ritorna a index
+    OrdineBean.removeFromSession(data);
+    data.setScreenTemplate("Index.vm"); // NOI18N
+  }
+
+  public void doCmd_annulla_anagrafica(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    // abbandona da maschera anagrafica: ritorna a index
+    OrdineBean.removeFromSession(data);
+    data.setScreenTemplate("Index.vm"); // NOI18N
+  }
+
+  public void doCmd_annulla_accettazione(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    // abbandona da maschera accettazione: ritorna a index
+    OrdineBean.removeFromSession(data);
+    data.setScreenTemplate("Index.vm"); // NOI18N
+  }
+}

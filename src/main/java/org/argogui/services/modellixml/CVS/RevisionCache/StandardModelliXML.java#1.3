@@ -1,0 +1,704 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.modellixml;
+
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.rigel.ArgoCustomUrlBuilder;
+import it.radimage.argo.rigel.ArgoRigelUIManager;
+import it.radimage.argo.rigel.RigelDefaultI18n;
+import it.radimage.argo.services.ArgoBaseService;
+import java.io.*;
+
+import it.radimage.argo.utils.TR;
+import it.radimage.argo.utils.format.*;
+import org.rigel.SetupHolder;
+import org.rigel.db.turbine.TurbineConnectionProducer;
+import org.rigel.table.peer.html.*;
+import org.rigel.table.peer.xml.*;
+import org.rigel.table.sql.html.*;
+import org.jdom2.*;
+import org.jdom2.input.*;
+import org.rigel.table.peer.PeerWrapperXmlMaker;
+import org.rigel.table.sql.SqlWrapperXmlMaker;
+import org.rigel.table.sql.xml.SqlWrapperListaXml;
+import org.rigel.exceptions.*;
+import org.rigel.glue.validators.ValidatorsFactory;
+import org.rigel.table.peer.PeerWrapperTmapMaker;
+import org.rigel.table.peer.TorqueObjectManager;
+import java.net.*;
+import java.util.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.turbine.services.servlet.TurbineServlet;
+import org.apache.commons.logging.*;
+import org.apache.turbine.services.pull.TurbinePull;
+import org.apache.turbine.services.pull.tools.UITool;
+import org.commonlib.utils.StringOper;
+import org.rigel.glue.custom.CustomButtonFactory;
+import org.rigel.glue.custom.CustomEditFactory;
+
+/**
+ * Implementazione standard del gestore modelli XML.
+ *
+ * @author Nicola De Nisco
+ */
+public class StandardModelliXML extends ArgoBaseService
+   implements modelliXML
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(StandardModelliXML.class);
+  private PeerWrapperXmlMaker pwm = new PeerWrapperXmlMaker();
+  private SqlWrapperXmlMaker swm = new SqlWrapperXmlMaker();
+  private PeerWrapperTmapMaker twm = new PeerWrapperTmapMaker();
+  private Document doc = null;
+  private Vector vFilesXml = new Vector();
+  private boolean rigelInitOK = false;
+  private static String context = "/newstar";
+  private String baseFormUrl, baseListUrl, baseFormPopup, baseListPopup;
+  protected UITool ui = null;
+
+  @Override
+  public void argoInit()
+     throws Exception
+  {
+    log.info("Inizializzazione StandardModelliXML");
+    ui = (UITool) TurbinePull.getTool(TurbinePull.getGlobalContext(), "ui");
+
+    // estrae dati di setup
+    Configuration cfg = getConfiguration();
+    baseFormUrl = cfg.getString("baseFormUrl", "mform.vm");
+    baseListUrl = cfg.getString("baseListUrl", "maint.vm");
+    baseFormPopup = cfg.getString("baseFormPopup", "pform.vm");
+    baseListPopup = cfg.getString("baseListPopup", "plista.vm");
+
+    // carica prima i files personalizzati (hanno precedenza)
+    String[] fXmlPers = cfg.getStringArray("file.azienda." + aziendaId);
+    if(fXmlPers.length != 0)
+      addFilesToParse(fXmlPers);
+
+    // cerca i files standard
+    String[] fXml = cfg.getStringArray("file");
+    if(fXml.length == 0)
+      die("Nessun file XML specificato.");
+
+    addFilesToParse(fXml);
+
+    context = TR.getString("serverdata.default.contextPath", context);
+    context = cfg.getString("context", context);
+    ASSERT(context != null, "context != null");
+    if(!context.startsWith("/"))
+      context = "/" + context;
+
+    doc = buildDocument();
+
+    TorqueObjectManager tom = new TorqueObjectManager();
+    tom.setBasePeerArray(cfg.getStringArray("basePeer"));
+    tom.setBaseObjectArray(cfg.getStringArray("baseObject"));
+
+    pwm.setTObjMan(tom);
+    pwm.setDocument(doc);
+    swm.setDocument(doc);
+    twm.setTObjMan(tom);
+
+    twm.setBaseFormUrl(baseFormUrl);
+    twm.setBaseListUrl(baseListUrl);
+
+    String excludeFields = cfg.getString("excludeFields", "statorec");
+    if(excludeFields != null)
+      twm.setExcludeFields(excludeFields);
+
+    String readOnlyFields = cfg.getString("readOnlyFields", "iduser,idcrea,ultmodif,creazione");
+    if(readOnlyFields != null)
+      twm.setReadOnlyFields(readOnlyFields);
+
+    ValidatorsFactory.getInstance().setClassRadixs(new String[]
+    {
+      "it.radimage.argo.rigel.validators"
+    });
+
+    CustomEditFactory.getInstance().setClassRadixs(new String[]
+    {
+      "it.radimage.argo.rigel.customedit"
+    });
+
+    CustomButtonFactory.getInstance().setClassRadixs(new String[]
+    {
+      "it.radimage.argo.rigel.custombuttons"
+    });
+
+    tryInitRigelPath();
+  }
+
+  protected void addFilesToParse(String[] fileNames)
+     throws Exception
+  {
+    for(int i = 0; i < fileNames.length; i++)
+      addFileToParse(fileNames[i]);
+  }
+
+  protected void addFileToParse(String fileName)
+     throws Exception
+  {
+    File f = getConfMainFile(fileName);
+    ASSERT_FILE(f);
+    vFilesXml.add(f);
+  }
+
+  @Override
+  public void shutdown()
+  {
+  }
+
+  @Override
+  public String getContextPath()
+  {
+    return context;
+  }
+
+  public void tryInitRigelPath()
+     throws Exception
+  {
+    if(!StringOper.isOkStr(context))
+      context = TurbineServlet.getContextPath();
+
+    if(rigelInitOK || !StringOper.isOkStr(context))
+      return;
+
+    initRigelPath();
+    rigelInitOK = true;
+  }
+
+  public void initRigelPath()
+     throws Exception
+  {
+    SetupHolder.setImgEditData(getImgEditData());
+    SetupHolder.setImgEditForeign(getImgEditForeign());
+    SetupHolder.setImgLista(getImgLista());
+    SetupHolder.setImgEditItem(getImgEditItem());
+    SetupHolder.setImgFormForeign(getImgFormForeign());
+    SetupHolder.setImgSelItem(getImgSelect());
+    SetupHolder.setImgDeleteItem(getImgCancellaRecord());
+
+    SetupHolder.setDateFormat(new DateOnlyFormat());
+    SetupHolder.setTimeFormat(new TimeOnlyFormat());
+    SetupHolder.setDateTimeFormat(new DateTimeFormat());
+    SetupHolder.setNumberFormat(new NumeroServiceFormat());
+    SetupHolder.setValutaFormat(new ValutaServiceFormat());
+    SetupHolder.setConProd(new TurbineConnectionProducer());
+    SetupHolder.setQueryBuilderClassName(getSC("querybuilder", "Postgre73QueryBuilder"));
+
+    SetupHolder.setAutoComboLimit(100);
+    SetupHolder.setAutoForeingColumns("descrizione, cognome, rag_soc");
+
+    ArgoCustomUrlBuilder ub = new ArgoCustomUrlBuilder(context);
+    ub.setBaseMainForm(baseFormUrl);
+    ub.setBaseMainList(baseListUrl);
+    ub.setBasePopupForm(baseFormPopup);
+    ub.setBasePopupList(baseListPopup);
+    SetupHolder.setUrlBuilder(ub);
+
+    SetupHolder.setUiManager(new ArgoRigelUIManager());
+    SetupHolder.setRi18n(new RigelDefaultI18n());
+  }
+
+  public String getImgSelect()
+     throws Exception
+  {
+    return getImgGlyphicon("download", I.I("Conferma"));
+    //return getImgHtml(getSC("ImgSelect", "select.gif"), "Conferma");
+  }
+
+  public String getImgEditData()
+     throws Exception
+  {
+    return getImgGlyphicon("calendar", I.I("Modifica data"));
+    //return getImgHtml(getSC("ImgEditData", "calendario.gif"), "Modifica data");
+  }
+
+  public String getImgEditForeign()
+     throws Exception
+  {
+    return getImgGlyphicon("search", I.I("Ricerca valore"));
+    //return getImgHtml(getSC("ImgEditForeign", "editForeign.gif"), "Ricerca valore");
+  }
+
+  public String getImgFormForeign()
+     throws Exception
+  {
+    return getImgGlyphicon("list-alt", I.I("Visualizza dettaglio"));
+    //return getImgHtml(getSC("ImgFormForeign", "formForeign.gif"), "Visualizza dettaglio");
+  }
+
+  public String getImgLista()
+     throws Exception
+  {
+    return getImgGlyphicon("list", I.I("Seleziona lista"));
+    //return getImgHtml(getSC("ImgLista", "ricerca.gif"), "Seleziona lista");
+  }
+
+  public String getImgEditItem()
+     throws Exception
+  {
+    return getImgGlyphicon("edit", I.I("Modifica"));
+    //return getImgHtml(getSC("ImgEditItem", "editItem.gif"), "Modifica");
+  }
+
+  public String getImgEditRecord()
+     throws Exception
+  {
+    return getImgGlyphicon("edit", I.I("Modifica record"));
+    //return getImgHtml(getSC("ImgEditRecord", "editRecord.gif"), "Modifica record");
+  }
+
+  public String getImgCancellaRecord()
+     throws Exception
+  {
+    return getImgGlyphicon("remove", I.I("Cancella record"));
+    //return getImgHtml(getSC("ImgCancellaRecord", "cancella.gif"), "Cancella record");
+  }
+
+  protected String getSC(String key, String defVal)
+     throws Exception
+  {
+    return getConfiguration().getString(key, defVal);
+  }
+
+  protected String getImgHtml(String imgName, String tip)
+     throws Exception
+  {
+    return "<img src=\"" + getImageUrl(imgName)
+       + " \" alt=\"" + tip + "\" tip=\"" + tip + "\" title=\"" + tip + "\" border=\"0\">";
+  }
+
+  public String getImgGlyphicon(String name, String title)
+  {
+    return "<span class=\"glyphicon glyphicon-" + name + "\" aria-hidden=\"true\" title=\"" + title + "\"></span>";
+  }
+
+  /**
+   * Ritorna l'url completa dell'immagine (http://.../images/nomeima),
+   * prelevandola dalla directory images dell'applicazione web.
+   * Viene applicato lo skin corrente.
+   * @param nomeima nome dell'immagine
+   * @return la URL relativa completa
+   */
+  protected String getImageUrl(String nomeima)
+  {
+    return ui.image(nomeima);
+  }
+
+  /**
+   * Ritorna i tags HTML necessari per un campo data con l'ausilio del calendario
+   * @param nomeCampo nome HTML del campo
+   * @param valore eventuale valore di default (puo' essere null)
+   * @param size dimensione richiesta
+   * @return l'HTML completo del campo e del javascript per l'editing
+   * @throws java.lang.Exception
+   */
+  @Override
+  public String getCampoData(String nomeCampo, String nomeForm, String valore, int size)
+     throws Exception
+  {
+    String sds = URLEncoder.encode("restartd_" + nomeCampo, "UTF-8");
+
+    return "<input name=\"" + nomeCampo + "\" size=\"" + size + "\" value=\"" + StringOper.okStr(valore) + "\">&nbsp;"
+       + "<a href=\"javascript:apriCalendario('" + sds + "')\">"
+       + getImgEditData() + "</a>\r\n"
+       + "<script LANGUAGE=\"JavaScript\">\r\n"
+       + "function restartd_" + nomeCampo + "(strdate) {\r\n"
+       + "      document." + nomeForm + "." + nomeCampo + ".value = strdate;\r\n"
+       + "      calwindow.close();\r\n"
+       + "}\r\n"
+       + "</SCRIPT>\r\n";
+  }
+
+  /**
+   * Ritorna i tags HTML necessari per un campo data con l'ausilio del calendario.
+   * Il campo generato verra' utilizzato con il suo gemello generato da
+   * 'getCampoDataIntervalloFine' che genera il campo finale dell'intervallo.
+   * @param nomeCampoInizio nome HTML del campo di inizio intervallo
+   * @param nomeCampoFine nome HTML del campo di fine intervallo
+   * @param nomeForm nome del form
+   * @param valore eventuale valore di default (puo' essere null)
+   * @param size dimensione richiesta
+   * @return l'HTML completo del campo di inizio intervallo e del javascript per l'editing
+   * @throws java.lang.Exception
+   */
+  @Override
+  public String getCampoDataIntervalloInizio(String nomeCampoInizio, String nomeCampoFine, String nomeForm, String valore, int size)
+     throws Exception
+  {
+    String sds = URLEncoder.encode("restartd_" + nomeCampoInizio, "UTF-8");
+    String sdf = URLEncoder.encode("restartd_" + nomeCampoInizio + "_" + nomeCampoFine, "UTF-8");
+
+    return "<input id=\"" + nomeCampoInizio + "\" name=\"" + nomeCampoInizio + "\" size=\"" + size + "\" value=\"" + StringOper.okStr(valore) + "\">&nbsp;"
+       + "<a href=\"javascript:apriCalendarioIntervallo('" + sds + "','" + sdf + "')\">"
+       + getImgEditData() + "</a>\r\n"
+       + "<script LANGUAGE=\"JavaScript\">\r\n"
+       + "function restartd_" + nomeCampoInizio + "(strdate) {\r\n"
+       + "      document." + nomeForm + "." + nomeCampoInizio + ".value = strdate;\r\n"
+       + "      calwindow.close();\r\n"
+       + "}\r\n"
+       + "function restartd_" + nomeCampoInizio + "_" + nomeCampoFine + "(ss) {\r\n"
+       + "      var idx = ss.indexOf(\"|\");\r\n"
+       + "      var s1  = ss.substring( 0, idx);\r\n"
+       + "      var s2  = ss.substring(idx+1);\r\n"
+       + "      document." + nomeForm + "." + nomeCampoInizio + ".value = s1;\r\n"
+       + "      document." + nomeForm + "." + nomeCampoFine + ".value = s2;\r\n"
+       + "      calwindow.close();\r\n"
+       + "}\r\n"
+       + "</SCRIPT>\r\n";
+  }
+
+  /**
+   * Ritorna i tags HTML necessari per un campo data con l'ausilio del calendario
+   * Il campo generato verra' utilizzato con il suo gemello generato da
+   * 'getCampoDataIntervalloInizio' che genera il campo iniziale dell'intervallo.
+   * @param nomeCampoInizio nome HTML del campo di inizio intervallo
+   * @param nomeCampoFine nome HTML del campo di fine intervallo
+   * @param nomeForm nome del form
+   * @param valore eventuale valore di default (puo' essere null)
+   * @param size dimensione richiesta
+   * @return l'HTML completo del campo di fine intervallo e del javascript per l'editing
+   * @throws java.lang.Exception
+   */
+  @Override
+  public String getCampoDataIntervalloFine(String nomeCampoInizio, String nomeCampoFine, String nomeForm, String valore, int size)
+     throws Exception
+  {
+    String sds = URLEncoder.encode("restartd_" + nomeCampoFine, "UTF-8");
+    String sdf = URLEncoder.encode("restartd_" + nomeCampoFine + "_" + nomeCampoInizio, "UTF-8");
+
+    return "<input id=\"" + nomeCampoFine + "\" name=\"" + nomeCampoFine + "\" size=\"" + size + "\" value=\"" + StringOper.okStr(valore) + "\">&nbsp;"
+       + "<a href=\"javascript:apriCalendarioIntervallo('" + sds + "','" + sdf + "')\">"
+       + getImgEditData() + "</a>\r\n"
+       + "<script LANGUAGE=\"JavaScript\">\r\n"
+       + "function restartd_" + nomeCampoFine + "(strdate) {\r\n"
+       + "      document." + nomeForm + "." + nomeCampoFine + ".value = strdate;\r\n"
+       + "      calwindow.close();\r\n"
+       + "}\r\n"
+       + "function restartd_" + nomeCampoFine + "_" + nomeCampoInizio + "(ss) {\r\n"
+       + "      var idx = ss.indexOf(\"|\");\r\n"
+       + "      var s1  = ss.substring( 0, idx);\r\n"
+       + "      var s2  = ss.substring(idx+1);\r\n"
+       + "      document." + nomeForm + "." + nomeCampoInizio + ".value = s1;\r\n"
+       + "      document." + nomeForm + "." + nomeCampoFine + ".value = s2;\r\n"
+       + "      calwindow.close();\r\n"
+       + "}\r\n"
+       + "</SCRIPT>\r\n";
+  }
+
+  /**
+   * Costruisce un campo di edit con la funzione di ricerca classica
+   * di Newstar (come da Rigel).
+   * @param nomeCampo nome del campo generato
+   * @param valore valore di default all'interno del campo
+   * @param size dimensione del campo
+   * @param url url per l'editing del campo (lista dei valori)
+   * @param valForeign valore per il foreign (se null no descrizione foreign)
+   * @param extraScript evantuale extrascript (puo' essere null)
+   * @return l'HTML completo del campo e del javascript per l'editing
+   */
+  @Override
+  public String getCampoForeign(String nomeCampo, String valore, int size, String url,
+     String valForeign, String extraScript)
+     throws Exception
+  {
+    if(valForeign == null)
+      return getForeignEditFld(nomeCampo,
+         "<input type=\"text\" name=\"" + nomeCampo + "\" value=\"" + valore + "\" size=\"" + size + "\">\r\n",
+         url, extraScript);
+    else
+      return getForeignEditDescr(nomeCampo,
+         "<input type=\"text\" name=\"" + nomeCampo + "\" value=\"" + valore + "\" size=\"" + size + "\">\r\n",
+         valForeign,
+         url, extraScript);
+  }
+
+  /**
+   * Ritorna la porzione di javascript necessaria a consentire l'editing
+   * di dati esterni.
+   * @param fldName nome del campo
+   * @return il codice javascript
+   */
+  protected String getScriptEdit(String fldName, boolean conDescrizione, String extraScript)
+  {
+    if(conDescrizione)
+    {
+      return "\r\n"
+         + "<SCRIPT LANGUAGE=\"JavaScript\">\r\n"
+         + "  function imposta_" + fldName + "(codice, descri)\r\n"
+         + "  {\r\n"
+         + "    document.fo." + fldName + ".value=codice;\r\n"
+         + "    document.getElementById('" + fldName + "_ED').childNodes[0].nodeValue=descri;\r\n"
+         + (extraScript == null ? "" : extraScript)
+         + "  }\r\n"
+         + "</SCRIPT>\r\n"
+         + "\r\n";
+    }
+    else
+    {
+      return "\r\n"
+         + "<SCRIPT LANGUAGE=\"JavaScript\">\r\n"
+         + "  function imposta_" + fldName + "(codice, descri)\r\n"
+         + "  {\r\n"
+         + "    document.fo." + fldName + ".value=codice;\r\n"
+         + (extraScript == null ? "" : extraScript)
+         + "  }\r\n"
+         + "</SCRIPT>\r\n"
+         + "\r\n";
+    }
+  }
+
+  protected String getForeignEditFld(String fldName, String valore,
+     String url, String extraScript)
+     throws Exception
+  {
+    return "\r\n"
+       + "<table border=0 cellspacing=0 cellpadding=0><tr>\r\n"
+       + "<td>" + valore + "</td>\r\n"
+       + "<td>&nbsp;<a href=\"" + buildUrl(url, fldName) + "\">" + getImgEditForeign() + "</a>"
+       + "&nbsp;</td>\r\n"
+       + "</tr></table>\r\n"
+       + getScriptEdit(fldName, false, extraScript);
+  }
+
+  protected String getForeignEditDescr(String fldName, String valore, String valForeign,
+     String url, String extraScript)
+     throws Exception
+  {
+    return "\r\n"
+       + "<table border=0 cellspacing=0 cellpadding=0><tr>\r\n"
+       + "<td>" + valore + "</td>\r\n"
+       + "<td>&nbsp;<a href=\"" + buildUrl(url, fldName) + "\">" + getImgEditForeign() + "</a>"
+       + "&nbsp;</td>\r\n"
+       + "<td><div id=\"" + fldName + "_ED\" style=\"font-weight: bold;\">"
+       + valForeign + "&nbsp;</div></td>\r\n"
+       + "</tr></table>\r\n"
+       + getScriptEdit(fldName, true, extraScript);
+  }
+
+  protected String buildUrl(String url, String fldName)
+     throws Exception
+  {
+    String sds = "func=" + URLEncoder.encode("imposta_" + fldName, "UTF-8");
+
+    // verfica per url con macro
+    int pos;
+    if((pos = url.indexOf("@@@")) != -1)
+    {
+      return url.substring(0, pos) + sds + url.substring(pos + 3);
+    }
+
+    return url + sds;
+  }
+
+  @Override
+  public void forceReloadXML()
+     throws Exception
+  {
+    doc = buildDocument();
+    pwm.setDocument(doc);
+    swm.setDocument(doc);
+  }
+
+  public Document buildDocument()
+     throws Exception
+  {
+    if(vFilesXml.size() == 1)
+    {
+      File fxml = (File) vFilesXml.get(0);
+
+      log.info("Leggo " + fxml.getAbsolutePath());
+      SAXBuilder builder = new SAXBuilder();
+      return builder.build(fxml);
+    }
+
+    // crea una hastable per il livello principale
+    Hashtable htMainLevel = new Hashtable();
+
+    // scorre i files per attivare la fusione
+    for(int i = 0; i < vFilesXml.size(); i++)
+    {
+      File fxml = (File) vFilesXml.get(i);
+
+      log.info("Merge multipli XML dal file " + fxml.getAbsolutePath());
+      SAXBuilder builder = new SAXBuilder();
+      Document d = builder.build(fxml);
+
+      List tipiListe = d.getRootElement().getChildren();
+      for(Iterator itTls = tipiListe.iterator(); itTls.hasNext();)
+      {
+        // a questo livello siamo a <liste></liste> ... <forms></forms>
+        Element e = (Element) itTls.next();
+        String ename = e.getName();
+
+        // recupera o crea una hash table per il livello elementi
+        Hashtable htItemLevel = (Hashtable) htMainLevel.get(ename);
+        if(htItemLevel == null)
+        {
+          htItemLevel = new Hashtable();
+          htMainLevel.put(ename, htItemLevel);
+        }
+
+        // aggiunge tutte le liste contenute <clienti></clienti> <indirizzi></indirizzi>
+        List liste = e.getChildren();
+        for(Iterator itLst = liste.iterator(); itLst.hasNext();)
+        {
+          Element l = (Element) itLst.next();
+          String iname = l.getName();
+
+          // scarta i duplicati
+          if(htItemLevel.get(iname) == null)
+            htItemLevel.put(iname, l.clone());
+        }
+      }
+    }
+
+    // nuovo elemento root
+    Element root = new Element("root");
+
+    // aggiunge gli elementi memorizzati nelle hashtable
+    Enumeration enMain = htMainLevel.keys();
+    while(enMain.hasMoreElements())
+    {
+      String ename = (String) enMain.nextElement();
+      Hashtable htItemLevel = (Hashtable) htMainLevel.get(ename);
+
+      Element elista = new Element(ename);
+      root.addContent(elista);
+
+      Enumeration enItem = htItemLevel.keys();
+      while(enItem.hasMoreElements())
+      {
+        String iname = (String) enItem.nextElement();
+        Element eitem = (Element) htItemLevel.get(iname);
+        elista.addContent(eitem);
+      }
+    }
+
+    // crea il documento fusione di tutti i files xml passati
+    Document mergeDoc = new Document();
+    mergeDoc.setRootElement(root);
+    return mergeDoc;
+  }
+
+  @Override
+  public Document getDocument()
+  {
+    return doc;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // liste basate sui Peer (Torque)
+  //
+  @Override
+  public PeerWrapperListaHtml getListaPeer(String nomeLista)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return pwm.getLista(nomeLista);
+  }
+
+  @Override
+  public PeerWrapperEditHtml getListaEditPeer(String nomeLista)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return pwm.getListaEdit(nomeLista);
+  }
+
+  @Override
+  public PeerWrapperFormHtml getFormPeer(String nomeForm)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return pwm.getForm(nomeForm);
+  }
+
+  @Override
+  public PeerWrapperListaXml getListaXmlPeer(String nomeLista)
+     throws Exception
+  {
+    tryInitRigelPath();
+    try
+    {
+      return pwm.getListaXml(nomeLista, true);
+    }
+    catch(MissingListException ex1)
+    {
+      return pwm.getListaXmlFromListe(nomeLista, true);
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // liste basate su query libere (SQL)
+  //
+  @Override
+  public SqlWrapperListaHtml getListaSql(String nomeLista)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return swm.getLista(nomeLista);
+  }
+
+  @Override
+  public SqlWrapperFormHtml getFormSql(String nomeForm)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return swm.getForm(nomeForm);
+  }
+
+  @Override
+  public SqlWrapperListaXml getListaXmlSql(String nomeLista)
+     throws Exception
+  {
+    tryInitRigelPath();
+    try
+    {
+      return swm.getListaXml(nomeLista, true);
+    }
+    catch(MissingListException ex1)
+    {
+      return swm.getListaXmlFromListe(nomeLista, true);
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // liste basate sulle tablemap (Torque)
+  //
+  @Override
+  public PeerWrapperListaHtml getListaTmap(String nomeTabella)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return twm.getLista(nomeTabella);
+  }
+
+  @Override
+  public PeerWrapperEditHtml getListaEditTmap(String nomeTabella)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return twm.getListaEdit(nomeTabella);
+  }
+
+  @Override
+  public PeerWrapperFormHtml getFormTmap(String nomeTabella)
+     throws Exception
+  {
+    tryInitRigelPath();
+    return twm.getForm(nomeTabella);
+  }
+}

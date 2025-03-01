@@ -1,0 +1,27 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo;
+
+/**
+ * Questa eccezione viene sollevata nel caso in cui il message toggle (MT)
+ * inviato dallo strumento non è congruentecon con il MT atteso dall'host.
+ * @author mmazzetti
+ */
+public class MessageToggleException extends Exception
+{
+  public MessageToggleException(String message)
+  {
+    super(message);
+  }
+}

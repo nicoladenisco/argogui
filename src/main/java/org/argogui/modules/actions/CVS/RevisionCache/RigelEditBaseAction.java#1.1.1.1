@@ -1,0 +1,177 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.actions;
+
+import it.radimage.argo.Costanti;
+import it.radimage.argo.beans.NavigationStackBean;
+import it.radimage.argo.rigel.RigelTurbineWrapperCache;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+import org.rigel.table.html.wrapper.HtmlWrapperBase;
+import org.rigel.table.peer.html.PeerWrapperFormHtml;
+
+/**
+ * Classe base di FormSave e ListaEditSave.
+ * Funzioni comuni alle action per salvare forms rigel.
+ *
+ * @author Nicola De Nisco
+ */
+abstract public class RigelEditBaseAction extends ArgoBaseAction
+{
+  @Override
+  public void doPerform2(ArgoRunData data, Context context)
+     throws Exception
+  {
+    String type = data.getParameters().getString("type");
+    if(type == null)
+      throw new Exception("Manca il parametro type.");
+
+    boolean saveDB = false, ritorna = false, nuovoDetail = false, duplica = false,
+       clear = false, cancella = false, chiudi = false;
+
+    String cmd = data.getParameters().getString("command"); // NOI18N
+    if(cmd != null)
+    {
+      if(cmd.equals(Costanti.SAVE_ONLY) || cmd.equals(Costanti.SAVE_AND_NEW))
+        saveDB = true;
+      if(cmd.equals(Costanti.SAVE_AND_EXIT))
+        saveDB = ritorna = true;
+      if(cmd.equals(Costanti.NEW_DETAIL))
+        nuovoDetail = true;
+      if(cmd.equals(Costanti.DUP_CURRENT))
+        duplica = saveDB = true;
+      if(cmd.equals(Costanti.CLEAR_FORM_DATA))
+        clear = ritorna = true;
+      if(cmd.equals(Costanti.CLOSE_EDIT))
+        clear = chiudi = true;
+      if(cmd.equals(Costanti.DELETE_RECORD))
+        cancella = true;
+    }
+
+    if(clear)
+      doClear(data, type);
+    else
+      doWork(data, context, type, saveDB, !ritorna, nuovoDetail, cancella);
+
+    if(chiudi)
+    {
+      // redirezione a chiusura popup
+      data.getTemplateInfo().setScreenTemplate("closeme.vm");
+      return;
+    }
+
+    if(ritorna)
+    {
+      // verifica lo stack di navigazione per eventuale indirizzo di ritorno
+      NavigationStackBean bean = NavigationStackBean.getFromSession(data);
+
+      // scarta la cima dello stack che è la uri attualmente visualizzata
+      if(bean.size() > 1)
+        bean.pop();
+
+      if(bean.popUri(data))
+        return;
+
+      String jlc = SU.okStrNull(data.getParameters().getString("jlc"));
+      String jvm = SU.okStrNull(data.getParameters().getString("jvm"));
+
+      if(jlc != null && jlc.contains(".vm"))
+      {
+        // si ritorna ad una generica pagina velocity come specificato in jlc
+        data.getTemplateInfo().setScreenTemplate(jlc);
+      }
+      else if(jlc != null && jlc.contains("maint"))
+      {
+        // se jlc inizia per maint- sicuramente si ritorna a maint.vm
+        if(jvm == null)
+          jvm = "maint.vm";
+        data.getTemplateInfo().setScreenTemplate(jvm);
+        data.getParameters().setString("type", jlc);
+      }
+      else if(jlc != null && !jlc.contains("."))
+      {
+        // se jlc non contiene punti (.html, .vm, ecc.) probabilmente è il nome di una lista
+        if(jvm == null)
+          jvm = "maint.vm";
+        data.getTemplateInfo().setScreenTemplate(jvm);
+        data.getParameters().setString("type", jlc);
+      }
+      else if(jlc == null && jvm != null)
+      {
+        data.getTemplateInfo().setScreenTemplate(jvm);
+      }
+      else
+      {
+        // variabile jlc non definita o non comprensibile: torniamo alla pagina iniziale
+        gotoHome(data);
+      }
+    }
+  }
+
+  /**
+   * Salvataggio del form.
+   * Salva i campi del form nei rispettivi oggetti peer
+   * utilizzando le funzioni di rigel.
+   * @param data
+   * @param context
+   * @param type
+   * @param saveDB
+   * @param saveTmp
+   * @param nuovoDetail
+   * @throws Exception
+   */
+  abstract protected void doWork(ArgoRunData data, Context context, String type,
+     boolean saveDB, boolean saveTmp, boolean nuovoDetail, boolean cancellaDetail)
+     throws Exception;
+
+  /**
+   * Pulisce informazioni di sessione.
+   * Rimuove dalla sessione i dati memorizzati per l'editing del form.
+   * Generalmente utilizzata nel comando abbandona.
+   * @param data
+   * @param type
+   * @throws Exception
+   */
+  abstract protected void doClear(ArgoRunData data, String type)
+     throws Exception;
+
+  protected PeerWrapperFormHtml getForm(ArgoRunData data, String type)
+     throws Exception
+  {
+    RigelTurbineWrapperCache wpc = RigelTurbineWrapperCache.getFromSession(data);
+    return wpc.getFormCache(type);
+  }
+
+  protected HtmlWrapperBase getLista(ArgoRunData data, String type)
+     throws Exception
+  {
+    RigelTurbineWrapperCache wpc = RigelTurbineWrapperCache.getFromSession(data);
+    return wpc.getListaEditCache(type);
+  }
+
+  @Override
+  protected boolean isAuthorized(RunData data)
+     throws Exception
+  {
+    return isAuthorizedAll(data, "modifica_dati_generale");
+  }
+
+  protected boolean isAuthorizedDelete(RunData data)
+     throws Exception
+  {
+    return isAuthorizedAll(data, "cancella_manutenzione");
+  }
+}

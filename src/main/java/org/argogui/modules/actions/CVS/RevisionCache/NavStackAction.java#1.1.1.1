@@ -1,0 +1,65 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.actions;
+
+import it.radimage.argo.beans.NavigationStackBean;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import java.util.Map;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+
+/**
+ * Action per la navigazione.
+ *
+ * @author Nicola De Nisco
+ */
+public class NavStackAction extends ArgoBaseAction
+{
+  @Override
+  public void doPerform2(ArgoRunData data, Context context)
+     throws Exception
+  {
+    String command = SU.okStrNull(data.getParameters().getString("command"));
+    if(command != null)
+      doCommand(command, data, null);
+  }
+
+  @Override
+  protected boolean isAuthorized(RunData data)
+     throws Exception
+  {
+    return true;
+  }
+
+  public void doCmd_push(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    NavigationStackBean bean = NavigationStackBean.getFromSession(data);
+    bean.pushUri(data);
+  }
+
+  public void doCmd_pop(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    NavigationStackBean bean = NavigationStackBean.getFromSession(data);
+    bean.popUri(data);
+  }
+
+  public void doCmd_clear(ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    NavigationStackBean.removeFromSession(data);
+  }
+}

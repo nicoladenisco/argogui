@@ -1,0 +1,67 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.screens;
+
+import it.radimage.argo.utils.LI;
+import it.radimage.argo.utils.SU;
+import java.util.Map;
+
+import it.radimage.argo.beans.turbine.AccountBean;
+import it.radimage.argo.utils.ArgoRunData;
+
+
+import org.apache.torque.util.BasePeer;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+
+/**
+ * Gestione account ruoli
+ * @author Nicola De Nisco
+ */
+public class AccountRuoli extends AccountBaseScreen
+{
+  @Override
+  protected void doBuildTemplate2(ArgoRunData data, Context context)
+     throws Exception
+  {
+    AccountBean ab = AccountBean.getFromSession(data);
+
+    String command = data.getParameters().getString("command"); // NOI18N
+    if(command != null && command.equals("cancella")) // NOI18N
+    {
+      String idRole = data.getParameters().getString("key");
+      if(idRole != null)
+      {
+        String sSQL;
+        sSQL = "DELETE FROM turbine_user_group_role WHERE role_id=" + idRole;
+        log.debug("Cancellazione associazione: " + sSQL);
+        BasePeer.executeStatement(sSQL);
+        sSQL = "DELETE FROM turbine_role_permission WHERE role_id=" + idRole;
+        log.debug("Cancellazione associazione: " + sSQL);
+        BasePeer.executeStatement(sSQL);
+        sSQL = "DELETE FROM turbine_role WHERE role_id=" + idRole;
+        log.debug("Cancellazione ruolo: " + sSQL);
+        BasePeer.executeStatement(sSQL);
+      }
+    }
+
+    Map params = SU.getParMap(data);
+    String html = ab.getHtmlRole(params, data.getSession());
+
+    context.put("html", html);
+    context.put("urlNuovo", LI.getLinkUrl("mform.vm?type=ruoli&new=1&jlc=AccountRuoli.vm"));
+  }
+
+}
+

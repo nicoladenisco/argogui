@@ -1,0 +1,44 @@
+/*
+ *  Ricerca.java
+ *  Creato il 15-lug-2016, 19.35.40
+ *
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ */
+package it.radimage.argo.modules.screens;
+
+import it.radimage.argo.beans.NavigationStackBean;
+import it.radimage.argo.beans.RicercaDicomBean;
+import it.radimage.argo.utils.ArgoRunData;
+import org.apache.turbine.util.uri.TemplateURI;
+import org.apache.velocity.context.Context;
+
+/**
+ * Controllore per Ricerca.vm.
+ *
+ * @author Nicola De Nisco
+ */
+public class Ricerca extends ArgoBaseScreen
+{
+  @Override
+  protected void doBuildTemplate2(ArgoRunData data, Context context) throws Exception
+  {
+    super.doBuildTemplate2(data, context);
+
+    NavigationStackBean.removeFromSession(data);
+    NavigationStackBean nsb = NavigationStackBean.getFromSession(data);
+    TemplateURI uri = new TemplateURI(data, "Ricerca.vm");
+    nsb.push(uri.getRelativeLink());
+
+    RicercaDicomBean bean = RicercaDicomBean.getFromSession(data);
+    context.put("bean", bean);
+    context.put("htmlRicerca", bean.getHtmlRicerca(data));
+  }
+}

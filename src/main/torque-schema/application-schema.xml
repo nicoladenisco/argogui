@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<!-- ============================================================================== -->
+<!--                                                                                -->
+<!--  Database Definition for the Application                                       -->
+<!--                                                                                -->
+<!--  @version $Id: application-schema.xml                                          -->
+<!--                                                                                -->
+<!-- ============================================================================== -->
+
+<database xmlns="http://db.apache.org/torque/5.0/templates/database"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0-strict.xsd"
+          name="argogui"
+          defaultIdMethod="native">
+
+
+  <table name="ANA.ASL" idMethod="native" description="Tabella delle ASL">
+    <column name="ASL_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" description="Codice numerico istat" />
+    <column name="CODICE" size="15" type="VARCHAR" description="Sigla asl" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" description="descrizione asl" />
+    <column name="LISTINO" type="INTEGER" default="0" />
+    <column name="INDIRIZZO" size="50" type="VARCHAR" description="indirizzo asl" />
+    <column name="TELEFONO" size="20" type="VARCHAR" description="telefono asl" />
+    <column name="FAX" size="20" type="VARCHAR" description="fax asl" />
+    <column name="CAP" size="6" type="VARCHAR" description="cap asl" />
+    <column name="CITTA" size="50" type="VARCHAR" description="citta asl" />
+    <column name="PROVINCIA" size="2" type="CHAR" description="provincia asl" />
+    <column name="CODICEREGIONE" size="6" type="VARCHAR" description="codice regione ASL" />
+    <column name="CODICEASLREGIONE" size="6" type="VARCHAR" description="codice ASL regionale" />
+    <column name="TIPORECORD" type="INTEGER" description="Nota(1)" default="0" />
+    <column name="SCADENZA" type="TIMESTAMP" description="Data di scadenza del record" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_ANA_ASL_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.CIRCOSCRIZIONI" idMethod="native" description="Tabella delle Circoscrizioni">
+    <column name="CIRCOSCRIZIONI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" description="Codice numerico progressivo" />
+    <column name="CODICE" size="32" type="VARCHAR" description="Codice circoscrizione" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" description="Descrizione circoscrizione" />
+    <column name="ID_COMUNI" type="INTEGER" description="comune di residenza" default="0" />
+    <column name="ID_ASL" type="INTEGER" description="comune di residenza" default="0" />
+    <column name="ID_DISTRETTI" type="INTEGER" description="comune di residenza" default="0" />
+    <column name="ID_OLDASL" type="INTEGER" description="vecchio idAsl" default="0" />
+    <column name="ID_OLDDISTRETTI" type="INTEGER" description="vecchio idDistretto" default="0" />
+    <column name="ISCIRCOSCRIZIONE" type="INTEGER" description="se 0 allora e una circoscrizione fittizia" default="0" />
+    <column name="TIPORECORD" type="INTEGER" description="Nota(1)" default="0" />
+    <column name="SCADENZA" type="TIMESTAMP" description="Data di scadenza del record" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="ANA.COMUNI">
+      <reference local="ID_COMUNI" foreign="COMUNI_ID" />
+    </foreign-key>
+    <foreign-key foreignTable="ANA.ASL">
+      <reference local="ID_ASL" foreign="ASL_ID" />
+    </foreign-key>
+    <foreign-key foreignTable="ANA.DISTRETTI">
+      <reference local="ID_DISTRETTI" foreign="DISTRETTI_ID" />
+    </foreign-key>
+    <unique name="IDX_ANA_CIRCOSCRIZIONI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.COMUNI" idMethod="native" description="Tabella dei Comuni">
+    <column name="COMUNI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" description="Codice numerico progressivo" />
+    <column name="CODICE" size="6" type="VARCHAR" description="Codice ISTAT del comune" />
+    <column name="DESCRIZIONE" size="50" type="VARCHAR" description="Descrizione del comune" />
+    <column name="CAP" size="5" type="VARCHAR" description="CAP comune" />
+    <column name="ID_PROVINCE" type="INTEGER" default="0" />
+    <column name="BELFIORE" size="5" type="VARCHAR" description="Codice Belfiore per il codice fiscale" />
+    <column name="OLDISTAT" size="6" type="VARCHAR" description="Codice Istat per comuni modificati" />
+    <column name="OLDIDPROVINCE" size="5" type="VARCHAR" description="vecchia provincia per comuni" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="ANA.PROVINCE">
+      <reference local="ID_PROVINCE" foreign="PROVINCE_ID" />
+    </foreign-key>
+    <unique name="IDX_ANA_COMUNI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.DISTRETTI" idMethod="native" description="Tabella dei Distretti">
+    <column name="DISTRETTI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" description="codice numerico progressivo" />
+    <column name="CODICE" size="32" type="VARCHAR" description="codice distretto" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" description="descrizione distretto" />
+    <column name="ID_ASL" type="INTEGER" description="asl distretto" default="0" />
+    <column name="TIPORECORD" type="INTEGER" description="Nota(1)" default="0" />
+    <column name="SCADENZA" type="TIMESTAMP" description="Data di scadenza del record" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="ANA.ASL">
+      <reference local="ID_ASL" foreign="ASL_ID" />
+    </foreign-key>
+    <unique name="IDX_ANA_DISTRETTI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.NAZIONI" idMethod="native" description="Tabella delle Nazioni">
+    <column name="NAZIONI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" size="6" type="VARCHAR" description="Codice ISTAT della nazione" />
+    <column name="DESCRIZIONE" size="120" type="VARCHAR" description="nome della nazione" />
+    <column name="UE" type="INTEGER" description="1 appartiene alla comunita europea" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_ANA_NAZIONI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.PROVINCE" idMethod="native" description="Tabella delle Province">
+    <column name="PROVINCE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" size="6" type="VARCHAR" description="Codice ISTAT della provincia" />
+    <column name="DESCRIZIONE" size="120" type="VARCHAR" description="nome della provincia" />
+    <column name="SIGLA" size="2" type="VARCHAR" description="sigla della provincia" />
+    <column name="ID_REGIONI" type="INTEGER" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="ANA.REGIONI">
+      <reference local="ID_REGIONI" foreign="REGIONI_ID" />
+    </foreign-key>
+    <unique name="IDX_ANA_PROVINCE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.RAZZE" idMethod="native" description="Tabella delle razze">
+    <column name="RAZZE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" size="6" type="VARCHAR" description="Codice ISTAT della nazione" />
+    <column name="DESCRIZIONE" size="120" type="VARCHAR" description="nome della nazione" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_ANA_RAZZE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.REGIONI" idMethod="native" description="Tabella delle Regioni">
+    <column name="REGIONI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" size="6" type="VARCHAR" description="Codice ISTAT della regione" />
+    <column name="DESCRIZIONE" size="120" type="VARCHAR" description="nome della regione" />
+    <column name="ID_NAZIONI" type="INTEGER" default="0" />
+    <column name="CODICEASLREGIONE" size="6" type="VARCHAR" description="Codice regionale ASL" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="ANA.NAZIONI">
+      <reference local="ID_NAZIONI" foreign="NAZIONI_ID" />
+    </foreign-key>
+    <unique name="IDX_ANA_REGIONI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="ANA.RELIGIONI" idMethod="native" description="Tabella delle razze">
+    <column name="RELIGIONI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" size="6" type="VARCHAR" description="Codice ISTAT della nazione" />
+    <column name="DESCRIZIONE" size="120" type="VARCHAR" description="nome della nazione" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_ANA_RELIGIONI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="GEN.ALLARMI" idMethod="native" description="Allarmi sollevati durante il funzionamento.">
+    <column name="ALLARMI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="SEVERITY" type="VARCHAR" size="1" />
+    <column name="SERVIZIO" type="VARCHAR" size="64" required="true" />
+    <column name="COMPONENTE" type="VARCHAR" size="64" required="true" />
+    <column name="MESSAGGIO" type="CLOB" required="true" />
+    <column name="VISIBILITA" type="INTEGER" default="0" />
+    <column name="STATO" type="VARCHAR" size="1" />
+    <column name="NOTE_DISABILITAZIONE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+  </table>
+  <table name="GEN.APPLICATIVIESTERNI" idMethod="native" description="Tabella Applicativi Esterni">
+    <column name="APPLICATIVIESTERNI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" size="32" type="VARCHAR" required="true" description="Codice aapplicativo" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" required="true" />
+    <column name="ATTIVO" type="INTEGER" default="0" description="0=disattivato" />
+    <column name="PRIORITA" type="INTEGER" default="0" description="ordine di priorita" />
+    <column name="PLUGIN" type="VARCHAR" size="255" required="true" description="tipo di plugin utilizzato" />
+    <column name="PARAMETRI" type="CLOB" description="Parametri connessione (dipendono dal plugin)" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <unique name="IDX_GEN_APPLICATIVIESTERNI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="GEN.GIOTAB" idMethod="native" description="Contatori permanenti.">
+    <column name="GIOTAB_ID" type="INTEGER" required="true" autoIncrement="true" primaryKey="true" />
+    <column name="ESERCIZIO" type="VARCHAR" size="64" />
+    <column name="CHIAVE" type="VARCHAR" size="64" />
+    <column name="VINT1" type="INTEGER" default="0" />
+    <column name="VINT2" type="INTEGER" default="0" />
+    <column name="VAL1" type="DOUBLE" />
+    <column name="VAL2" type="DOUBLE" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <unique name="IDX_GEN_GIOTAB_1">
+      <unique-column name="ESERCIZIO" />
+      <unique-column name="CHIAVE" />
+    </unique>
+  </table>
+  <table name="GEN.HL7DETAIL" idMethod="native" description="messaggi  inviati per destinazione">
+    <column name="HL7DETAIL_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ID_HL7ENTITY" required="true" type="INTEGER" default="0" />
+    <column name="MESSAGE" required="true" type="VARCHAR" size="255" />
+    <column name="BUILDER" type="VARCHAR" size="255" description="eventuale builder speciale per questo messaggio" />
+    <column name="INFO" type="VARCHAR" size="255" description="parametri supplementari per il builder" />
+    <column name="TIPO_EVENTO" type="INTEGER" description="evento Perseo associato a questo invio" default="0" />
+    <column name="TIPO_INVIO" type="INTEGER" description="0=ASINCRONO 1=PERMANENTE 2=SINCRONO 3=BLOCCANTE" default="0" />
+    <column name="TIPO_LOG" type="INTEGER" description="0=NESSUNO 1=ERRORE 2=SEMPRE" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="GEN.HL7ENTITY">
+      <reference foreign="HL7ENTITY_ID" local="ID_HL7ENTITY" />
+    </foreign-key>
+  </table>
+  <table name="GEN.HL7ENTITY" idMethod="native" description="destinazione  dei messaggi HL7">
+    <column name="HL7ENTITY_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="NOME_HOST" required="true" type="VARCHAR" size="255" />
+    <column name="INDIRIZZO" required="true" type="VARCHAR" size="255" />
+    <column name="APPLICATION" type="VARCHAR" size="64" />
+    <column name="FACILITY" type="VARCHAR" size="64" />
+    <column name="SENDING_FACILITY" type="VARCHAR" size="64" description="se non vuoto è la facility inviante" />
+    <column name="PORT" required="true" type="INTEGER" default="0" />
+    <column name="ACTOR" type="VARCHAR" size="255" />
+    <column name="TLS" type="VARCHAR" size="1" />
+    <column name="TLS_KEYSTORE" type="VARCHAR" size="255" />
+    <column name="BUILDER" type="VARCHAR" size="255" description="eventuale builder per questa destinazione" />
+    <column name="INFO" type="VARCHAR" size="255" description="parametri supplementari per il builder" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+  </table>
+  <table name="GEN.HL7LOG" idMethod="native" description="log di invio dei  messaggi HL7">
+    <column name="HL7LOG_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ID_HL7ENTITY" required="true" type="INTEGER" default="0" />
+    <column name="NOME_HOST" required="true" type="VARCHAR" size="255" />
+    <column name="APPLICATION" type="VARCHAR" size="64" />
+    <column name="FACILITY" type="VARCHAR" size="64" />
+    <column name="TIPO_MESSAGGIO" required="true" type="VARCHAR" size="255" />
+    <column name="RISULTATO" type="INTEGER" default="0" description="0=OK 1=ERRORE" />
+    <column name="MESSAGE" required="true" type="CLOB" />
+    <column name="ERROR" required="true" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="GEN.HL7ENTITY">
+      <reference foreign="HL7ENTITY_ID" local="ID_HL7ENTITY" />
+    </foreign-key>
+  </table>
+  <table name="GEN.HL7ROUTE" idMethod="native" description="Coda messaggi HL7 per messaggi permanenti.">
+    <column name="HL7ROUTE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="MESSAGE" required="true" type="CLOB" />
+    <column name="ID_HL7DETAIL" required="true" type="INTEGER" default="0" />
+    <column name="PRIORITY" type="INTEGER" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="GEN.HL7DETAIL">
+      <reference foreign="HL7DETAIL_ID" local="ID_HL7DETAIL" />
+    </foreign-key>
+  </table>
+  <table name="GEN.LISTPRO" idMethod="native" description="Lista programmi (menu generale).">
+    <column name="LISTPRO_ID" type="INTEGER" required="true" autoIncrement="true" primaryKey="true" />
+    <column name="ID_PADRE" type="INTEGER" default="0" />
+    <column name="NUM_RIGA" type="INTEGER" default="0" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="100" />
+    <column name="PROGRAMMA" type="VARCHAR" size="100" />
+    <column name="IMMAGINE" type="VARCHAR" size="100" />
+    <column name="COLORE" type="VARCHAR" size="10" />
+    <column name="TIPO" type="VARCHAR" size="10" />
+    <column name="FLAG1" type="VARCHAR" size="10" />
+    <column name="FLAG2" type="VARCHAR" size="10" />
+    <column name="PERMISSION" type="VARCHAR" size="100" />
+    <column name="NOTE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+  </table>
+  <table name="GEN.LOGINJOUR" idMethod="native" description="Giornale di logon.">
+    <column name="LOGINJOUR_ID" type="INTEGER" required="true" autoIncrement="true" primaryKey="true" />
+    <column name="SESSIONID" type="VARCHAR" size="255" />
+    <column name="LOGIN_NAME" type="VARCHAR" size="255" required="true" description="utente associato" />
+    <column name="MODE" type="INTEGER" default="0" />
+    <column name="FIRST_NAME" type="VARCHAR" size="255" />
+    <column name="LAST_NAME" type="VARCHAR" size="255" />
+    <column name="TLOGIN" type="TIMESTAMP" />
+    <column name="TLOGOUT" type="TIMESTAMP" />
+    <column name="STATION_NAME" type="VARCHAR" size="255" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+  </table>
+  <table name="GEN.PARSTAMPE" description="Descrittori dei parametri stampe" idMethod="native">
+    <column name="PARSTAMPE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="10" required="true" description="codice parametro statistica" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" description="descrizione parametro statistica" />
+    <column name="TABELLA_VALORI" type="VARCHAR" size="255" description="tabella da cui recuperare i valori del parametro" />
+    <column name="CAMPO_CHIAVE" type="VARCHAR" size="255" description="campo della tabella valori, sara'' utilizzato come filtro per la statistica" />
+    <column name="CAMPO_VALORE" type="VARCHAR" size="255" description="campo della tabella valori, e'' il valore che sara'' usato in visualizzazione" />
+    <column name="VALORI" type="VARCHAR" size="255" description="valori statici del parametro, in questo caso non esiste una tabella dei valori" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_GEN_PARSTAMPE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="GEN.SETUP_OVERRIDE" idMethod="native" description="override dei parametri di setup">
+    <column name="SETUP_OVERRIDE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="NOME" type="CLOB" />
+    <column name="VALORE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+  </table>
+  <table name="GEN.SMARTCARD" idMethod="native" description="Certificati utente utilizzati per identificazione.">
+    <column name="SMARTCARD_ID" autoIncrement="true" required="true" primaryKey="true" type="INTEGER" />
+    <column name="LOGIN_NAME" type="VARCHAR" size="255" required="true" description="utente associato al certificato" />
+    <column name="CERT_CHAIN" type="CLOB" description="contenuto del subject-name del certificato" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <unique name="IDX_GEN_SMARTCARD_1">
+      <unique-column name="LOGIN_NAME" />
+      <unique-column name="CERT_CHAIN" />
+    </unique>
+  </table>
+  <table name="GEN.STAMPE" description="Descrittori delle stampe." idMethod="native">
+    <column name="STAMPE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="10" required="true" description="codice della stampa" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" description="descrizione della stampa" />
+    <column name="PLUGIN" type="VARCHAR" size="255" required="true" description="tipo di plugin utilizzato (con eventuali parametri richiesti)" />
+    <column name="PERMISSION" type="VARCHAR" size="255" description="permessi utente (uno qualsiasi)" />
+    <column name="NOME" type="VARCHAR" size="255" description="nome della stampa (significato dipende dal plugin)" />
+    <column name="INFO" type="VARCHAR" size="255" description="informazioni per la stampa (signigicato dipende dal plugin)" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_GEN_STAMPE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="GEN.TRANSCODE" idMethod="none" description="Transcodifica codici">
+    <column name="APP" type="VARCHAR" size="16" primaryKey="true" required="true" />
+    <column name="TIPO" type="VARCHAR" size="16" primaryKey="true" required="true" />
+    <column name="CODICE_INTERNO" type="VARCHAR" size="64" primaryKey="true" required="true" />
+    <column name="CODICE_ESTERNO" type="VARCHAR" size="64" required="true" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <index name="IDX_GEN_TRANSCODE_1">
+      <index-column name="APP" />
+      <index-column name="CODICE_ESTERNO" />
+    </index>
+  </table>
+  <table name="GEN.VERSION" idMethod="native" description="Componenti installate e rispettive versioni.">
+    <column name="VERSION_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="COMPONENTE" size="64" type="VARCHAR" />
+    <column name="MAJOR" required="true" type="INTEGER" default="0" />
+    <column name="MINOR" required="true" type="INTEGER" default="0" />
+    <column name="STATO_OPER" type="CHAR" size="1" />
+    <column name="ERROR" type="CLOB" />
+    <column name="NOTE" type="CLOB" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+  </table>
+  <table name="INF.IN_ACCETTAZIONI" idMethod="native" description="Accettazioni di pazienti ed esami.">
+    <column name="IN_ACCETTAZIONI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ID_ANAGRAFICHE" type="INTEGER" default="0" />
+    <column name="ID_SITI" type="INTEGER" default="0" />
+    <column name="ID_REPARTI" type="INTEGER" default="0" />
+    <column name="ID_ZONE" type="INTEGER" default="0" />
+    <column name="TIP_ACC" type="VARCHAR" size="1" description="" />
+    <column name="CODICE" type="VARCHAR" size="255" />
+    <column name="ACCESSION_NUMBER" type="VARCHAR" size="255" />
+    <column name="NUM_IMMAGINI" type="INTEGER" description="Immagini DICOM associate a questa accettazione" default="0" />
+    <column name="DATA_ACCETTAZIONE" type="TIMESTAMP" />
+    <column name="PESO" type="INTEGER" description="Peso espresso in chilogrammi" default="0" />
+    <column name="ALTEZZA" type="INTEGER" description="Altezza espressa in centimetri" default="0" />
+    <column name="FUMATORE" type="BIT" description="Flag fumatore" />
+    <column name="DIURESI" type="INTEGER" description="Volume giornaliero urine (ml)" default="0" />
+    <column name="DATA_ULT_MEST" type="DATE" description="Data ultima mestruazione (donna incinata)" />
+    <column name="LETTO" type="VARCHAR" size="255" />
+    <column name="COD_ICD9CM" type="VARCHAR" size="255" />
+    <column name="QUESITO" type="CLOB" />
+    <column name="NOTE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="INF.IN_ANAGRAFICHE">
+      <reference foreign="IN_ANAGRAFICHE_ID" local="ID_ANAGRAFICHE" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.SITI">
+      <reference foreign="SITI_ID" local="ID_SITI" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.REPARTI">
+      <reference foreign="REPARTI_ID" local="ID_REPARTI" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.ZONE">
+      <reference foreign="ZONE_ID" local="ID_ZONE" />
+    </foreign-key>
+    <unique name="IDX_INF_IN_ACCETTAZIONI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="INF.IN_ANAGRAFICHE" idMethod="native" description="Elenco pazienti.">
+    <column name="IN_ANAGRAFICHE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE_ALTERNATIVO" type="VARCHAR" size="255" />
+    <column name="ID_APPLICATIVI" type="INTEGER" default="0" />
+    <column name="COGNOME" type="VARCHAR" size="255" />
+    <column name="NOME" type="VARCHAR" size="255" />
+    <column name="DATA_NASCITA" type="TIMESTAMP" />
+    <column name="ID_COMUNE_NASCITA" type="INTEGER" default="0" />
+    <column name="PESO" type="INTEGER" description="Peso espresso in chilogrammi" default="0" />
+    <column name="ALTEZZA" type="INTEGER" description="Altezza espressa in centimetri" default="0" />
+    <column name="FUMATORE" type="BIT" description="Flag fumatore" />
+    <column name="DIURESI" type="INTEGER" description="Volume giornaliero urine (ml)" default="0" />
+    <column name="ANAMNESI" type="CLOB" />
+    <column name="SESSO" type="VARCHAR" size="255" />
+    <column name="CODICE_FISCALE" type="VARCHAR" size="255" />
+    <column name="CODICE_SANITARIO" type="VARCHAR" size="255" />
+    <column name="GRUPPO_SANGUIGNO" type="VARCHAR" size="255" />
+    <column name="FATTORE_RH" type="VARCHAR" size="255" />
+    <column name="DCE" type="VARCHAR" size="255" />
+    <column name="ID_RAZZA" type="INTEGER" default="0" />
+    <column name="ID_RELIGIONE" type="INTEGER" default="0" />
+    <column name="TELEFONO" type="VARCHAR" size="255" />
+    <column name="CELLULARE" type="VARCHAR" size="255" />
+    <column name="EMAIL" type="VARCHAR" size="255" />
+    <column name="NOTE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="ANA.COMUNI">
+      <reference foreign="COMUNI_ID" local="ID_COMUNE_NASCITA" />
+    </foreign-key>
+    <foreign-key foreignTable="ANA.RAZZE">
+      <reference foreign="RAZZE_ID" local="ID_RAZZA" />
+    </foreign-key>
+    <foreign-key foreignTable="ANA.RELIGIONI">
+      <reference foreign="RELIGIONI_ID" local="ID_RELIGIONE" />
+    </foreign-key>
+    <unique name="IDX_INF_IN_ANAGRAFICHE_1">
+      <unique-column name="CODICE_ALTERNATIVO" />
+    </unique>
+    <unique name="IDX_INF_IN_ANAGRAFICHE_2">
+      <unique-column name="CODICE_FISCALE" />
+    </unique>
+  </table>
+  <table name="INF.IN_ESAMI" idMethod="native" description="Esami richiesti per accettazione.">
+    <column name="IN_ESAMI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ID_ACCETTAZIONI" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" type="VARCHAR" size="255" required="true" description="codice" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" description="descrizione" />
+    <column name="ACCESSION_NUMBER" type="VARCHAR" size="255" />
+    <column name="NUM_IMMAGINI" type="INTEGER" description="Immagini DICOM associate a questo esame" default="0" />
+    <column name="TIP_PRIORITA" type="VARCHAR" size="1" description="" default="R" />
+    <column name="QTY" type="DOUBLE" />
+    <column name="NOTE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="INF.IN_ACCETTAZIONI">
+      <reference foreign="IN_ACCETTAZIONI_ID" local="ID_ACCETTAZIONI" />
+    </foreign-key>
+    <index name="IDX_INF_IN_ESAMI_2">
+      <index-column name="ACCESSION_NUMBER" />
+    </index>
+    <unique name="IDX_INF_IN_ESAMI_1">
+      <unique-column name="ID_ACCETTAZIONI" />
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="RIS.WORKLIST" idMethod="native" description="Dati temporanei per le worklist.">
+    <column name="WORKLIST_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="ID_PRESTAZIONE" type="INTEGER" default="0" />
+    <column name="ID_ESAME" type="INTEGER" default="0" />
+    <column name="CHAR_SET" size="64" type="VARCHAR" />
+    <column name="ACCESSION_NUMBER" type="VARCHAR" size="19" />
+    <column name="ADMISSION_ID" type="VARCHAR" size="65" />
+    <column name="ISSUER_ADMISSION_ID" type="VARCHAR" size="65" />
+    <column name="PAT_NASCITA" type="DATE" />
+    <column name="ETHNIC_GROUP" type="VARCHAR" size="65" />
+    <column name="REGION_OF_RESIDENCE" type="VARCHAR" size="65" />
+    <column name="MILITARY_RANK" type="VARCHAR" size="65" />
+    <column name="CONTRASTALLERGIES" type="VARCHAR" size="65" />
+    <column name="CURRPATLOC" type="VARCHAR" size="65" />
+    <column name="CONF_CONST_ONPAT_DATA" type="VARCHAR" size="65" />
+    <column name="MEDICALALERTS" type="VARCHAR" size="65" />
+    <column name="PAT_ID" required="true" type="VARCHAR" size="65" />
+    <column name="ISSUER_PAT_ID" size="65" type="VARCHAR" />
+    <column name="PAT_NAME" required="true" type="VARCHAR" size="65" />
+    <column name="PAT_SEX" type="VARCHAR" size="5" />
+    <column name="REFERENCEPHYSICIAN" type="VARCHAR" size="65" />
+    <column name="REFER_PHYSICIAN" type="VARCHAR" size="65" />
+    <column name="REQ_PHYSICIAN" type="VARCHAR" size="65" />
+    <column name="PREGNANCY_STATUS" type="VARCHAR" size="65" />
+    <column name="EXAMPRIORITY" type="VARCHAR" size="65" />
+    <column name="PAT_STATUS" type="VARCHAR" size="65" />
+    <column name="PLACER_NUM" type="VARCHAR" size="65" />
+    <column name="FILLER_NUM" type="VARCHAR" size="65" />
+    <column name="ENTEREDBY" type="VARCHAR" size="65" />
+    <column name="ORDER_ENT_LOCAT" type="VARCHAR" size="65" />
+    <column name="ORDER_CALLBACK" type="VARCHAR" size="65" />
+    <column name="SCHED_STATION_AE_TITLE" type="VARCHAR" size="67" required="true" />
+    <column name="SCHED_PROC_STEP_START_DATE_TIME" type="TIMESTAMP" />
+    <column name="MODALITY" type="VARCHAR" size="19" />
+    <column name="SCHED_PROC_STEP_DESC" type="VARCHAR" size="65" />
+    <column name="SCHED_STATION_NAME" type="VARCHAR" size="19" />
+    <column name="SCHED_PROC_STEP_LOCATION" type="VARCHAR" size="19" />
+    <column name="SCHED_PROC_STEP_ID" type="VARCHAR" size="19" />
+    <column name="SCHED_PROT_CODE_VALUE" type="VARCHAR" size="64" />
+    <column name="SCHED_PROT_CODE_SCHEME" type="VARCHAR" size="64" />
+    <column name="SCHED_PROT_CODE_MEANING" type="VARCHAR" size="64" />
+    <column name="REQ_PROC_ID" type="VARCHAR" size="19" />
+    <column name="REQ_PROC_CODE_VALUE" type="VARCHAR" size="64" />
+    <column name="REQ_PROC_CODE_SCHEME" type="VARCHAR" size="64" />
+    <column name="REQ_PROC_CODE_MEANING" type="VARCHAR" size="64" />
+    <column name="PAT_TRANSPORT" type="VARCHAR" size="64" />
+    <column name="REASON" type="CLOB" />
+    <column name="STUDY_INSTANCE_UID" type="VARCHAR" size="64" />
+    <column name="REQ_PROC_DESC" type="VARCHAR" size="65" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="INF.IN_ESAMI">
+      <reference local="ID_PRESTAZIONE" foreign="IN_ESAMI_ID" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.ESAMI">
+      <reference local="ID_ESAME" foreign="ESAMI_ID" />
+    </foreign-key>
+    <unique name="IDX_RIS_WORKLIST_1">
+      <unique-column name="ID_PRESTAZIONE" />
+      <unique-column name="SCHED_STATION_AE_TITLE" />
+    </unique>
+  </table>
+  <table name="RIS.WORKRULE" idMethod="native" description="Instradamento da worklist a modalita effettive.">
+    <column name="WORKRULE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="SCHED_STATION_NAME" type="VARCHAR" size="255" description="Nome della stazione o gruppo di stazioni." />
+    <column name="MODALITY" type="VARCHAR" size="255" description="Modalità della stazione finale." />
+    <column name="FILTER" type="VARCHAR" size="255" description="Filtro di selezione su descrizione esame (espressione regolare)." />
+    <column name="SCHED_STATION_AE_TITLE" type="VARCHAR" size="255" description="AETITLE della stazione destinazione effettiva." />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+  </table>
+  <table name="STO.ACCETTAZIONI" idMethod="native" description="Accettazioni di pazienti ed esami.">
+    <column name="ACCETTAZIONI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ID_ANAGRAFICHE" type="INTEGER" default="0" />
+    <column name="ID_SITI" type="INTEGER" default="0" />
+    <column name="ID_REPARTI" type="INTEGER" default="0" />
+    <column name="ID_ZONE" type="INTEGER" default="0" />
+    <column name="TIP_ACC" type="VARCHAR" size="1" description="E=Emergency I=Inpatient(interno) O=Outpatient(esterno) P=Pre-admit(prenotato)" />
+    <column name="CODICE" type="VARCHAR" size="255" />
+    <column name="DATA_ACCETTAZIONE" type="TIMESTAMP" />
+    <column name="LETTO" type="VARCHAR" size="255" />
+    <column name="COD_ICD9CM" type="VARCHAR" size="255" />
+    <column name="QUESITO" type="CLOB" />
+    <column name="NOTE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="INF.IN_ANAGRAFICHE">
+      <reference foreign="IN_ANAGRAFICHE_ID" local="ID_ANAGRAFICHE" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.SITI">
+      <reference foreign="SITI_ID" local="ID_SITI" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.REPARTI">
+      <reference foreign="REPARTI_ID" local="ID_REPARTI" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.ZONE">
+      <reference foreign="ZONE_ID" local="ID_ZONE" />
+    </foreign-key>
+    <unique name="IDX_STO_ACCETTAZIONI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STO.ESAMI" idMethod="native" description="Esami richiesti per accettazione.">
+    <column name="ESAMI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ID_ACCETTAZIONI" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" type="VARCHAR" size="255" required="true" description="codice" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" description="descrizione" />
+    <column name="QTY" type="DOUBLE" />
+    <column name="NOTE" type="CLOB" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="STO.ACCETTAZIONI">
+      <reference foreign="ACCETTAZIONI_ID" local="ID_ACCETTAZIONI" />
+    </foreign-key>
+    <unique name="IDX_STO_ESAMI_1">
+      <unique-column name="ID_ACCETTAZIONI" />
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.BRANCHE" idMethod="native" description="Tabella Branche">
+    <column name="BRANCHE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" size="32" type="VARCHAR" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" />
+    <column name="CODMIN" size="32" type="VARCHAR" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_STP_BRANCHE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.CATEGORIE" idMethod="native" description="Tabella delle categorie prestazioni">
+    <column name="CATEGORIE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" size="32" type="VARCHAR" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" />
+    <column name="ID_BRANCA" required="true" type="INTEGER" default="0" />
+    <column name="ACCORPAMENTO_VIS" type="INTEGER" default="0" description="1=tutte gli esami di questa branca in unica visualizzazione" />
+    <column name="COD_VISUALIZZAZIONE" type="INTEGER" default="0" description="tipo di screen per la visualizzazione degli esami" />
+    <column name="SCHED_STATION_NAME" type="VARCHAR" size="255" description="Nome della stazione o gruppo di stazioni per l''esecuzione." />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="STP.BRANCHE">
+      <reference foreign="BRANCHE_ID" local="ID_BRANCA" />
+    </foreign-key>
+    <unique name="IDX_STP_CATEGORIE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.ESAMI" idMethod="native" description="Setup esami richiesti per accettazione.">
+    <column name="ESAMI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="255" required="true" description="codice" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" description="descrizione" />
+    <column name="ID_BRANCA" required="true" type="INTEGER" default="0" />
+    <column name="ID_CATEGORIA" required="true" type="INTEGER" default="0" />
+    <column name="SCHED_STATION_NAME" type="VARCHAR" size="255" description="Nome della stazione o gruppo di stazioni per l''esecuzione. Se vuoto vale quello della categoria." />
+    <column name="TIPORECORD" type="INTEGER" description="0=normale 1=maschera ordine 2=maschera ordine con parametri" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="STP.CATEGORIE">
+      <reference foreign="CATEGORIE_ID" local="ID_CATEGORIA" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.BRANCHE">
+      <reference foreign="BRANCHE_ID" local="ID_BRANCA" />
+    </foreign-key>
+    <unique name="IDX_STP_ESAMI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.NODI_DICOM" idMethod="native" description="Nodi dicom">
+    <column name="NODI_DICOM_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="AETITLE" size="255" type="VARCHAR" required="true" />
+    <column name="MODALITY" type="VARCHAR" size="255" description="Modalità se previsto." />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" required="true" />
+    <column name="INDIRIZZO" size="255" type="VARCHAR" />
+    <column name="PORTA" type="INTEGER" default="0" />
+    <column name="PREF_TRANSFER_SYNTAX" size="255" type="VARCHAR" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+  </table>
+  <table name="STP.PROFILI" idMethod="native" description="Tabella dei profili di prestazioni">
+    <column name="PROFILI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" size="32" type="VARCHAR" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" />
+    <column name="ORDINE_VIS" type="INTEGER" default="0" />
+    <column name="TIPO_INTERFACCIA" type="INTEGER" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_STP_PROFILI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.PROFILI_ESAMI" description="Link fra profili e prestazioni">
+    <column name="ID_PROFILO" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="ID_ESAME" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <foreign-key foreignTable="STP.PROFILI">
+      <reference foreign="PROFILI_ID" local="ID_PROFILO" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.ESAMI">
+      <reference foreign="ESAMI_ID" local="ID_ESAME" />
+    </foreign-key>
+  </table>
+  <table name="STP.REPARTI" idMethod="native" description="Setup. Reparti di provenienza dei pazienti.">
+    <column name="REPARTI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="255" required="true" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_STP_REPARTI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.SITI" idMethod="native" description="Setup; siti di provenienza dei pazienti.">
+    <column name="SITI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="255" required="true" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_STP_SITI_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.STAMPANTI" idMethod="native" description="Tabella delle Stampanti di Sistema">
+    <column name="STAMPANTI_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" default="0" />
+    <column name="CODICE" type="VARCHAR" size="32" description="codice mnemonico stampante" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" description="descrizione stampante" />
+    <column name="TIPO" type="VARCHAR" size="50" description="descrizione stampante" />
+    <column name="IPCLIENT" size="100" type="VARCHAR" description="indirizzo ip del client" />
+    <column name="NOMECLIENT" size="100" type="VARCHAR" description="nome del client" />
+    <column name="PERCORSOSTAMPANTE" size="100" type="VARCHAR" description="url della stampante" />
+    <column name="TEMPLATE1" size="100" type="VARCHAR" description="dati utili alla stampa" />
+    <column name="TEMPLATE2" size="100" type="VARCHAR" description="dati utili alla stampa" />
+    <column name="ORDINESTAMPA" type="INTEGER" description="indice priorita di stampa" default="0" />
+    <column name="ESAMIPERETIC" type="INTEGER" description="esami visualizzati su di una etichetta" default="0" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+  </table>
+  <table name="STP.STORAGE" description="Descrittori delle aree di storage" idMethod="native">
+    <column name="STORAGE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="64" required="true" description="codice univoco (AETITLE)" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" description="descrizione leggibile" />
+    <column name="TIPO" type="INTEGER" default="0" description="0=storage RW 1=storage sola lettura 2=locali 3=distribuito" />
+    <column name="PATH" type="VARCHAR" size="255" description="path nel file system" />
+    <column name="INFO" type="VARCHAR" size="255" description="informazioni supplementari" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_STP_STORAGE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.TEMPLATEETICHETTE" idMethod="native" description="Tabella Template Etichette. Il campo TEMPLATE, contiene text/html per il template da stampare">
+    <column name="TEMPLATEETICHETTE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" description="Codice numerico progressivo" />
+    <column name="CODICE" size="32" type="VARCHAR" description="codice del template" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" description="nome del template" />
+    <column name="ID_STAMPANTE" type="INTEGER" default="0" />
+    <column name="ID_TIPIETICHETTE" type="INTEGER" default="0" />
+    <column name="TEMPLATE" type="CLOB" description="campo text/html per il template da stampare" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="STP.STAMPANTI">
+      <reference local="ID_STAMPANTE" foreign="STAMPANTI_ID" />
+    </foreign-key>
+    <foreign-key foreignTable="STP.TIPIETICHETTE">
+      <reference local="ID_TIPIETICHETTE" foreign="TIPIETICHETTE_ID" />
+    </foreign-key>
+    <unique name="IDX_STP_TEMPLATEETICHETTE_1">
+      <unique-column name="CODICE" />
+    </unique>
+    <unique name="IDX_STP_TEMPLATEETICHETTE_2">
+      <unique-column name="ID_STAMPANTE" />
+      <unique-column name="ID_TIPIETICHETTE" />
+    </unique>
+  </table>
+  <table name="STP.TIPIETICHETTE" idMethod="native" description="Tipi di etichetta LIS">
+    <column name="TIPIETICHETTE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" description="Codice numerico progressivo" />
+    <column name="CODICE" size="32" type="VARCHAR" description="codice del tipo" />
+    <column name="DESCRIZIONE" size="255" type="VARCHAR" description="nome del tipo" />
+    <column name="ID_STAMPANTE_DEFAULT" type="INTEGER" default="0" description="stampante preferenziale per questo tipo di etichetta" />
+    <column name="CAPACITA" type="REAL" />
+    <column name="COLORE" size="10" type="VARCHAR" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <foreign-key foreignTable="STP.STAMPANTI">
+      <reference local="ID_STAMPANTE_DEFAULT" foreign="STAMPANTI_ID" />
+    </foreign-key>
+    <unique name="IDX_STP_TIPIETICHETTE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+  <table name="STP.ZONE" idMethod="native" description="Setup. ZONE di provenienza dei pazienti.">
+    <column name="ZONE_ID" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+    <column name="CODICE" type="VARCHAR" size="255" required="true" />
+    <column name="DESCRIZIONE" type="VARCHAR" size="255" required="true" />
+    <column name="STATO_REC" type="INTEGER" default="0" />
+    <column name="ID_USER" type="INTEGER" default="0" />
+    <column name="ID_UCREA" type="INTEGER" default="0" />
+    <column name="ULT_MODIF" type="TIMESTAMP" />
+    <column name="CREAZIONE" type="TIMESTAMP" />
+    <unique name="IDX_STP_ZONE_1">
+      <unique-column name="CODICE" />
+    </unique>
+  </table>
+</database>

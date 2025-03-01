@@ -1,0 +1,712 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.dcmsrv;
+
+import com.pixelmed.dicom.*;
+import com.pixelmed.network.DeleteSOPClassSCU;
+import it.radimage.argo.Costanti;
+import it.radimage.argo.Semafori;
+import it.radimage.argo.om.InfInEsami;
+import it.radimage.argo.om.InfInEsamiPeer;
+import it.radimage.argo.om.StpNodiDicom;
+import it.radimage.argo.om.StpNodiDicomPeer;
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.services.InfoSetupBlock;
+import it.radimage.argo.services.InfoSetupInterface;
+import it.radimage.argo.services.ArgoBaseService;
+import it.radimage.argo.services.bus.BUS;
+import it.radimage.argo.services.bus.BusMessages;
+import it.radimage.argo.services.bus.MessageBusListener;
+import it.radimage.argo.utils.SU;
+import java.io.*;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.torque.util.BasePeer;
+import org.commonlib.exec.ExecHelper;
+import org.commonlib.utils.CommonFileUtils;
+import org.commonlib.utils.OsIdent;
+import org.commonlib.utils.PropertyManager;
+import org.commonlib.utils.StringOper;
+
+/**
+ * Server DICOM in collegamento con ARGO.
+ * In effetti questo non è un server DICOM, ma solo un frontend
+ * al server ARGO da cui legge le immagini ricevute.
+ *
+ * @author Nicola De Nisco
+ */
+public class ArgoDicomServer extends ArgoBaseService
+   implements MessageBusListener, DicomServer, InfoSetupInterface
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(ArgoDicomServer.class);
+  //
+  public static final String RXQUEUE = "rxqueue";
+  public static final String LOCKFILE = "lockfile";
+  //
+  protected String pacsAEtitle = null;
+  protected File dirDicom = null, dirReject = null;
+  protected File argoCfg = null, mainBuffer = null;
+  protected ArrayList<String> arActiveConnections = new ArrayList<String>();
+  protected Thread thScan = null;
+  protected int delayQueueMillis = 0, porta = 0;
+  protected boolean cygwin = true;
+  protected boolean mustExit = false;
+  protected File arQuery = null, dicomDic = null, dirDcmtk = null, dirArgoBin = null, dirArgoLib = null;
+  protected ArrayList<File> arRejectToDelete = new ArrayList<File>();
+
+  @Override
+  public boolean isRunning()
+  {
+    return true;
+  }
+
+  @Override
+  public void pcsdmInit()
+     throws Exception
+  {
+    Configuration cfg = getConfiguration();
+    pacsAEtitle = cfg.getString("pacsAEtitle", "PCSDM");
+    porta = cfg.getInt("delayQueueMillis", 12001);
+
+    delayQueueMillis = cfg.getInt("delayQueueMillis", 30000);
+    cygwin = cfg.getBoolean("argo.cygwin", true);
+    mustExit = false;
+
+    dirDicom = getWorkMainFile("dicom");
+    ASSERT_DIR_WRITE(dirDicom);
+
+    dirReject = new File(dirDicom, "reject");
+    ASSERT_DIR_WRITE(dirReject);
+
+    String pathArgoBin = cfg.getString("dirArgoBin", "/usr/local/argobin");
+    String pathArgoLib = cfg.getString("dirArgoLib", pathArgoBin + "/lib");
+    String pathArQuery = cfg.getString("arQuery", pathArgoBin + "/arquery");
+    String pathDirDcmtk = cfg.getString("dirDcmtk", "/usr/local/dicom");
+    String pathDicomDic = cfg.getString("dicomDic", pathDirDcmtk + "/lib/dicom.dic");
+
+    // questo lo creiamo noi quindi non esiste al momento
+    argoCfg = new File(dirDicom, "argo.cfg");
+    argoCfg.delete();
+
+    dirArgoBin = new File(pathArgoBin);
+    ASSERT_DIR(dirArgoBin);
+    dirArgoLib = new File(pathArgoLib);
+    ASSERT_DIR(dirArgoLib);
+    arQuery = new File(pathArQuery);
+    ASSERT_FILE(arQuery);
+    dirDcmtk = new File(pathDirDcmtk);
+    ASSERT_DIR(dirDcmtk);
+    dicomDic = new File(pathDicomDic);
+    ASSERT_FILE(dicomDic);
+
+    // avvia i server dicom
+    startServers();
+
+    // si registra sul bus per ricevere notifiche
+    BUS.registerEventListner(getClass().getName(), this);
+  }
+
+  @Override
+  public void shutdown()
+  {
+    // segnala uscita
+    mustExit = true;
+
+    // cancella il file di configurazione di argo: questo provocherà un arresto del demone
+    argoCfg.delete();
+
+    try
+    {
+      if(thScan != null && thScan.isAlive())
+        thScan.join();
+    }
+    catch(InterruptedException ex)
+    {
+    }
+
+    super.shutdown();
+  }
+
+  protected void startServers()
+     throws Exception
+  {
+    writeArgoConfig();
+
+    thScan = new Thread()
+    {
+      @Override
+      public void run()
+      {
+        scanDirectoryDicom();
+      }
+    };
+
+    thScan.setName("Scan DICOM");
+    thScan.setDaemon(true);
+    thScan.start();
+  }
+
+  protected void writeArgoConfig()
+     throws Exception
+  {
+    synchronized(Semafori.argolink)
+    {
+      File tmp = new File(argoCfg.getAbsolutePath() + ".tmp");
+      try (FileWriter wr = new FileWriter(tmp))
+      {
+        wr.write(String.format(
+           "# Generato da PCSDM\n"
+           + "# non modificare: viene rigenerato periodicamente\n"
+           + "NetworkType     = \"tcp\"\n"
+           + "NetworkTCPPort  = %d\n"
+           + "MaxPDUSize      = 16384\n"
+           + "MaxAssociations = 16\n"
+           + "Display         = \"no\"\n",
+           porta));
+
+        wr.write("HostTable BEGIN\n");
+
+        wr.write(String.format(
+           "pcsdm = (%s, localhost, %d)\n", getCanonicalServerAETitle(), porta));
+        wr.write("locals = pcsdm\n");
+
+        List<StpNodiDicom> lsNodi = StpNodiDicomPeer.getNodi(null);
+        if(!lsNodi.isEmpty())
+        {
+          String names = "";
+          for(StpNodiDicom nodo : lsNodi)
+          {
+            String srvName = nodo.getDescrizione().replace(' ', '_');
+            wr.write(String.format(
+               "%s = (%s, %s, %d)\n",
+               srvName, nodo.getAetitle(), nodo.getIndirizzo(), nodo.getPorta()));
+            names += "," + srvName;
+          }
+
+          wr.write("nodes = " + names.substring(1) + "\n");
+        }
+
+        wr.write("HostTable END\n");
+
+        wr.write("VendorTable BEGIN\n");
+        wr.write("\"Local hosts\" = locals\n");
+        if(!lsNodi.isEmpty())
+          wr.write("\"Remote hosts\" = nodes\n");
+        wr.write("VendorTable END\n");
+
+        wr.write("AETable BEGIN\n");
+
+        mainBuffer = new File(dirDicom, "main");
+        ASSERT_DIR_WRITE(mainBuffer);
+
+        String argoStorage = mainBuffer.getAbsolutePath();
+        if(OsIdent.checkOStype() == OsIdent.OS_WINDOWS && cygwin)
+          // se argo è cygwin occorre convertire la path nella forma corretta per cygwin
+          argoStorage = SU.convertPathToCygwin(argoStorage);
+
+        wr.write(String.format(
+           "%s       %s       RW  (200, 1024mb) ANY\n",
+           getCanonicalServerAETitle(), argoStorage));
+
+        wr.write("AETable END\n");
+      }
+
+      CommonFileUtils.moveFile(tmp, argoCfg);
+    }
+  }
+
+  @Override
+  public int message(int msgID, Object originator, Connection con, Object[] args)
+     throws Exception
+  {
+//    switch(msgID)
+//    {
+//      case BusMessages.APPLICATION_STARTED:
+//      case BusMessages.LISTA_MASTERIZZATORI_SAVED:
+//        writeArgoConfig();
+//        break;
+//    }
+
+    return 0;
+  }
+
+  /**
+   * Funzione di servizio del thread di scansione.
+   */
+  protected void scanDirectoryDicom()
+  {
+    while(!mustExit)
+    {
+      try
+      {
+        Thread.sleep(1000);
+        scanDirectoryDicomShot();
+      }
+      catch(Exception e)
+      {
+        log.error(I.I("Errore nel thread di scansione."), e);
+      }
+    }
+  }
+
+  /**
+   * Scansione delle directory DICOM a caccia di job da avviare.
+   * @throws Exception
+   */
+  protected void scanDirectoryDicomShot()
+     throws Exception
+  {
+    // test se inizializzazione completata
+    if(mainBuffer == null)
+      return;
+
+    synchronized(Semafori.argolink)
+    {
+      ArrayList<String> prevConn = new ArrayList<String>(arActiveConnections);
+
+      arActiveConnections.clear();
+      scanDirForJob(pacsAEtitle, mainBuffer);
+
+      if(!prevConn.equals(arActiveConnections))
+        BUS.sendMessage(BusMessages.ASSOCIATION_LIST_CHANGED, 0, 0, 0, arActiveConnections);
+    }
+  }
+
+  /**
+   * Scansione di una directory e salvataggio dati essenziali in db.
+   * Cerca i file della coda di ARGO per interpretare i dati DICOM
+   * e riportare nel db interno i dati necessari.
+   * @param aetitle AETitle associato alla directory da analizzare
+   * @param dirToScan directory da analizzare
+   * @throws Exception
+   */
+  protected void scanDirForJob(String aetitle, File dirToScan)
+     throws Exception
+  {
+    File rxqueue = new File(dirToScan, RXQUEUE);
+    File semaforo = new File(rxqueue, LOCKFILE);
+    if(!semaforo.exists())
+      return;
+
+    File[] arFiles = rxqueue.listFiles();
+    for(int i = 0; i < arFiles.length; i++)
+    {
+      File f = arFiles[i];
+      if(f.getName().equals(LOCKFILE))
+        continue;
+
+      if(!semaforo.exists())
+        return;
+
+      if(f.getName().contains(".txt"))
+      {
+        try
+        {
+          // estrae dati dal file descrittore
+          PropertyManager pm = new PropertyManager(f);
+          String callingAETitle = pm.getString("callingAETitle");
+          String calledAETitle = pm.getString("calledAETitle");
+          String pathFileDcm = pm.getString("imageFileName");
+
+          if(OsIdent.checkOStype() == OsIdent.OS_WINDOWS && cygwin)
+            pathFileDcm = SU.convertPathFromCygwin(pathFileDcm);
+
+          if(pathFileDcm != null)
+          {
+            File fileDicom = new File(pathFileDcm);
+            if(fileDicom.canRead())
+              processFileDicom(callingAETitle, calledAETitle, fileDicom, pm);
+          }
+        }
+        catch(Exception ex)
+        {
+          log.error(I.I("Errore durante lo scan della directoy %s.", dirToScan.getAbsolutePath()), ex);
+        }
+
+        // cancella il file dalla coda ricevuti
+        f.delete();
+      }
+
+      if(f.getName().contains(".con"))
+      {
+        try
+        {
+          // estrae dati dal file descrittore
+          PropertyManager pm = new PropertyManager(f);
+          String callingAETitle = pm.getString("callingAETitle");
+          String calledAETitle = pm.getString("calledAETitle");
+          arActiveConnections.add(callingAETitle + "|" + calledAETitle);
+        }
+        catch(Exception ex)
+        {
+          log.error(I.I("Errore durante lo scan della directoy %s.", dirToScan.getAbsolutePath()), ex);
+        }
+      }
+    }
+
+    // alla fine della scansione cancella dal db di Argo i files spostati in reject
+    if(!arRejectToDelete.isEmpty())
+    {
+      synchronized(Semafori.argolink)
+      {
+        deleteDicomFiles(arRejectToDelete, null);
+        arRejectToDelete.clear();
+      }
+    }
+  }
+
+  /**
+   * Segnala un file DICOM come rifiutato.
+   * Generalmente la causa è dovuta ad una corruzione
+   * del file o alla impossibilità di leggerlo.
+   * Il server DICOM lo sposta in una apposita directory.
+   * @param toReject
+   * @throws Exception
+   */
+  @Override
+  public void rejectDicomFile(File toReject)
+  {
+    try
+    {
+      File fout = new File(dirReject, toReject.getName());
+      CommonFileUtils.moveFile(toReject, fout);
+
+      // salva il file in un array per rimuoverlo successivamente dal db di argo
+      arRejectToDelete.add(fout);
+    }
+    catch(Exception ex)
+    {
+      log.error("Non posso spostare file nell'area reject.", ex);
+    }
+  }
+
+  @Override
+  public void deleteDicomFiles(String accno, String aetitle)
+     throws Exception
+  {
+    ArrayList<String> filtro = new ArrayList<>();
+    filtro.add("AccessionNumber=" + accno);
+
+    String rvq = queryArgo(filtro);
+    ArrayList<String> files = new ArrayList<>();
+    CommonFileUtils.grep(new BufferedReader(new StringReader(rvq)), Pattern.compile("Dicom file [0-9]+: (.+)"), files);
+
+    if(files.isEmpty())
+      return;
+
+    SetOfDicomFiles sdf = new SetOfDicomFiles();
+    for(String sf : files)
+    {
+      File test = new File(sf);
+      if(test.exists())
+        sdf.add(sf);
+    }
+
+    if(sdf.isEmpty())
+      return;
+
+    if(aetitle == null)
+      aetitle = pacsAEtitle;
+
+    DeleteSOPClassSCU dsc = new DeleteSOPClassSCU();
+    dsc.delete("localhost", porta, aetitle, pacsAEtitle, sdf, 0);
+  }
+
+  @Override
+  public void deleteDicomFiles(List<File> lsFiles, String aetitle)
+     throws Exception
+  {
+    SetOfDicomFiles sdf = new SetOfDicomFiles();
+    for(File f : lsFiles)
+    {
+      if(f.exists())
+        sdf.add(f);
+    }
+
+    if(sdf.isEmpty())
+      return;
+
+    if(aetitle == null)
+      aetitle = pacsAEtitle;
+
+    DeleteSOPClassSCU dsc = new DeleteSOPClassSCU();
+    dsc.delete("localhost", porta, aetitle, pacsAEtitle, sdf, 0);
+  }
+
+  @Override
+  public void cancellaStorage()
+     throws Exception
+  {
+    synchronized(Semafori.argolink)
+    {
+      // cancella il file di configurazione di argo: questo provocherà un arresto del demone
+      argoCfg.delete();
+
+      // ritardo necessario per attendere la terminazione
+      Thread.sleep(2000);
+
+      // rimuove tutti i files dalla directory di spool
+      CommonFileUtils.deleteDir(dirDicom, false);
+
+      // ricrea il file di configurazione argo (riavviando il demone)
+      writeArgoConfig();
+
+      // ritardo necessario per attendere la riattivazione
+      Thread.sleep(2000);
+    }
+  }
+
+  @Override
+  public String getCanonicalServerAETitle()
+  {
+    return pacsAEtitle;
+  }
+
+  /**
+   * Imposta nel db lo stato di ricevuto per le immagini.
+   * @param callingAETitle
+   * @param calledAETitle
+   * @param fileDicom
+   * @param pm
+   */
+  private void processFileDicom(String callingAETitle, String calledAETitle, File fileDicom, PropertyManager pm)
+  {
+    try
+    {
+      // legge il file DICOM in memoria
+      AttributeList list = new AttributeList();
+      try (DicomInputStream ids = new DicomInputStream(fileDicom))
+      {
+        list.read(ids, TagFromName.PixelData);
+      }
+
+      String accno = SU.okStrNull(Attribute.getSingleStringValueOrNull(list, TagFromName.AccessionNumber));
+      if(accno == null)
+      {
+        log.error(I.I("Il file %s non contiene accension number: non può essere associato a nessun esame.", fileDicom.getName()));
+        rejectDicomFile(fileDicom);
+        return;
+      }
+
+      List<InfInEsami> lsEsa = InfInEsamiPeer.getByAccno(accno, null);
+      for(InfInEsami esa : lsEsa)
+      {
+        esa.setNumImmagini(esa.getNumImmagini() + 1);
+        esa.setStatoRec(Costanti.STATO_REC_RESULT_RECEIVED);
+        esa.save();
+      }
+
+      // imposta i record worklist come processati
+      String sSQL
+         = "UPDATE ris.worklist SET stato_rec=" + Costanti.STATO_REC_PROCESSED
+         + " WHERE accession_number='" + accno + "'";
+      BasePeer.executeStatement(sSQL);
+    }
+    catch(Exception ex)
+    {
+      log.error(I.I("Il file %s non è un file DICOM leggibile: viene rigettato.", fileDicom.getName()), ex);
+      rejectDicomFile(fileDicom);
+    }
+  }
+
+  /**
+   * Query al database Argo.
+   * Utilizza arquery per interrogare il db di Argo.
+   * @param filtri filtri da impiegare (tag=valore)
+   * @return l'output prodotto da arquery
+   * @throws Exception
+   */
+  private String queryArgo(List<String> filtri)
+     throws Exception
+  {
+    String fileCfg = argoCfg.getCanonicalPath();
+    String fileDic = dicomDic.getCanonicalPath();
+    String pathLib = dirArgoLib.getCanonicalPath();
+
+    if(OsIdent.checkOStype() == OsIdent.OS_WINDOWS && cygwin)
+    {
+      // se argo è cygwin occorre convertire la path nella forma corretta per cygwin
+      fileCfg = SU.convertPathToCygwin(fileCfg);
+      fileDic = SU.convertPathToCygwin(fileDic);
+      pathLib = SU.convertPathToCygwin(pathLib);
+    }
+
+    // predispone parametri della linea di comando
+    ArrayList<String> cmdList = new ArrayList<>();
+    cmdList.add(arQuery.getAbsolutePath());
+    cmdList.add("-c");
+    cmdList.add(fileCfg);
+    cmdList.add("-mv");
+    cmdList.addAll(filtri);
+
+    String[] cmdArray = StringOper.toArray(cmdList);
+    String[] env =
+    {
+      "DCMDICTPATH=" + fileDic,
+      "LD_LIBRARY_PATH=" + pathLib
+    };
+
+    // avvia il demone argo
+    log.debug("Run argo: " + StringOper.join(cmdArray, ' ')); // NOI18N
+    log.debug("Environment: " + StringOper.join(env, ',')); // NOI18N
+
+    ExecHelper eh = ExecHelper.exec(cmdArray, env);
+    log.debug(eh.getError());
+
+    if(eh.getStatus() != 0)
+      throw new IOException(I.I("Errore nell'esecuzione di arquery."));
+
+    return eh.getOutput();
+  }
+
+  @Override
+  public List<File> getDicomFiles(String accno, int tipo)
+     throws Exception
+  {
+    ArrayList<File> rv = new ArrayList<>();
+    ArrayList<String> filtro = new ArrayList<>();
+    filtro.add("AccessionNumber=" + accno);
+
+    // query al db di argo per immagini associate
+    String output = queryArgo(filtro);
+
+    StringTokenizer st = new StringTokenizer(output, "\n", false);
+    while(st.hasMoreTokens())
+    {
+      // Dicom file 61: /var/pcsdm/dicom/main/dicom/2015/03/03/MR_1_3_46_670589_11_0_0_11_4_2_0_20093_5_5312_2010051814034993991.dcm
+      // Jpeg  file 61: /var/pcsdm/dicom/main/jpeg/3106/IMG_1_3_46_670589_11_0_0_11_4_2_0_20093_5_5312_2010051814034993991.jpg
+      // 0
+      String s = st.nextToken();
+
+      if((tipo & 1) != 0 && s.startsWith("Jpeg"))
+      {
+        int pos = s.indexOf(':');
+        if(pos == -1 || (pos + 2) > s.length())
+          continue;
+
+        String path = s.substring(pos + 2);
+        File f = new File(path);
+        if(f.canRead())
+          rv.add(f);
+      }
+
+      if((tipo & 2) != 0 && s.startsWith("Dicom"))
+      {
+        int pos = s.indexOf(':');
+        if(pos == -1 || (pos + 2) > s.length())
+          continue;
+
+        String path = s.substring(pos + 2);
+        File f = new File(path);
+        if(f.canRead())
+          rv.add(f);
+      }
+    }
+
+    return rv;
+  }
+
+  @Override
+  public List<String> getDicomRelativePaths(String accno, int tipo)
+     throws Exception
+  {
+    ArrayList<String> rv = new ArrayList<>();
+    ArrayList<String> filtro = new ArrayList<>();
+    filtro.add("AccessionNumber=" + accno);
+
+    // query al db di argo per immagini associate
+    String output = queryArgo(filtro);
+    String spath = dirDicom.getAbsolutePath();
+    if(spath.endsWith("/"))
+      spath += "/";
+    int len = spath.length();
+
+    StringTokenizer st = new StringTokenizer(output, "\n", false);
+    while(st.hasMoreTokens())
+    {
+      // Dicom file 61: /var/pcsdm/dicom/main/dicom/2015/03/03/MR_1_3_46_670589_11_0_0_11_4_2_0_20093_5_5312_2010051814034993991.dcm
+      // Jpeg  file 61: /var/pcsdm/dicom/main/jpeg/3106/IMG_1_3_46_670589_11_0_0_11_4_2_0_20093_5_5312_2010051814034993991.jpg
+      // 0
+      String s = st.nextToken();
+
+      if((tipo & 1) != 0 && s.startsWith("Jpeg"))
+      {
+        int pos = s.indexOf(':');
+        if(pos == -1 || (pos + 2) > s.length())
+          continue;
+
+        String path = s.substring(pos + 2 + len);
+        rv.add(path);
+      }
+
+      if((tipo & 2) != 0 && s.startsWith("Dicom"))
+      {
+        int pos = s.indexOf(':');
+        if(pos == -1 || (pos + 2) > s.length())
+          continue;
+
+        String path = s.substring(pos + 2 + len);
+        rv.add(path);
+      }
+    }
+
+    return rv;
+  }
+
+  @Override
+  public void ricaricaConfigurazione()
+     throws Exception
+  {
+    synchronized(Semafori.argolink)
+    {
+      // cancella il file di configurazione di argo: questo provocherà un arresto del demone
+      argoCfg.delete();
+
+      // ritardo necessario per attendere la terminazione
+      Thread.sleep(2000);
+
+      // ricrea il file di configurazione argo (riavviando il demone)
+      writeArgoConfig();
+
+      // ritardo necessario per attendere la riattivazione
+      Thread.sleep(2000);
+    }
+  }
+
+  @Override
+  public void populateInfoSetup(List<InfoSetupBlock> arInfo, boolean isAdmin)
+     throws Exception
+  {
+    arInfo.add(new InfoSetupBlock(I.I("Server DICOM"), "D").
+       add(I.I("AETITLE"), pacsAEtitle).
+       add(I.I("DICOM Port"), Integer.toString(porta)).
+       add(I.I("DICOM TLS Port"), "Non attivo").
+       add(I.I("Directory DICOM"), dirDicom.getCanonicalPath()).
+       add(I.I("Directory Reject"), dirReject.getCanonicalPath()).
+       add(I.I("Config Argo"), argoCfg.getCanonicalPath()).
+       add(I.I("Argo binary"), dirArgoBin.getCanonicalPath()).
+       add(I.I("Argo lib"), dirArgoLib.getCanonicalPath()).
+       add(I.I("Arquery"), arQuery.getCanonicalPath()).
+       add(I.I("DICOM toolkit"), dirDcmtk.getCanonicalPath()).
+       add(I.I("DICOM dictionary"), dicomDic.getCanonicalPath())
+    );
+  }
+}

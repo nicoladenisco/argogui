@@ -1,0 +1,562 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.beans.turbine;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.apache.torque.om.*;
+import org.apache.torque.util.Criteria;
+import org.apache.turbine.util.RunData;
+import org.commonlib.utils.ClassOper;
+import org.commonlib.utils.StringOper;
+import it.radimage.argo.Costanti;
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.om.GenListpro;
+import it.radimage.argo.om.GenListproPeer;
+import it.radimage.argo.om.bean.GenListproBean;
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+import it.radimage.argo.utils.tree.ArgoMenuTreeNode;
+
+/**
+ * Bean di supporto per la visualizzazione del menu.
+ *
+ * FILENOI18N
+ * @author Nicola De Nisco
+ */
+public class menuBean extends ArgoTurbineBaseBeans
+{
+  public static final int ID_LISTPRO_PADRE = 0;
+  protected ArgoMenuTreeNode padre = null;
+  protected int iHelp = -1, iApri = -1, iChiudi = -1;
+  protected boolean isChiudiTutti = false;
+  protected String helpMenu;
+  protected int rientra = 5;
+  protected int border = 0;
+  protected boolean SHOW_HELP = false;
+  protected boolean USE_ANCHOR = false;
+  protected String baseFormUrl, baseListUrl, baseFormPopup, baseListPopup;
+  protected String htmlMenu = null;
+
+  /** Creates a new instance of menuBean */
+  public menuBean()
+  {
+    border = TR.getInt("menu.border", 0);
+    SHOW_HELP = TR.getBoolean("menu.showhelp", false);
+    USE_ANCHOR = TR.getBoolean("menu.useanchor", false);
+
+    baseFormUrl = TR.getString("services.ModelliXML.baseFormUrl", "mform.vm");
+    baseListUrl = TR.getString("services.ModelliXML.baseListUrl", "maint.vm");
+    baseFormPopup = TR.getString("services.ModelliXML.baseFormPopup", "pform.vm");
+    baseListPopup = TR.getString("services.ModelliXML.baseListPopup", "plista.vm");
+  }
+
+  protected String substMacro(String s)
+  {
+    if(s != null)
+    {
+      s = StringOper.strReplace(s, "@list", baseListUrl);
+      s = StringOper.strReplace(s, "@form", baseFormUrl);
+      s = StringOper.strReplace(s, "@plist", baseListPopup);
+      s = StringOper.strReplace(s, "@pform", baseFormPopup);
+    }
+    return s;
+  }
+
+  public void costruisciAlbero(RunData data)
+     throws Exception
+  {
+    padre = new ArgoMenuTreeNode(
+       GenListproPeer.retrieveByPK(new NumberKey(ID_LISTPRO_PADRE)).getBean());
+
+    cercaFigli(data, 0, padre);
+  }
+
+  public void cercaFigli(RunData data, int livello, ArgoMenuTreeNode node)
+     throws Exception
+  {
+    node.setEnabled(true);
+    String permission = node.getMenuItem().getPermission();
+
+    // controllo permessi
+    if(SU.isOkStr(permission))
+      if(!SEC.checkAnyPermission(data, permission))
+        node.setEnabled(false);
+
+    node.removeChild();
+    if(livello >= Costanti.MAX_LIVELLI_MENU)
+      return;
+
+    Criteria c = new Criteria();
+    c.add(GenListproPeer.ID_PADRE, node.getMenuItem().getListproId());
+    c.addAscendingOrderByColumn(GenListproPeer.NUM_RIGA);
+    List<GenListpro> v = GenListproPeer.doSelect(c);
+
+    for(GenListpro lf : v)
+    {
+      ArgoMenuTreeNode child = new ArgoMenuTreeNode(lf.getBean());
+      node.addChild(child);
+      cercaFigli(data, livello + 1, child);
+    }
+  }
+
+  protected String fmtFontColor(String color, String text)
+  {
+    return (color != null && color.trim().length() > 0)
+              ? "<font color=\"" + color + "\">" + text + "</font>" : text;
+  }
+
+  protected String fmtFontColor(GenListproBean l)
+  {
+    return fmtFontColor(l.getColore(), l.getDescrizione());
+  }
+
+  protected String fmtItemUrl(GenListproBean l)
+  {
+    String url = substMacro(l.getProgramma());
+
+    // per default viene considerata internal
+    if(l.getFlag1() == null || l.getFlag1().trim().length() == 0)
+      return getServerTemplateUrl(url);
+
+    String s = l.getFlag1().trim();
+
+    if(s.equals("I") || s.equals("i"))
+      // internal: generazione url su application server
+      return getServerTemplateUrl(url);
+    else if(s.equals("E") || s.equals("e"))
+      // external: url esterna all'application server: viene passata
+      return url;
+
+    // per default viene considerata internal
+    return getServerTemplateUrl(url);
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  protected String fmtItemMenu(GenListproBean l)
+  {
+    if(SU.isOkStr(l.getProgramma()))
+    {
+      String url = fmtItemUrl(l);
+      return menuLeft(fmtFontColor(l), url, "main_menu_nul");
+    }
+    else
+      return "<td class=\"main_menu_txt\">"
+         + fmtFontColor(l.getColore(), l.getDescrizione()) + "</td>";
+  }
+
+  protected String fmtItemMenu2(GenListproBean l)
+  {
+    if(SU.isOkStr(l.getProgramma()))
+    {
+      String url = fmtItemUrl(l);
+      return menuLeft2(fmtFontColor(l), url, "main_menu_nul");
+    }
+    else
+      return "<td class=\"main_menu_txt\" colspan=\"2\">"
+         + fmtFontColor(l.getColore(), l.getDescrizione()) + "</td>";
+  }
+
+  protected String menuLeft(String body, String lnk, String style)
+  {
+    return "<td class=\"cell_lmenu\""
+       + "    style=\"cursor:pointer\""
+       + "    onMouseOver=\"this.className='cell_lmenu_hilite';\""
+       + "    onMouseOut=\"this.className='cell_lmenu';\""
+       + "    onClick=\"window.location.href='" + lnk + "'\""
+       + "    align=\"left\">"
+       + "    &nbsp;"
+       + "    <span class=\"" + style + "\">"
+       + "        " + body
+       + "    </span>"
+       + "    &nbsp;"
+       + "</td>";
+  }
+
+  protected String menuLeft2(String body, String lnk, String style)
+  {
+    return "<td class=\"cell_lmenu\""
+       + "    style=\"cursor:pointer\""
+       + "    onMouseOver=\"this.className='cell_lmenu_hilite';\""
+       + "    onMouseOut=\"this.className='cell_lmenu';\""
+       + "    onClick=\"window.location.href='" + lnk + "'\""
+       + "    align=\"left\" colspan=\"2\">"
+       + "    &nbsp;"
+       + "    <span class=\"" + style + "\">"
+       + "        " + body
+       + "    </span>"
+       + "    &nbsp;"
+       + "</td>";
+  }
+
+  protected String apriChiudiLink(String func, ArgoMenuTreeNode node)
+     throws Exception
+  {
+    GenListproBean l = node.getMenuItem();
+    int id = l.getListproId();
+    if(USE_ANCHOR)
+      return node.isOpened()
+                ? "<a href=\"javascript:" + func + "('chiudi=" + id + "#anc" + id + "')\">"
+         + getImgGenericUI("freccia-chiudi.gif", "Chiudi menu'") + "</a>"
+                : "<a href=\"javascript:" + func + "('apri=" + id + "#anc" + id + "')\">"
+         + getImgGenericUI("freccia-apri.gif", "Apri menu'") + "</a>";
+    else
+      return node.isOpened() ? "<a href=\"javascript:" + func + "('chiudi=" + id + "')\">"
+         + getImgGenericUI("freccia-chiudi.gif", "Chiudi menu'") + "</a>"
+                : "<a href=\"javascript:" + func + "('apri=" + id + "')\">"
+         + getImgGenericUI("freccia-apri.gif", "Apri menu'") + "</a>";
+  }
+
+  protected void displayAlberoHtml(String func, int livello, PrintWriter out, ArgoMenuTreeNode node)
+     throws Exception
+  {
+    if(livello >= Costanti.MAX_LIVELLI_MENU)
+      return;
+
+    //out.print("<table cellspacing=0 cellpadding=0 border=" + border + " width=100%>");
+    out.println("<table cellspacing=1 cellpadding=1 border=1 width=100%>");
+
+    for(int i = 0; i < node.getChildCount(); i++)
+    {
+      ArgoMenuTreeNode child = (ArgoMenuTreeNode) (node.getChildAt(i));
+
+      // controllo permessi
+      if(!child.isEnabled())
+        continue;
+
+      GenListproBean l = child.getMenuItem();
+      int id = l.getListproId();
+
+      if(iApri == id)
+      {
+        child.setOpened(true);
+        helpMenu = SU.okStr(l.getNote());
+      }
+
+      if(isChiudiTutti || iChiudi == id)
+        child.setOpened(false);
+
+      if(iHelp == id)
+        helpMenu = SU.okStr(l.getNote());
+
+      if(!child.isLeaf())
+      {
+        String vis = apriChiudiLink(func, child);
+
+        out.println(
+           "<tr>"
+           + "<td width=" + rientra + " align=center>" + vis + "</td>"
+           + "<a name=\"anc" + id + "\">"
+           + fmtItemMenu(l)
+           + "</tr>");
+      }
+      else
+      {
+        String vis = getImgGenericUI("palla-no.gif", "help");
+
+        out.println(
+           "<tr>"
+           + "<td width=" + rientra + " align=center>" + vis + "</td>"
+           + "<a name=\"anc" + id + "\">"
+           + fmtItemMenu(l)
+           + "</tr>");
+
+        /*
+         out.println(
+         "<tr>" +
+         "<a name=\"anc" + id + "\">" +
+         fmtItemMenu2(node) +
+         "</tr>");
+         */
+      }
+
+      /*
+       String vis = SHOW_HELP ? "<a href=\"" + currJspName + "?help=" + id + "\">" +
+       getImgGenericUI("palla-no.gif", "help") + "</a>" : getImgGenericUI("palla-no.gif", "help");
+
+       if(haveChildren)
+       {
+       if(USE_ANCHOR)
+       vis = node.isFigliVisibili() ? "<a href=\"" + currJspName + "?chiudi=" + id + "#anc" + id + "\">" + getImgGenericUI("freccia-chiudi.gif", "Chiudi menu'") + "</a>" : "<a href=\"" + currJspName + "?apri=" + id + "#anc" + id + "\">" + getImgGenericUI("freccia-apri.gif", "Apri menu'") + "</a>";
+       else
+       vis = node.isFigliVisibili() ? "<a href=\"" + currJspName + "?chiudi=" + id + "\">" + getImgGenericUI("freccia-chiudi.gif", "Chiudi menu'") + "</a>" : "<a href=\"" + currJspName + "?apri=" + id + "\">" + getImgGenericUI("freccia-apri.gif", "Apri menu'") + "</a>";
+       }
+
+       out.println(
+       "<tr>" +
+       "<td width=" + rientra + " align=center>" + vis + "</td>" +
+       //"<td width="+rientra+" bgcolor=navy class=\"txt-yellow-bold-12-nul\" align=center>"+vis+"</td>"+
+       "<a name=\"anc" + id + "\">" +
+       fmtItemMenu(node) +
+       "</tr>");
+       */
+      if(!child.isLeaf() && child.isOpened())
+      {
+        out.print(
+           "<tr>"
+           + "<td width=" + rientra + ">&nbsp;</td>"
+           + "<td>");
+
+        displayAlberoHtml(func, livello + 1, out, child);
+
+        out.print("</td>"
+           + "</tr>");
+      }
+    }
+    out.println("</table>");
+  }
+
+  protected void displayAlberoJavascript(ArgoRunData data, String func,
+     int livello, PrintWriter out, ArgoMenuTreeNode node)
+     throws Exception
+  {
+    if(livello >= Costanti.MAX_LIVELLI_MENU)
+      return;
+
+    String spaces = StringOper.GetSpaces(livello + 3);
+
+    for(int i = 0; i < node.getChildCount(); i++)
+    {
+      ArgoMenuTreeNode child = (ArgoMenuTreeNode) (node.getChildAt(i));
+      if(child == null)
+        continue;
+
+      GenListproBean l = child.getMenuItem();
+
+      // controllo permessi
+      if(l == null || !child.isEnabled())
+        continue;
+
+      if(child.isLeaf())
+        out.println(spaces + "<li><a href=\"" + fmtItemUrl(l) + "\">" + data.i18n(l.getDescrizione()) + "</a></li>");
+      else
+      {
+        if(livello == 0)
+        {
+          out.println(spaces + "<li class=\"dropdown\">");
+          out.println(spaces +
+             "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">"
+             + data.i18n(l.getDescrizione()) + " <span class=\"caret\"></span></a>\n");
+          out.println(spaces + "<ul class=\"dropdown-menu multi-level\" role=\"menu\">");
+        }
+        else
+        {
+          out.println(spaces + "<li class=\"dropdown-submenu\">");
+          out.println(spaces +
+             "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">"
+             + data.i18n(l.getDescrizione()) + " </a>\n");
+          out.println(spaces + "<ul class=\"dropdown-menu\">");
+        }
+        displayAlberoJavascript(data, func, livello + 1, out, child);
+        out.println(spaces + "</ul>");
+        out.println(spaces + "</li>");
+      }
+    }
+  }
+
+  public void prepareToRender(RunData data)
+     throws Exception
+  {
+    HttpServletRequest request = data.getRequest();
+
+    if(padre == null
+       || request.getParameter("rileggi") != null
+       || request.getParameter("reload") != null)
+    {
+      htmlMenu = null;
+      costruisciAlbero(data);
+    }
+
+    currJspName = request.getRequestURI();
+
+    int pos = 0;
+    if((pos = currJspName.indexOf("/action")) != -1)
+      currJspName = currJspName.substring(0, pos);
+
+    if(currJspName.endsWith("pgm"))
+      currJspName += "/Index.vm";
+  }
+
+  public synchronized void printHtmlMenu(HttpServletRequest request, Writer wrout)
+     throws Exception
+  {
+    iHelp = SU.parse(request.getParameter("help"), -1);
+    iApri = SU.parse(request.getParameter("apri"), -1);
+    iChiudi = SU.parse(request.getParameter("chiudi"), -1);
+    isChiudiTutti = request.getParameter("closeall") != null;
+
+    PrintWriter out = new PrintWriter(wrout);
+    displayAlberoHtml("aggiornaMenuPcsdm", 0, out, padre);
+    out.flush();
+  }
+
+  public void printJavascriptMenu(ArgoRunData data, Writer wrout)
+     throws Exception
+  {
+    PrintWriter out = new PrintWriter(wrout);
+    displayAlberoJavascript(data, "aggiornaMenuPcsdm", 0, out, padre);
+    out.flush();
+  }
+
+  public String getHtml(RunData data)
+     throws Exception
+  {
+    prepareToRender(data);
+
+    if(htmlMenu == null)
+    {
+      StringWriter swr = new StringWriter(1024);
+      printJavascriptMenu((ArgoRunData)data, swr);
+      swr.flush();
+      htmlMenu = swr.toString();
+    }
+
+    return htmlMenu;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  protected String fmtItemMenuPalmare(GenListproBean l)
+  {
+    return (l.getProgramma() != null && l.getProgramma().trim().length() > 0
+               ? "<td><a href=\"" + fmtItemUrl(l) + "\" >" + fmtFontColor(l) + "</a></td>"
+               : "<td>" + fmtFontColor(l.getColore(), l.getDescrizione()) + "</td>");
+  }
+
+  protected void displayAlberoHtmlPalmare(
+     int livello, PrintWriter out, ArgoMenuTreeNode node)
+     throws Exception
+  {
+    if(livello >= Costanti.MAX_LIVELLI_MENU)
+      return;
+
+    out.print("<table cellspacing=0 cellpadding=0 border=" + border + " width=100%>");
+
+    for(int i = 0; i < node.getChildCount(); i++)
+    {
+      ArgoMenuTreeNode child = (ArgoMenuTreeNode) (node.getChildAt(i));
+      GenListproBean l = child.getMenuItem();
+
+      // controllo permessi
+      if(!child.isEnabled())
+        continue;
+
+      int id = l.getListproId();
+
+      if(iApri == id)
+      {
+        child.setOpened(true);
+        helpMenu = SU.okStr(l.getNote());
+      }
+
+      if(isChiudiTutti || iChiudi == id)
+        child.setOpened(false);
+
+      if(iHelp == id)
+        helpMenu = SU.okStr(l.getNote());
+
+      String vis = getImgGenericUI("palla-no.gif", "help");
+
+      if(!child.isLeaf())
+        vis = child.isOpened()
+                 ? "<a href=\"" + currJspName + "?chiudi=" + id + "#anc" + id + "\">"
+           + getImgGenericUI("freccia-chiudi.gif", "Chiudi menu'") + "</a>"
+                 : "<a href=\"" + currJspName + "?apri=" + id + "#anc" + id + "\">"
+           + getImgGenericUI("freccia-apri.gif", "Apri menu'") + "</a>";
+
+      out.println(
+         "<tr>"
+         + "<td width=" + rientra + " align=center>" + vis + "</td>"
+         + "<a name=\"anc" + id + "\">"
+         + fmtItemMenuPalmare(l)
+         + "</tr>");
+
+      if(child.isOpened() && !child.isLeaf())
+      {
+        out.print(
+           "<tr>"
+           + "<td width=" + rientra + ">&nbsp;</td>"
+           + "<td>");
+
+        displayAlberoHtmlPalmare(livello + 1, out, child);
+
+        out.print("</td>"
+           + "</tr>");
+      }
+    }
+    out.println("</table>");
+  }
+
+  public synchronized void printHtmlMenuPalmare(HttpServletRequest request, Writer wrout)
+     throws Exception
+  {
+    iHelp = SU.parse(request.getParameter("help"), -1);
+    iApri = SU.parse(request.getParameter("apri"), -1);
+    iChiudi = SU.parse(request.getParameter("chiudi"), -1);
+    isChiudiTutti = request.getParameter("closeall") != null;
+
+    PrintWriter out = new PrintWriter(wrout);
+    displayAlberoHtmlPalmare(0, out, padre);
+    out.flush();
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  public ArgoMenuTreeNode getPadre()
+  {
+    return padre;
+  }
+
+  public String getHelpMenu()
+  {
+    return helpMenu;
+  }
+  //////////////////////////////////////////////////////////////////////////
+  public static final String MENU_BEAN_KEY = "MENU_BEAN_KEY:menuBean";
+
+  public static menuBean retrieveFromSession(RunData data)
+     throws Exception
+  {
+    menuBean mb = (menuBean) (data.getSession().getAttribute(MENU_BEAN_KEY));
+    if(mb == null)
+    {
+      String clName = TR.getString("menu.object", "menuBean");
+      Class menuClass = ClassOper.loadClass(clName, ClassOper.getClassPackage(menuBean.class), null);
+
+      mb = (menuBean) menuClass.newInstance();
+      mb.init(data);
+      data.getSession().setAttribute(MENU_BEAN_KEY, mb);
+    }
+    return mb;
+  }
+
+  public static menuBean retrieveFromSession(HttpSession session)
+     throws Exception
+  {
+    menuBean mb = (menuBean) (session.getAttribute(MENU_BEAN_KEY));
+    if(mb == null)
+      throw new Exception(I.I("Bean menu non presente in sessione."));
+
+    return mb;
+  }
+
+  public static void removeFromSession(RunData data)
+  {
+    data.getSession().removeAttribute(MENU_BEAN_KEY);
+  }
+}

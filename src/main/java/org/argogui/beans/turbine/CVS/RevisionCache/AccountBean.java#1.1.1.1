@@ -1,0 +1,1334 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.beans.turbine;
+
+import java.io.InputStream;
+import org.rigel.table.*;
+import org.rigel.table.html.wrapper.EditInfo;
+import org.rigel.table.sql.html.SqlListaElem;
+import org.rigel.table.sql.html.SqlTableModel;
+import org.rigel.table.sql.html.SqlWrapperListaHtml;
+import java.sql.Connection;
+import java.util.*;
+import javax.servlet.http.HttpSession;
+import org.apache.torque.util.BasePeer;
+import org.apache.torque.util.Criteria;
+import org.apache.torque.util.SqlEnum;
+import org.apache.torque.util.Transaction;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.util.RunData;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
+import it.radimage.argo.ErrorMessageException;
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.om.TurbineGroup;
+import it.radimage.argo.om.TurbineGroupPeer;
+import it.radimage.argo.om.TurbinePermission;
+import it.radimage.argo.om.TurbinePermissionPeer;
+import it.radimage.argo.om.TurbineRole;
+import it.radimage.argo.om.TurbineRolePeer;
+import it.radimage.argo.om.TurbineRolePermission;
+import it.radimage.argo.om.TurbineRolePermissionPeer;
+import it.radimage.argo.om.TurbineUser;
+import it.radimage.argo.om.TurbineUserGroupRole;
+import it.radimage.argo.om.TurbineUserGroupRolePeer;
+import it.radimage.argo.om.TurbineUserPeer;
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.rigel.table.AlternateColorTableMaint;
+import it.radimage.argo.services.SERVICE;
+import it.radimage.argo.utils.LI;
+import it.radimage.argo.utils.SU;
+
+/**
+ * Bean per la gestione degli account in generale.
+ *
+ * FILENOI18N
+ * @author Nicola De Nisco
+ */
+public class AccountBean extends ArgoTurbineBaseBeans
+{
+  public boolean authDelete = false;
+  public boolean authDeletePerm = false;
+  public static final String ACCOUNT_BEAN_KEY = "ACCOUNT_BEAN_KEY";
+  public static final String PAGE_ONEUTE_RUOLI = "AccountURuoli.vm";
+  public static final String PAGE_ONEROLE_USERS = "AccountRUtenti.vm";
+  public static final String PAGE_ONEPERMISSION_RUOLI = "AccountPRuoli.vm";
+  public static final String PAGE_ONEROLE_PERMISSION = "AccountRPermission.vm";
+  public static final String sRowHeader = "TR class=\"rigel_table_header_row\"";
+  public static final String sColHeader = "TD class=\"rigel_table_header_cell\"";
+  public int groupId = 0;
+
+  /**
+   * Costruttore protetto.
+   * Il bean può essere istanziato solo tramite getFromSession.
+   */
+  protected AccountBean()
+  {
+  }
+
+  @Override
+  public void init(RunData data)
+     throws Exception
+  {
+    super.init(data);
+
+    if(SEC.checkAllPermission(data, "admin_users"))
+      authDelete = true;
+
+    if(SEC.isAdmin(data))
+      authDeletePerm = true;
+
+    initUtenti(data);
+    initRuoli(data);
+    initPermessi(data);
+    leggiDati();
+  }
+  ////////////////////////////////////////////////////////////////////////
+  // LISTA UTENTI
+  public SqlWrapperListaHtml wrapUte = null;
+  public SqlTableModel pUte = null;
+  public SqlListaElem bUte = new SqlListaElem();
+  public AlternateColorTableMaint tUte = new AlternateColorTableMaint();
+
+  public void initUtenti(RunData data)
+     throws Exception
+  {
+    currJspName = data.getRequest().getRequestURI();
+
+    wrapUte = new SqlWrapperListaHtml();
+    pUte = (SqlTableModel) wrapUte.getPtm();
+
+    wrapUte.setSelect(
+       "user_id, login_name, password_value, first_name, last_name,"
+       + "email, confirm_value, modified, created, last_login");
+
+    wrapUte.setFrom("turbine_user");
+    wrapUte.setOrderby("user_id");
+
+    pUte.addColumn("ID", "user_id", RigelColumnDescriptor.PDT_INTEGER, 20);
+    pUte.lc().setPrimaryKey(true);
+    pUte.addColumn("Login", "login_name", RigelColumnDescriptor.PDT_STRING, 80);
+    pUte.addColumn("Nome", "first_name", RigelColumnDescriptor.PDT_STRING, 80);
+    pUte.lc().setRicercaSemplice(BuilderRicercaGenerica.IDX_CRITERIA_LIKE);
+    pUte.addColumn("Cognome", "last_name", RigelColumnDescriptor.PDT_STRING, 100);
+    pUte.lc().setRicercaSemplice(BuilderRicercaGenerica.IDX_CRITERIA_LIKE);
+    pUte.addColumn("E-mail", "email", RigelColumnDescriptor.PDT_STRING, 100);
+    pUte.addColumn("Creato", "created", RigelColumnDescriptor.PDT_DATE, 50);
+    pUte.addColumn("Modificato", "modified", RigelColumnDescriptor.PDT_DATE, 50);
+    pUte.addColumn("Ultimo acc.", "last_login", RigelColumnDescriptor.PDT_DATE, 50);
+
+    if(authDelete)
+    {
+      pUte.addColumn("Zoom", "#zoom", RigelColumnDescriptor.PDT_STRING, 30);
+      pUte.lc().setCaratteristicheCancellaRiga(true);
+      pUte.lc().setCaratteristicheEditRiga(true);
+    }
+
+    // numero di record visualizzati
+    bUte.limit = 20;
+    bUte.setEmptyHtml(
+       "<table width=100%><tr><td bgcolor=white>Nessun utente nell'archivio!</td></tr></table>");
+
+    tUte.init(wrapUte);
+
+    // per effettuare edit dell'utente
+    EditInfo ei = new EditInfo();
+    ei.setUrlEditRiga("mform.vm?type=utenti&jlc=AccountUtenti.vm");
+    ei.addParamEditRiga("userid", "@user_id");
+    wrapUte.setEdInfo(ei);
+
+    wrapUte.setTbl(tUte);
+    wrapUte.setPager(bUte);
+    wrapUte.init();
+
+    bUte.setBaseSelfUrl("AccountUtenti.vm");
+
+    tUte.setTableStatement(tagTabelleList);
+    tUte.setColheadStatement(sColHeader);
+  }
+
+  public String getHtmlUte(Map params, HttpSession session)
+     throws Exception
+  {
+    return wrapUte.getHtmlLista(params, session);
+  }
+  ////////////////////////////////////////////////////////////////////////
+  // LISTA RUOLI
+  public SqlWrapperListaHtml wrapRole = null;
+  public SqlTableModel pRole = null;
+  public SqlListaElem bRole = new SqlListaElem();
+  public AlternateColorTableMaint tRole = new AlternateColorTableMaint();
+
+  public void initRuoli(RunData data)
+     throws Exception
+  {
+    currJspName = data.getRequest().getRequestURI();
+
+    wrapRole = new SqlWrapperListaHtml();
+    pRole = (SqlTableModel) wrapRole.getPtm();
+
+    wrapRole.setSelect("role_id, role_name");
+    wrapRole.setFrom("turbine_role");
+    wrapRole.setWhere("role_id>0");
+    wrapRole.setOrderby("role_id");
+
+    pRole.addColumn("ID", "role_id", RigelColumnDescriptor.PDT_INTEGER, 30);
+    pRole.lc().setPrimaryKey(true);
+    pRole.addColumn("Nome", "role_name", RigelColumnDescriptor.PDT_STRING, 200);
+    pRole.lc().setRicercaSemplice(BuilderRicercaGenerica.IDX_CRITERIA_LIKE);
+
+    if(authDelete)
+    {
+      pRole.addColumn("Zoom", "#zoom", RigelColumnDescriptor.PDT_STRING, 30);
+      pRole.lc().setCaratteristicheCancellaRiga(true);
+      pRole.lc().setCaratteristicheEditRiga(true);
+    }
+
+    // numero di record visualizzati
+    bRole.limit = 20;
+    bRole.setEmptyHtml(
+       "<table width=100%><tr><td bgcolor=white>Nessun ruolo nell'archivio!</td></tr></table>");
+
+    tRole.init(wrapRole);
+
+    // per effettuare edit del ruolo
+    EditInfo ei = new EditInfo();
+    ei.setUrlEditRiga("mform.vm?type=ruoli&jlc=AccountRuoli.vm");
+    ei.addParamEditRiga("roleid", "@role_id");
+    wrapRole.setEdInfo(ei);
+
+    wrapRole.setTbl(tRole);
+    wrapRole.setPager(bRole);
+    wrapRole.init();
+
+    bRole.setBaseSelfUrl("AccountRuoli.vm");
+
+    tRole.setTableStatement(tagTabelleList);
+    tRole.setColheadStatement(sColHeader);
+  }
+
+  public String getHtmlRole(Map params, HttpSession session)
+     throws Exception
+  {
+    return wrapRole.getHtmlLista(params, session);
+  }
+  ////////////////////////////////////////////////////////////////////////
+  // LISTA PERMESSI
+  public SqlWrapperListaHtml wrapPerm = null;
+  public SqlTableModel pPerm = null;
+  public SqlListaElem bPerm = new SqlListaElem();
+  public AlternateColorTableMaint tPerm = new AlternateColorTableMaint();
+
+  public void initPermessi(RunData data)
+     throws Exception
+  {
+    currJspName = data.getRequest().getRequestURI();
+
+    wrapPerm = new SqlWrapperListaHtml();
+    pPerm = (SqlTableModel) wrapPerm.getPtm();
+
+    wrapPerm.setSelect("permission_id, permission_name");
+    wrapPerm.setFrom("turbine_permission");
+    wrapPerm.setWhere("permission_id>0");
+    wrapPerm.setOrderby("permission_id");
+
+    pPerm.addColumn("ID", "permission_id", RigelColumnDescriptor.PDT_INTEGER, 30);
+    pPerm.lc().setPrimaryKey(true);
+    pPerm.addColumn("Nome", "permission_name", RigelColumnDescriptor.PDT_STRING, 200);
+    pPerm.lc().setRicercaSemplice(BuilderRicercaGenerica.IDX_CRITERIA_LIKE);
+
+    if(authDeletePerm)
+    {
+      pPerm.addColumn("Zoom", "#zoom", RigelColumnDescriptor.PDT_STRING, 30);
+      pPerm.lc().setCaratteristicheCancellaRiga(true);
+      pPerm.lc().setCaratteristicheEditRiga(true);
+    }
+
+    // numero di record visualizzati
+    bPerm.limit = 20;
+    bPerm.setEmptyHtml(
+       "<table width=100%><tr><td bgcolor=white>Nessun permesso nell'archivio!</td></tr></table>");
+
+    tPerm.init(wrapPerm);
+
+    // per effettuare edit del permesso
+    EditInfo ei = new EditInfo();
+    ei.setUrlEditRiga("mform.vm?type=permessi&jlc=AccountPermessi.vm");
+    ei.addParamEditRiga("permissionid", "@permission_id");
+    wrapPerm.setEdInfo(ei);
+
+    wrapPerm.setTbl(tPerm);
+    wrapPerm.setPager(bPerm);
+    wrapPerm.init();
+
+    bPerm.setBaseSelfUrl("AccountPermessi.vm");
+
+    tPerm.setTableStatement(tagTabelleList);
+    tPerm.setColheadStatement(sColHeader);
+  }
+
+  public String getHtmlPerm(Map params, HttpSession session)
+     throws Exception
+  {
+    return wrapPerm.getHtmlLista(params, session);
+  }
+  ////////////////////////////////////////////////////////////////////////
+  // UTENTI/RUOLI
+  public List vUser, vGroup, vRole, vPerm, vUserGroupRole, vRolePerm;
+  public int[] uidSelected = null;
+  public int[] ridSelected = null;
+  public int[] pidSelected = null;
+  public int[] tidSelected = null;
+
+  protected void leggiDati()
+     throws Exception
+  {
+    vUser = TurbineUserPeer.doSelect((new Criteria()).addAscendingOrderByColumn(TurbineUserPeer.LOGIN_NAME));
+
+    Criteria cGroup = new Criteria();
+    //cGroup.add(TurbineGroupPeer.GROUP_ID, 0, SqlEnum.GREATER_THAN);
+    cGroup.addAscendingOrderByColumn(TurbineGroupPeer.GROUP_NAME);
+    vGroup = TurbineGroupPeer.doSelect(cGroup);
+
+    // imposta il gruppo corrente a quello globale
+    groupId = -1;
+    for(int i = 0; i < vGroup.size(); i++)
+    {
+      TurbineGroup tg = (TurbineGroup) vGroup.get(i);
+      if(SU.isEqu(Group.GLOBAL_GROUP_NAME, tg.getGroupName()))
+        groupId = tg.getGroupId();
+    }
+    SERVICE.ASSERT(groupId != -1, "groupId != -1");
+
+    Criteria cRole = new Criteria();
+    cRole.add(TurbineRolePeer.ROLE_ID, 0, SqlEnum.GREATER_THAN);
+    cRole.addAscendingOrderByColumn(TurbineRolePeer.ROLE_NAME);
+    vRole = TurbineRolePeer.doSelect(cRole);
+
+    Criteria cPerm = new Criteria();
+    cPerm.add(TurbinePermissionPeer.PERMISSION_ID, 0, SqlEnum.GREATER_THAN);
+    cPerm.addAscendingOrderByColumn(TurbinePermissionPeer.PERMISSION_NAME);
+    vPerm = TurbinePermissionPeer.doSelect(cPerm);
+
+    vUserGroupRole = TurbineUserGroupRolePeer.doSelect(new Criteria());
+    vRolePerm = TurbineRolePermissionPeer.doSelect(new Criteria());
+  }
+
+  private boolean checkUsrGrpRole(int userId, int groupId, int roleId)
+  {
+    for(int i = 0; i < vUserGroupRole.size(); i++)
+    {
+      TurbineUserGroupRole ugr = (TurbineUserGroupRole) (vUserGroupRole.get(i));
+      if(ugr.getUserId() == userId
+         && ugr.getGroupId() == groupId
+         && ugr.getRoleId() == roleId)
+        return true;
+    }
+    return false;
+  }
+
+  public boolean isSelectedUser(TurbineUser tu)
+  {
+    return isSelectedUser(tu.getUserId());
+  }
+
+  public boolean isSelectedUser(int idUser)
+  {
+    if(uidSelected == null)
+      return false;
+
+    for(int i = 0; i < uidSelected.length; i++)
+    {
+      if(idUser == uidSelected[i])
+        return true;
+    }
+
+    return false;
+  }
+
+  public boolean isSelectedRole(TurbineRole tr)
+  {
+    return isSelectedRole(tr.getRoleId());
+  }
+
+  public boolean isSelectedRole(int idRole)
+  {
+    if(ridSelected == null)
+      return false;
+
+    for(int i = 0; i < ridSelected.length; i++)
+    {
+      if(idRole == ridSelected[i])
+        return true;
+    }
+
+    return false;
+  }
+
+  public boolean isSelectedPermission(TurbinePermission tp)
+  {
+    return isSelectedPermission(tp.getPermissionId());
+  }
+
+  public boolean isSelectedPermission(int idPermission)
+  {
+    if(pidSelected == null)
+      return false;
+
+    for(int i = 0; i < pidSelected.length; i++)
+    {
+      if(idPermission == pidSelected[i])
+        return true;
+    }
+
+    return false;
+  }
+
+  public boolean isSelectedPRole(TurbineRole tr)
+  {
+    return isSelectedPRole(tr.getRoleId());
+  }
+
+  public boolean isSelectedPRole(int idRole)
+  {
+    if(tidSelected == null)
+      return false;
+
+    for(int i = 0; i < tidSelected.length; i++)
+    {
+      if(idRole == tidSelected[i])
+        return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Ritorna l'HTML per l'editing dei delle associazioni Utenti->Ruoli.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit5()
+     throws Exception
+  {
+    StringBuilder sOut = new StringBuilder(8192);
+    sOut.append(
+       "<div class='rigel_formtable'>"
+       + "<" + tagTabelleForm + ">\r\n"
+       + "<" + sRowHeader + ">"
+       + "<" + sColHeader + " colspan=2 rowspan=2 align=center>Utenti</td>"
+       + "<" + sColHeader + " colspan=" + (vRole.size()) + " align=center>Ruoli</td>"
+       + "</tr>\r\n");
+
+    String baseUrlURuoli = LI.getLinkUrl(PAGE_ONEUTE_RUOLI) + "?userid=";
+    String baseUrlRUsers = LI.getLinkUrl(PAGE_ONEROLE_USERS) + "?roleid=";
+
+    sOut.append("<tr>");
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      sOut.append("<td><a href=\"" + baseUrlRUsers + tr.getRoleId() + "\">" + tr.getRoleName() + "</a></td>");
+    }
+    sOut.append("</tr>");
+
+    for(int u = 0; u < vUser.size(); u++)
+    {
+      TurbineUser us = (TurbineUser) (vUser.get(u));
+      int userId = us.getUserId();
+
+      sOut.append("<tr>");
+      sOut.append("<td><a href=\"" + baseUrlURuoli + us.getUserId() + "\">" + us.getLoginName() + "</a></td>");
+      sOut.append("<td align=right><input type=\"button\" value=\"SI\" onClick=\"tuttiSI(" + userId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiNO(" + userId + ")\"></td>");
+
+      for(int r = 0; r < vRole.size(); r++)
+      {
+        TurbineRole tr = (TurbineRole) (vRole.get(r));
+        int roleId = tr.getRoleId();
+        String cbName = "RUGR_" + userId + "_" + roleId;
+        String hidName = "HUGR_" + userId + "_" + roleId;
+
+        sOut.append(
+           "<td><input type=\"checkbox\" name=\"" + cbName + "\" value=\"1\" "
+           + (checkUsrGrpRole(userId, groupId, roleId) ? "checked" : "") + ">"
+           + "<input type=\"hidden\" name=\"" + hidName + "\" value=\"1\"></td>\n");
+      }
+
+      sOut.append("</tr>");
+    }
+
+    sOut.append("<tr><td colspan=2>&nbsp;</td>");
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      int roleId = tr.getRoleId();
+      sOut.append("<td align=left><input type=\"button\" value=\"SI\" onClick=\"tuttiRoleSI(" + roleId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiRoleNO(" + roleId + ")\"></td>");
+    }
+    sOut.append("</tr>");
+
+    sOut.append("</table></div>");
+    return sOut.toString();
+  }
+
+  /**
+   * Ritorna l'HTML per l'editing dei delle associazioni Utenti->Ruoli.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit5OneUser(int idUser)
+     throws Exception
+  {
+    uidSelected = new int[]
+    {
+      idUser
+    };
+    return getHtmlTedit5SelectedUsers();
+  }
+
+  /**
+   * Ritorna l'HTML per l'editing dei delle associazioni Utenti->Ruoli.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit5SelectedUsers()
+     throws Exception
+  {
+    StringBuilder sOut = new StringBuilder(8192);
+    sOut.append(
+       "<div class='rigel_formtable'>"
+       + "<" + tagTabelleForm + ">\r\n"
+       + "<" + sRowHeader + ">"
+       + "<" + sColHeader + " colspan=2 rowspan=2 align=center>Ruoli</td>"
+       + "<" + sColHeader + " colspan=" + (uidSelected.length) + " align=center>Utente/i</td>"
+       + "</tr>\r\n");
+
+    String baseUrlRUsers = LI.getLinkUrl(PAGE_ONEROLE_USERS) + "?roleid=";
+
+    sOut.append("<tr>");
+    for(int i = 0; i < uidSelected.length; i++)
+    {
+      int idUser = uidSelected[i];
+      TurbineUser us = getUser(idUser);
+      sOut.append("<td>" + us.getLoginName() + "</td>");
+    }
+    sOut.append("</tr>");
+
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      int roleId = tr.getRoleId();
+      sOut.append("<tr>");
+      sOut.append("<td><a href=\"" + baseUrlRUsers + tr.getRoleId() + "\">" + tr.getRoleName() + "</a></td>\n");
+      sOut.append("<td align=right><input type=\"button\" value=\"SI\" onClick=\"tuttiRoleSI(" + roleId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiRoleNO(" + roleId + ")\"></td>");
+
+      for(int i = 0; i < uidSelected.length; i++)
+      {
+        int idUser = uidSelected[i];
+        String cbName = "RUGR_" + idUser + "_" + roleId;
+        String hidName = "HUGR_" + idUser + "_" + roleId;
+
+        sOut.append(
+           "<td><input type=\"checkbox\" name=\"" + cbName + "\" value=\"1\" "
+           + (checkUsrGrpRole(idUser, groupId, roleId) ? "checked" : "") + ">"
+           + "<input type=\"hidden\" name=\"" + hidName + "\" value=\"1\"></td>\n");
+      }
+      sOut.append("</tr>");
+    }
+
+    sOut.append("<tr><td colspan=2>&nbsp;</td>");
+    for(int i = 0; i < uidSelected.length; i++)
+    {
+      int idUser = uidSelected[i];
+      sOut.append("<td align=left><input type=\"button\" value=\"SI\" onClick=\"tuttiSI(" + idUser + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiNO(" + idUser + ")\"></td>");
+    }
+    sOut.append("</tr>");
+
+    sOut.append("</table></div>\r\n");
+    return sOut.toString();
+  }
+
+  /**
+   * Ritorna l'HTML per l'editing dei delle associazioni Utenti->Ruoli.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit5OneRole(int idRole)
+     throws Exception
+  {
+    ridSelected = new int[]
+    {
+      idRole
+    };
+    return getHtmlTedit5SelectedRoles();
+  }
+
+  /**
+   * Ritorna l'HTML per l'editing dei delle associazioni Utenti->Ruoli.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit5SelectedRoles()
+     throws Exception
+  {
+    StringBuilder sOut = new StringBuilder(8192);
+    sOut.append(
+       "<div class='rigel_formtable'>"
+       + "<" + tagTabelleForm + ">\r\n"
+       + "<" + sRowHeader + ">"
+       + "<" + sColHeader + " colspan=2 rowspan=2 align=center>Utenti</td>"
+       + "<" + sColHeader + " colspan=" + (ridSelected.length) + " align=center>Ruolo/i</td>"
+       + "</tr>\r\n");
+
+    String baseUrlURuoli = LI.getLinkUrl(PAGE_ONEUTE_RUOLI) + "?userid=";
+
+    sOut.append("<tr>");
+    for(int i = 0; i < ridSelected.length; i++)
+    {
+      int idRole = ridSelected[i];
+      TurbineRole tr = getRole(idRole);
+      sOut.append("<td>" + tr.getRoleName() + "</td>");
+    }
+    sOut.append("</tr>");
+
+    for(int u = 0; u < vUser.size(); u++)
+    {
+      TurbineUser us = (TurbineUser) (vUser.get(u));
+      int userId = us.getUserId();
+
+      sOut.append("<tr>");
+      sOut.append("<td><a href=\"" + baseUrlURuoli + us.getUserId() + "\">" + us.getLoginName() + "</a></td>");
+      sOut.append("<td align=right><input type=\"button\" value=\"SI\" onClick=\"tuttiSI(" + userId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiNO(" + userId + ")\"></td>");
+
+      for(int i = 0; i < ridSelected.length; i++)
+      {
+        int idRole = ridSelected[i];
+        String cbName = "RUGR_" + userId + "_" + idRole;
+        String hidName = "HUGR_" + userId + "_" + idRole;
+
+        sOut.append(
+           "<td><input type=\"checkbox\" name=\"" + cbName + "\" value=\"1\" "
+           + (checkUsrGrpRole(userId, groupId, idRole) ? "checked" : "") + ">"
+           + "<input type=\"hidden\" name=\"" + hidName + "\" value=\"1\"></td>\n");
+      }
+
+      sOut.append("</tr>");
+    }
+
+    sOut.append("<tr><td colspan=2>&nbsp;</td>");
+    for(int i = 0; i < ridSelected.length; i++)
+    {
+      int idRole = ridSelected[i];
+      sOut.append("<td align=left><input type=\"button\" value=\"SI\" onClick=\"tuttiRoleSI(" + idRole + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiRoleNO(" + idRole + ")\"></td>");
+    }
+    sOut.append("</tr>");
+
+    sOut.append("</table></div>\r\n");
+    return sOut.toString();
+  }
+
+  private boolean checkRolePerm(int roleId, int permId)
+  {
+    for(int i = 0; i < vRolePerm.size(); i++)
+    {
+      TurbineRolePermission ugr = (TurbineRolePermission) (vRolePerm.get(i));
+      if(ugr.getRoleId() == roleId && ugr.getPermissionId() == permId)
+        return true;
+    }
+    return false;
+  }
+
+  public TurbineGroup getGroup(int idGroup)
+  {
+    for(int u = 0; u < vGroup.size(); u++)
+    {
+      TurbineGroup gp = (TurbineGroup) vGroup.get(u);
+      if(gp.getGroupId() == idGroup)
+        return gp;
+    }
+    return null;
+  }
+
+  public TurbineGroup findGroup(String groupName)
+  {
+    for(int u = 0; u < vGroup.size(); u++)
+    {
+      TurbineGroup gp = (TurbineGroup) vGroup.get(u);
+      if(SU.isEqu(groupName, gp.getGroupName()))
+        return gp;
+    }
+    return null;
+  }
+
+  public TurbineUser getUser(int idUser)
+  {
+    for(int u = 0; u < vUser.size(); u++)
+    {
+      TurbineUser us = (TurbineUser) (vUser.get(u));
+      if(us.getUserId() == idUser)
+        return us;
+    }
+    return null;
+  }
+
+  public TurbineUser findUser(String loginName)
+  {
+    for(int u = 0; u < vUser.size(); u++)
+    {
+      TurbineUser us = (TurbineUser) (vUser.get(u));
+      if(SU.isEqu(loginName, us.getLoginName()))
+        return us;
+    }
+    return null;
+  }
+
+  public TurbineRole getRole(int idRole)
+  {
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      if(tr.getRoleId() == idRole)
+        return tr;
+    }
+    return null;
+  }
+
+  public TurbinePermission getPermission(int idPermission)
+  {
+    for(int i = 0; i < vPerm.size(); i++)
+    {
+      TurbinePermission tp = (TurbinePermission) (vPerm.get(i));
+      if(tp.getPermissionId() == idPermission)
+        return tp;
+    }
+    return null;
+  }
+
+  public TurbineRole findRole(String roleName)
+  {
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      if(SU.isEqu(roleName, tr.getRoleName()))
+        return tr;
+    }
+    return null;
+  }
+
+  public TurbinePermission findPermission(String permissionName)
+  {
+    for(int i = 0; i < vPerm.size(); i++)
+    {
+      TurbinePermission tp = (TurbinePermission) (vPerm.get(i));
+      if(SU.isEqu(permissionName, tp.getPermissionName()))
+        return tp;
+    }
+    return null;
+  }
+
+  /**
+   * Ritorna HTML per l'editing delle associazioni Ruoli->Permessi.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit6()
+     throws Exception
+  {
+    StringBuilder sOut = new StringBuilder(8192);
+    sOut.append(
+       "<div class='rigel_formtable'>"
+       + "<" + tagTabelleForm + ">\r\n"
+       + "<" + sRowHeader + ">"
+       + "<" + sColHeader + " colspan=2 rowspan=2 align=center>Permessi</td>"
+       + "<" + sColHeader + " colspan=" + (vRole.size()) + " align=center>Ruoli</td>"
+       + "</tr>\r\n");
+
+    String baseUrlPRuoli = LI.getLinkUrl(PAGE_ONEPERMISSION_RUOLI) + "?permid=";
+    String baseUrlRPerms = LI.getLinkUrl(PAGE_ONEROLE_PERMISSION) + "?roleid=";
+
+    sOut.append("<tr>");
+    Iterator iterRoleH = vRole.iterator();
+    while(iterRoleH.hasNext())
+    {
+      TurbineRole r = (TurbineRole) (iterRoleH.next());
+      sOut.append("<td><a href=\"" + baseUrlRPerms + r.getRoleId() + "\">" + r.getRoleName() + "</a></td>");
+    }
+    sOut.append("</tr>");
+
+    for(int p = 0; p < vPerm.size(); p++)
+    {
+      TurbinePermission tp = (TurbinePermission) (vPerm.get(p));
+      int permId = tp.getPermissionId();
+
+      sOut.append("<tr>");
+      sOut.append("<td align=left><a href=\"" + baseUrlPRuoli + tp.getPermissionId() + "\">" + tp.getPermissionName() + "</a></td>");
+      sOut.append("<td align=right><input type=\"button\" value=\"SI\" onClick=\"tuttiSI(" + permId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiNO(" + permId + ")\"></td>");
+
+      for(int r = 0; r < vRole.size(); r++)
+      {
+        TurbineRole tr = (TurbineRole) (vRole.get(r));
+        int roleId = tr.getRoleId();
+        String cbName = "RPC_" + permId + "_" + roleId;
+        String hidName = "HRPC_" + permId + "_" + roleId;
+
+        sOut.append(
+           "<td><input type=\"checkbox\" name=\"" + cbName + "\" value=\"1\" "
+           + (checkRolePerm(roleId, permId) ? "checked" : "") + ">"
+           + "<input type=\"hidden\" name=\"" + hidName + "\" value=\"1\" ></td>\n");
+      }
+
+      sOut.append("</tr>");
+    }
+
+    sOut.append("<tr><td colspan=2>&nbsp;</td>");
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      int roleId = tr.getRoleId();
+      sOut.append("<td align=left><input type=\"button\" value=\"SI\" onClick=\"tuttiRoleSI(" + roleId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiRoleNO(" + roleId + ")\"></td>");
+    }
+    sOut.append("</tr>");
+
+    sOut.append("</table></div>");
+    return sOut.toString();
+  }
+
+  /**
+   * Ritorna HTML per l'editing delle associazioni Ruoli->Permessi.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit6SelectedPermissions()
+     throws Exception
+  {
+    StringBuilder sOut = new StringBuilder(8192);
+    sOut.append(
+       "<div class='rigel_formtable'>"
+       + "<" + tagTabelleForm + ">\r\n"
+       + "<" + sRowHeader + ">"
+       + "<" + sColHeader + " colspan=2 rowspan=2 align=center>Ruoli</td>"
+       + "<" + sColHeader + " colspan=" + (pidSelected.length) + " align=center>Permesso/i</td>"
+       + "</tr>\r\n");
+
+    String baseUrlRPerms = LI.getLinkUrl(PAGE_ONEROLE_PERMISSION) + "?roleid=";
+
+    sOut.append("<tr>");
+    for(int i = 0; i < pidSelected.length; i++)
+    {
+      int idPerm = pidSelected[i];
+      TurbinePermission tp = getPermission(idPerm);
+      sOut.append("<td>" + tp.getPermissionName() + "</td>");
+    }
+    sOut.append("</tr>");
+
+    for(int r = 0; r < vRole.size(); r++)
+    {
+      TurbineRole tr = (TurbineRole) (vRole.get(r));
+      int roleId = tr.getRoleId();
+
+      sOut.append("<tr>");
+      sOut.append("<td align=left><a href=\"" + baseUrlRPerms + roleId + "\">" + tr.getRoleName() + "</a></td>");
+      sOut.append("<td align=right><input type=\"button\" value=\"SI\" onClick=\"tuttiRoleSI(" + roleId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiRoleNO(" + roleId + ")\"></td>");
+
+      for(int i = 0; i < pidSelected.length; i++)
+      {
+        int idPerm = pidSelected[i];
+        TurbinePermission p = getPermission(idPerm);
+        String cbName = "RPC_" + idPerm + "_" + roleId;
+        String hidName = "HRPC_" + idPerm + "_" + roleId;
+
+        sOut.append(
+           "<td><input type=\"checkbox\" name=\"" + cbName + "\" value=\"1\" "
+           + (checkRolePerm(roleId, idPerm) ? "checked" : "") + ">"
+           + "<input type=\"hidden\" name=\"" + hidName + "\" value=\"1\" ></td>\n");
+      }
+
+      sOut.append("</tr>");
+    }
+
+    sOut.append("<tr><td colspan=2>&nbsp;</td>");
+    for(int i = 0; i < pidSelected.length; i++)
+    {
+      int idPerm = pidSelected[i];
+      sOut.append("<td align=left><input type=\"button\" value=\"SI\" onClick=\"tuttiSI(" + idPerm + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiNO(" + idPerm + ")\"></td>");
+    }
+    sOut.append("</tr>");
+
+    sOut.append("</table></div>\r\n");
+    return sOut.toString();
+  }
+
+  /**
+   * Ritorna HTML per l'editing delle associazioni Ruoli->Permessi.
+   * @return html
+   * @throws java.lang.Exception
+   */
+  public String getHtmlTedit6SelectedRoles()
+     throws Exception
+  {
+    StringBuilder sOut = new StringBuilder(8192);
+    sOut.append(
+       "<div class='rigel_formtable'>"
+       + "<" + tagTabelleForm + ">\r\n"
+       + "<" + sRowHeader + ">"
+       + "<" + sColHeader + " colspan=2 rowspan=2 align=center>Permessi</td>"
+       + "<" + sColHeader + " colspan=" + (tidSelected.length) + " align=center>Ruolo/i</td>"
+       + "</tr>\r\n");
+
+    String baseUrlPRuoli = LI.getLinkUrl(PAGE_ONEPERMISSION_RUOLI) + "?permid=";
+
+    sOut.append("<tr>");
+    for(int i = 0; i < tidSelected.length; i++)
+    {
+      int idRole = tidSelected[i];
+      TurbineRole r = getRole(idRole);
+      sOut.append("<td>" + r.getRoleName() + "</td>");
+    }
+    sOut.append("</tr>");
+
+    for(int p = 0; p < vPerm.size(); p++)
+    {
+      TurbinePermission tp = (TurbinePermission) (vPerm.get(p));
+      int permId = tp.getPermissionId();
+
+      sOut.append("<tr>");
+      sOut.append("<td align=left><a href=\"" + baseUrlPRuoli + tp.getPermissionId() + "\">" + tp.getPermissionName() + "</a></td>");
+      sOut.append("<td align=right><input type=\"button\" value=\"SI\" onClick=\"tuttiSI(" + permId + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiNO(" + permId + ")\"></td>");
+
+      for(int i = 0; i < tidSelected.length; i++)
+      {
+        int idRole = tidSelected[i];
+        String cbName = "RPC_" + permId + "_" + idRole;
+        String hidName = "HRPC_" + permId + "_" + idRole;
+
+        sOut.append(
+           "<td><input type=\"checkbox\" name=\"" + cbName + "\" value=\"1\" "
+           + (checkRolePerm(idRole, permId) ? "checked" : "") + ">"
+           + "<input type=\"hidden\" name=\"" + hidName + "\" value=\"1\" ></td>\n");
+      }
+
+      sOut.append("</tr>");
+    }
+
+    sOut.append("<tr><td colspan=2>&nbsp;</td>");
+    for(int r = 0; r < tidSelected.length; r++)
+    {
+      int idRole = tidSelected[r];
+      sOut.append("<td align=left><input type=\"button\" value=\"SI\" onClick=\"tuttiRoleSI(" + idRole + ")\">");
+      sOut.append("<input type=\"button\" value=\"NO\" onClick=\"tuttiRoleNO(" + idRole + ")\"></td>");
+    }
+    sOut.append("</tr>");
+
+    sOut.append("</table></div>\r\n");
+    return sOut.toString();
+  }
+
+  public String getHtmlComboGruppi()
+  {
+    String rv = "";
+
+    for(Iterator it = vGroup.iterator(); it.hasNext();)
+    {
+      TurbineGroup g = (TurbineGroup) it.next();
+      String sel = groupId == g.getGroupId() ? "selected" : "";
+      rv += "<option value=\"" + g.getGroupId() + "\" " + sel + ">" + g.getGroupName() + "</option>";
+    }
+
+    return rv;
+  }
+
+  public void storeUserGroupRole(RunData data)
+     throws Exception
+  {
+    // recupera i gruppi diversi da quello corrente
+    Vector vTemp = new Vector(10, 10);
+    Iterator iter = vUserGroupRole.iterator();
+    while(iter.hasNext())
+    {
+      TurbineUserGroupRole ugr = (TurbineUserGroupRole) (iter.next());
+
+      // controlla se il gruppo e' quello interessato;
+      // diversamente li aggiunge al set in uscita
+      if(ugr.getGroupId() != groupId)
+      {
+        vTemp.add(ugr);
+        continue;
+      }
+
+      // controlla che questo TurbineUserGroupRole sia stato sottoposto
+      // ad editing; diversamente lo aggiunge al set in uscita
+      String hidName = "HUGR_" + ugr.getUserId() + "_" + ugr.getRoleId();
+      if(data.getParameters().getString(hidName) == null)
+        vTemp.add(ugr);
+    }
+
+    // costruisce dati di quello corrente
+    int num = 0;
+    for(int u = 0; u < vUser.size(); u++)
+    {
+      TurbineUser us = (TurbineUser) (vUser.get(u));
+      int userId = us.getUserId();
+
+      for(int r = 0; r < vRole.size(); r++)
+      {
+        TurbineRole tr = (TurbineRole) (vRole.get(r));
+        int roleId = tr.getRoleId();
+        String cbName = "RUGR_" + userId + "_" + roleId;
+
+        if(data.getParameters().getString(cbName) != null)
+        {
+          TurbineUserGroupRole ugr = new TurbineUserGroupRole();
+          ugr.setUserId(userId);
+          ugr.setGroupId(groupId);
+          ugr.setRoleId(roleId);
+          vTemp.add(ugr);
+          num++;
+        }
+      }
+    }
+
+    // dati persi?
+    if(num == 0)
+    {
+      vUserGroupRole = TurbineUserGroupRolePeer.doSelect(new Criteria());
+      return;
+    }
+
+    vUserGroupRole = vTemp;
+  }
+
+  public void storeRolePermission(RunData data)
+     throws Exception
+  {
+    // recupera le entry non sottoposte a editing
+    Vector vTemp = new Vector();
+    Iterator iter = vRolePerm.iterator();
+    while(iter.hasNext())
+    {
+      TurbineRolePermission trp = (TurbineRolePermission) (iter.next());
+
+      // controlla che questo TurbineRolePermission sia stato sottoposto
+      // ad editing; diversamente lo aggiunge al set in uscita
+      String hidName = "HRPC_" + trp.getPermissionId() + "_" + trp.getRoleId();
+      if(data.getParameters().getString(hidName) == null)
+        vTemp.add(trp);
+    }
+
+    int num = 0;
+    for(int p = 0; p < vPerm.size(); p++)
+    {
+      TurbinePermission tp = (TurbinePermission) (vPerm.get(p));
+      int permId = tp.getPermissionId();
+
+      for(int r = 0; r < vRole.size(); r++)
+      {
+        TurbineRole tr = (TurbineRole) (vRole.get(r));
+        int roleId = tr.getRoleId();
+        String cbName = "RPC_" + permId + "_" + roleId;
+
+        if(data.getParameters().getString(cbName) != null)
+        {
+          TurbineRolePermission trp = new TurbineRolePermission();
+          trp.setRoleId(roleId);
+          trp.setPermissionId(permId);
+          vTemp.add(trp);
+          num++;
+        }
+      }
+    }
+
+    // dati persi?
+    if(num == 0)
+    {
+      vRolePerm = TurbineRolePermissionPeer.doSelect(new Criteria());
+      return;
+    }
+
+    vRolePerm = vTemp;
+  }
+  private static final Object semaforoSalva = new Object();
+
+  public void saveUserGroupRole()
+     throws Exception
+  {
+    synchronized(semaforoSalva)
+    {
+      Connection con = null;
+      try
+      {
+        con = Transaction.begin();
+        saveUserGroupRole(con);
+        Transaction.commit(con);
+      }
+      catch(Exception e)
+      {
+        Transaction.safeRollback(con);
+        throw e;
+      }
+    }
+  }
+
+  public void saveUserGroupRole(Connection dbCon)
+     throws Exception
+  {
+    // salvataggio associazione utenti-gruppi-ruoli
+    BasePeer.executeStatement("DELETE FROM " + TurbineUserGroupRolePeer.TABLE_NAME, dbCon);
+    Iterator iterUgr = vUserGroupRole.iterator();
+    while(iterUgr.hasNext())
+    {
+      TurbineUserGroupRole ugr = (TurbineUserGroupRole) (iterUgr.next());
+      ugr.setNew(true);
+      ugr.setModified(true);
+      ugr.save(dbCon);
+    }
+  }
+
+  public void saveRolePermission()
+     throws Exception
+  {
+    synchronized(semaforoSalva)
+    {
+      Connection con = null;
+      try
+      {
+        con = Transaction.begin();
+        saveRolePermission(con);
+        Transaction.commit(con);
+      }
+      catch(Exception e)
+      {
+        Transaction.safeRollback(con);
+        throw e;
+      }
+    }
+  }
+
+  public void saveRolePermission(Connection dbCon)
+     throws Exception
+  {
+    // salvataggio associazione ruoli-permessi
+    BasePeer.executeStatement("DELETE FROM " + TurbineRolePermissionPeer.TABLE_NAME, dbCon);
+    Iterator iterRpe = vRolePerm.iterator();
+    while(iterRpe.hasNext())
+    {
+      TurbineRolePermission tpr = (TurbineRolePermission) (iterRpe.next());
+      tpr.setNew(true);
+      tpr.setModified(true);
+      tpr.save(dbCon);
+    }
+  }
+
+  /**
+   * Esegue import da file xml.
+   * @param name nome del file
+   * @param inputStream stream di ingresso
+   * @param ckremove flag per cancellazione preventiva ruoli e permessi
+   * @throws Exception
+   */
+  public void importDaFileXML(String name, InputStream inputStream, boolean ckremove)
+     throws Exception
+  {
+    synchronized(semaforoSalva)
+    {
+      Connection con = null;
+      try
+      {
+        con = Transaction.begin();
+        importDaFileXML(con, name, inputStream, ckremove);
+        Transaction.commit(con);
+
+        // legge il nuovo set dal db
+        leggiDati();
+      }
+      catch(Exception e)
+      {
+        Transaction.safeRollback(con);
+        throw e;
+      }
+    }
+  }
+
+  public void importDaFileXML(Connection dbCon, String name, InputStream inputStream, boolean ckremove)
+     throws Exception
+  {
+    SAXBuilder builder = new SAXBuilder();
+    Document doc = builder.build(inputStream);
+    Element root = doc.getRootElement();
+    if(root == null)
+      throw new ErrorMessageException(I.I("File XML non valido: nessun root document."));
+
+    Element roles = root.getChild("roles");
+    Element permissions = root.getChild("permissions");
+    Element grants = root.getChild("grants");
+
+    if(roles == null || permissions == null || grants == null)
+      throw new ErrorMessageException(I.I("File XML non valido: sezioni roles, permissions, grants sono obbligatorie."));
+
+    // mappa degli utenti, gruppi e ruoli
+    HashSet<String> userGroupRoleSet = new HashSet<String>();
+
+    if(ckremove)
+    {
+      // salva utenti gruppi ruoli per ripristino successivo
+      for(Iterator it = vUserGroupRole.iterator(); it.hasNext();)
+      {
+        TurbineUserGroupRole ugr = (TurbineUserGroupRole) it.next();
+        TurbineUser user = getUser(ugr.getUserId());
+        TurbineGroup group = getGroup(ugr.getGroupId());
+        TurbineRole role = getRole(ugr.getRoleId());
+        if(user != null && group != null && role != null)
+          userGroupRoleSet.add(user.getLoginName() + "|" + group.getGroupName() + "|" + role.getRoleName());
+      }
+
+      // rimuove ruoli e permessi esistenti
+      BasePeer.executeStatement("DELETE FROM " + TurbineUserGroupRolePeer.TABLE_NAME, dbCon);
+      BasePeer.executeStatement("DELETE FROM " + TurbineRolePermissionPeer.TABLE_NAME, dbCon);
+      BasePeer.executeStatement("DELETE FROM " + TurbineRolePeer.TABLE_NAME, dbCon);
+      BasePeer.executeStatement("DELETE FROM " + TurbinePermissionPeer.TABLE_NAME, dbCon);
+
+      vRole.clear();
+      vPerm.clear();
+      vRolePerm.clear();
+      vUserGroupRole.clear();
+    }
+
+    // carica tutti i ruoli
+    List lsRole = roles.getChildren("role");
+    for(Iterator itRole = lsRole.iterator(); itRole.hasNext();)
+    {
+      try
+      {
+        Element eRole = (Element) itRole.next();
+        String roleName = eRole.getAttributeValue("name");
+        if(!roleName.equals("0") && findRole(roleName) == null)
+        {
+          TurbineRole tr = new TurbineRole();
+          tr.setRoleName(roleName);
+          tr.save(dbCon);
+          vRole.add(tr);
+        }
+      }
+      catch(Exception e1)
+      {
+        e1.printStackTrace();
+      }
+    }
+
+    // carica tutti i permessi
+    List lsPermission = permissions.getChildren("permission");
+    for(Iterator itPermission = lsPermission.iterator(); itPermission.hasNext();)
+    {
+      try
+      {
+        Element ePermission = (Element) itPermission.next();
+        String permissionName = ePermission.getAttributeValue("name");
+        if(!permissionName.equals("0") && findPermission(permissionName) == null)
+        {
+          TurbinePermission tp = new TurbinePermission();
+          tp.setPermissionName(permissionName);
+          tp.save(dbCon);
+          vPerm.add(tp);
+        }
+      }
+      catch(Exception e1)
+      {
+        e1.printStackTrace();
+      }
+    }
+
+    // associa ruoli e permessi
+    vRolePerm.clear();
+    List lsGrant = grants.getChildren("grant");
+    for(Iterator itGrant = lsGrant.iterator(); itGrant.hasNext();)
+    {
+      Element eGrant = (Element) itGrant.next();
+      String roleName = eGrant.getAttributeValue("role");
+      String permName = eGrant.getAttributeValue("permission");
+      TurbineRole tr = findRole(roleName);
+      TurbinePermission tp = findPermission(permName);
+      if(tr != null && tp != null)
+      {
+        TurbineRolePermission trp = new TurbineRolePermission();
+        trp.setTurbineRole(tr);
+        trp.setTurbinePermission(tp);
+        vRolePerm.add(trp);
+      }
+    }
+
+    // salva dati su db
+    saveRolePermission(dbCon);
+
+    if(ckremove)
+    {
+      // associa utenti gruppi ruoli
+      vUserGroupRole.clear();
+      for(Iterator<String> it = userGroupRoleSet.iterator(); it.hasNext();)
+      {
+        String key = it.next();
+
+        String[] ss = SU.split(key, '|');
+        TurbineUser user = findUser(ss[0]);
+        TurbineGroup group = findGroup(ss[1]);
+        TurbineRole role = findRole(ss[2]);
+
+        if(user != null && group != null && role != null)
+        {
+          TurbineUserGroupRole ugr = new TurbineUserGroupRole();
+          ugr.setTurbineUser(user);
+          ugr.setTurbineGroup(group);
+          ugr.setTurbineRole(role);
+          vUserGroupRole.add(ugr);
+        }
+      }
+
+      // salva dati su db
+      saveUserGroupRole(dbCon);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
+  // funzioni statiche
+  public static AccountBean getFromSession(RunData data)
+     throws Exception
+  {
+    AccountBean ab = (AccountBean) (data.getSession().getAttribute(AccountBean.ACCOUNT_BEAN_KEY));
+    if(ab == null)
+    {
+      ab = new AccountBean();
+      ab.init(data);
+      data.getSession().setAttribute(AccountBean.ACCOUNT_BEAN_KEY, ab);
+    }
+
+    if(data.getParameters().getString("reload") != null)
+      ab.leggiDati();
+
+    return ab;
+  }
+
+  public static void removeFromSession(RunData data)
+     throws Exception
+  {
+    data.getSession().removeAttribute(ACCOUNT_BEAN_KEY);
+  }
+}

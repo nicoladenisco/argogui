@@ -1,0 +1,364 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.servlets;
+
+import it.radimage.argo.modules.screens.rigel.FormBase;
+import it.radimage.argo.modules.screens.rigel.ListaBase;
+import it.radimage.argo.modules.screens.rigel.ListaInfo;
+import it.radimage.argo.rigel.DialogCustomUrlBuilder;
+import it.radimage.argo.rigel.DialogRigelUIManager;
+import it.radimage.argo.rigel.ArgoCustomUrlBuilder;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.velocity.VelocityParser;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.turbine.services.rundata.RunDataService;
+import org.apache.turbine.services.rundata.TurbineRunDataFacade;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+import org.commonlib.utils.StringOper;
+import org.rigel.SetupHolder;
+import org.rigel.glue.table.AlternateColorTableAppBase;
+import org.rigel.table.RigelTableModel;
+import org.rigel.table.html.AbstractHtmlTablePagerFilter;
+import org.rigel.table.html.hEditTable;
+import org.rigel.table.html.wrapper.HtmlWrapperBase;
+import org.rigel.table.peer.html.PeerWrapperEditHtml;
+import org.rigel.table.peer.html.PeerWrapperFormHtml;
+
+/**
+ * Servlet per i form rigel.
+ *
+ * @author Nicola De Nisco
+ */
+public class RigelDirectHtml extends HttpServlet
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(RigelDirectHtml.class);
+
+  /** A reference to the RunData Service */
+  private RunDataService rundataService = null;
+  private DirectFormRender fbRender = new DirectFormRender();
+  private DirectListaRender lsRender = new DirectListaRender();
+  private DialogRigelUIManager uim = new DialogRigelUIManager();
+  private DialogCustomUrlBuilder urb = new DialogCustomUrlBuilder();
+  private String titolo, header;
+  //
+  public static final String MODELLO_LIST = "RigelLista.vm";
+  public static final String MODELLO_FORM = "RigelForm.vm";
+
+  public class DirectListaRender extends ListaBase
+  {
+    @Override
+    public boolean isPopup()
+    {
+      return false;
+    }
+
+    @Override
+    public boolean isEditPopup()
+    {
+      return true;
+    }
+
+    @Override
+    protected String makeSelfUrl(RunData data, String type)
+    {
+      return data.getRequest().getContextPath() + "/rigel/maint.vm?type=" + type;
+    }
+
+    @Override
+    protected void makeContextHtml(HtmlWrapperBase lso, ListaInfo li, ArgoRunData data, Context context, String baseUri)
+       throws Exception
+    {
+      titolo = lso.getTitolo();
+      header = lso.getHeader();
+
+      AlternateColorTableAppBase act = (AlternateColorTableAppBase) (lso.getTbl());
+      act.setAuthDelete(isAuthorizedDelete(data));
+      act.setPopup(true);
+      act.setEditPopup(true);
+      act.setAuthSel(true);
+      //act.setPopupEditFunction("apriFinestraEdit_" + li.type);
+      act.setUrlBuilder(urb);
+      urb.setFunc(li.func);
+
+      AbstractHtmlTablePagerFilter flt = (AbstractHtmlTablePagerFilter) lso.getPager();
+      flt.setFormName("fo" + li.type);
+      flt.setUim(uim);
+
+      super.makeContextHtml(lso, li, data, context, baseUri);
+    }
+
+    public void buildCtx(RunData data, Context ctx)
+       throws Exception
+    {
+      doBuildTemplate2((ArgoRunData) data, ctx);
+    }
+  }
+
+  public class DirectFormRender extends FormBase
+  {
+    @Override
+    public boolean isPopup()
+    {
+      return true;
+    }
+
+    @Override
+    public boolean isEditPopup()
+    {
+      return true;
+    }
+
+    @Override
+    protected PeerWrapperFormHtml getForm(ArgoRunData data, String type)
+       throws Exception
+    {
+      PeerWrapperFormHtml pwl = super.getForm(data, type);
+
+      // imposta il nome form nel table model
+      RigelTableModel rtm = pwl.getPtm();
+      rtm.setFormName("fo" + type);
+
+      return pwl;
+    }
+
+    @Override
+    protected PeerWrapperEditHtml getLista(ArgoRunData data, String type)
+       throws Exception
+    {
+      PeerWrapperEditHtml pwl = (PeerWrapperEditHtml) super.getLista(data, type);
+
+      // imposta il nome form nel table model
+      RigelTableModel rtm = pwl.getPtm();
+      rtm.setFormName("fo" + type);
+
+      if(pwl.getTbl() instanceof hEditTable)
+      {
+        hEditTable tbl = (hEditTable) pwl.getTbl();
+        tbl.setPopupListaFunction("apriFinestraLista_" + type);
+        tbl.setPopupFormFunction("apriFinestraForm_" + type);
+      }
+
+      return pwl;
+    }
+
+    @Override
+    protected String makeSelfUrl(RunData data, String type)
+    {
+      return data.getRequest().getContextPath() + "/rigel/mform.vm?type=" + type;
+    }
+
+    @Override
+    protected void makeContextHtml(boolean forceNew, boolean duplica, Map params, ArgoRunData data, Context context, PeerWrapperFormHtml pwl, String type, String baseUri)
+       throws Exception
+    {
+      titolo = pwl.getTitolo();
+      header = pwl.getHeader();
+
+      super.makeContextHtml(forceNew, duplica, params, data, context, pwl, type, baseUri);
+    }
+
+    public void buildCtx(RunData data, Context ctx)
+       throws Exception
+    {
+      doBuildTemplate2((ArgoRunData) data, ctx);
+    }
+  }
+
+  @Override
+  public void init()
+     throws ServletException
+  {
+    super.init();
+
+    if((rundataService = TurbineRunDataFacade.getService()) == null)
+      throw new ServletException("No RunData Service configured!");
+
+    ArgoCustomUrlBuilder ub = (ArgoCustomUrlBuilder) SetupHolder.getUrlBuilder();
+    urb.setBaseMainForm(ub.getBaseMainForm());
+    urb.setBaseMainList(ub.getBaseMainList());
+    urb.setBasePopupForm(ub.getBasePopupForm());
+    urb.setBasePopupList(ub.getBasePopupList());
+  }
+
+  /**
+   * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+   * @param request servlet request
+   * @param response servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+     throws ServletException, IOException
+  {
+    // Placeholder for the RunData object.
+    ArgoRunData data = null;
+
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    try
+    {
+      // estrae nome della richiesta
+      String sRequest = request.getPathInfo().substring(1);
+
+      // Get general RunData here...
+      // Perform turbine specific initialization below.
+      data = (ArgoRunData) rundataService.getRunData(request, response, getServletConfig());
+
+      if("plista.vm".equals(sRequest))
+        runLista(true, data, out);
+      else if("maint.vm".equals(sRequest))
+        runLista(false, data, out);
+      else if("pform.vm".equals(sRequest))
+        runForm(true, data, out);
+      else if("mform.vm".equals(sRequest))
+        runForm(false, data, out);
+      else
+        throw new ServletException(data.i18n("Richiesta non elaborabile: %s", sRequest));
+
+      out.flush();
+    }
+    catch(Exception ex)
+    {
+      log.error("Rigel direct rendering error", ex); // NOI18N
+    }
+    finally
+    {
+      out.close();
+
+      // Return the used RunData to the factory for recycling.
+      rundataService.putRunData(data);
+    }
+  }
+
+  private void runLista(boolean popup, RunData data, PrintWriter out)
+     throws Exception
+  {
+    String html = getListHtml(data, null);
+    out.print(html);
+  }
+
+  private void runForm(boolean popup, RunData data, PrintWriter out)
+     throws Exception
+  {
+    String html = getFormHtml(data, null);
+    out.print(html);
+  }
+
+  public synchronized String getListHtml(RunData data, String params)
+     throws Exception
+  {
+    // aggiunge i parametri specificati in params
+    if(params != null && !params.isEmpty())
+    {
+      Map<String, String> values = StringOper.string2Map(params, ",", false);
+      for(Map.Entry<String, String> es : values.entrySet())
+      {
+        String key = es.getKey();
+        String value = es.getValue();
+        data.getParameters().setString(key, value.isEmpty() ? "0" : value);
+      }
+    }
+
+    Context ctx = TurbineVelocity.getContext(data);
+    lsRender.buildCtx(data, ctx);
+    String html = VelocityParser.parseFileToString(MODELLO_LIST, ctx);
+
+    ListaInfo li = ListaInfo.getFromSession(data);
+    html = StringOper.strReplace(html, "document.fo" + li.type + ".submit();", "submit_" + li.type + "();");
+
+    html
+       += "<script type=\"text/javascript\">\n"
+       + "setTopDialogTitle('" + header + "')"
+       + "</script>\n";
+
+    return html;
+  }
+
+  public synchronized String getFormHtml(RunData data, String params)
+     throws Exception
+  {
+    // aggiunge i parametri specificati in params
+    if(params != null && !params.isEmpty())
+    {
+      Map<String, String> values = StringOper.string2Map(params, ",", false);
+      for(Map.Entry<String, String> es : values.entrySet())
+      {
+        String key = es.getKey();
+        String value = es.getValue();
+        data.getParameters().setString(key, value.isEmpty() ? "0" : value);
+      }
+    }
+
+    Context ctx = TurbineVelocity.getContext(data);
+    fbRender.buildCtx(data, ctx);
+    String html = VelocityParser.parseFileToString(MODELLO_FORM, ctx);
+
+    html
+       += "<script type=\"text/javascript\">\n"
+       + "setTopDialogTitle('" + header + "')"
+       + "</script>\n";
+
+    return html;
+  }
+
+  // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+  /**
+   * Handles the HTTP <code>GET</code> method.
+   * @param request servlet request
+   * @param response servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+     throws ServletException, IOException
+  {
+    processRequest(request, response);
+  }
+
+  /**
+   * Handles the HTTP <code>POST</code> method.
+   * @param request servlet request
+   * @param response servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+     throws ServletException, IOException
+  {
+    processRequest(request, response);
+  }
+
+  /**
+   * Returns a short description of the servlet.
+   * @return a String containing servlet description
+   */
+  @Override
+  public String getServletInfo()
+  {
+    return "Short description";
+  }// </editor-fold>
+}

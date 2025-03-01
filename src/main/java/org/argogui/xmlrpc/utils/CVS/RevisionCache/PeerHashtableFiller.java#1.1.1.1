@@ -1,0 +1,328 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.xmlrpc.utils;
+
+import java.util.*;
+import java.beans.*;
+import org.rigel.table.peer.PeerAbstractTableModel;
+import org.rigel.table.RigelColumnDescriptor;
+import org.rigel.table.MascheraRicercaGenerica;
+import org.apache.torque.om.NumberKey;
+import org.apache.torque.om.StringKey;
+import it.radimage.argo.utils.BeanWrapper;
+import org.rigel.RigelI18nInterface;
+
+/**
+ * Title:        Newstar
+ * Description:
+ * Copyright:    Copyright (c) 2002
+ * Company:      Italsystems s.r.l.
+ *
+ * In effetti per questo scopo e' molto adatta la PeerAbstractTableModel
+ * che implementa gia' dei concetti di marshalling per i peer.
+ * Estendiamo questa classe e sfruttiamo l'infrastruttura esistente.
+ *
+ *
+ * @author Nicola De Nisco
+ * @version 1.0
+ */
+/**
+ * Convertitore di oggetti e array di oggetti in tabelle di hashing
+ * e viceversa. Questa classe e' stata originarimente sviluppata per
+ * consentire di trasferire oggetti via XmlRpc.
+ * Il convertitore puo' essere usato in due modi: indicando espilicitamente
+ * i campi che si vogliono trasferire; per questa funzionalita' occorre
+ * aggiungere una colonna con il metodo addColumn per ogni campo di
+ * interesse. La generazione e la ricostruzione opereranno solo sui
+ * campi indicati.
+ * Modalita' automatica generica: utilizzando i due metodi statici
+ * un oggetto qualsiasi viene scomposto e ricomposto usando tecniche
+ * di introspezione dei bean per identificare i campi trasferibili.
+ * E' possibile generare Hashtable con il primo metodo e creare
+ * gli oggetti con il secondo.
+ * NOTA
+ * Vengono trasferiti solo i campi che hanno sia un getter che un setter
+ * e manipolano dati dei seguenti tipi:
+ * int, float, double, String, Date, StringKey, NumberKey
+ */
+public class PeerHashtableFiller extends PeerAbstractTableModel
+{
+  public static final String OBJTYPE = "objClassName";
+
+  public PeerHashtableFiller()
+  {
+  }
+
+  /**
+   * Produce la tabella di hashing per l'oggetto alla riga indicata.
+   */
+  public Hashtable obj2ht(int row)
+     throws Exception
+  {
+    Object record = getRowRecord(row);
+    return obj2ht(record);
+  }
+
+  /**
+   * Da un oggetto indicato produce la tabella di hashing
+   * con i valori indicate dalle colonne registrate.
+   */
+  public Hashtable obj2ht(Object obj)
+     throws Exception
+  {
+    Hashtable rv = new Hashtable();
+
+    for(int i = 0; i < getColumnCount(); i++)
+    {
+      RigelColumnDescriptor cd = getColumn(i);
+
+      Object val = cd.getValue(obj);
+
+      if(val != null)
+      {
+        if(val instanceof StringKey)
+          val = ((StringKey) (val)).toString();
+
+        if(val instanceof NumberKey)
+          val = new Integer(((NumberKey) (val)).getBigDecimal().intValue());
+
+        rv.put(cd.getName().toLowerCase(), val);
+      }
+    }
+
+    rv.put(OBJTYPE, obj.getClass().getName());
+    return rv;
+  }
+
+  /**
+   * Ricostruisce l'oggetto alla riga specificata.
+   */
+  public void ht2obj(Hashtable ht, int row)
+     throws Exception
+  {
+    Object record = getRowRecord(row);
+    fillObject(ht, record);
+  }
+
+  /**
+   * Ricostruzione di un oggetto dalla tabella di
+   * hashing generata per rappresentarlo.
+   */
+  public Object ht2obj(Hashtable ht)
+     throws Exception
+  {
+    Object obj = beanClass.newInstance();
+    fillObject(ht, obj);
+    return obj;
+  }
+
+  /**
+   * Riempie un oggetto con i valori identificati
+   * dalle colonne caricate.
+   */
+  private void fillObject(Hashtable ht, Object obj)
+     throws Exception
+  {
+    for(int i = 0; i < getColumnCount(); i++)
+    {
+      RigelColumnDescriptor cd = getColumn(i);
+
+      Object val = ht.get(cd.getName().toLowerCase());
+      if(val != null)
+      {
+        String clName = cd.getValClass().getName();
+
+        if(clName.equals("org.apache.turbine.om.StringKey"))
+          val = new StringKey(val.toString());
+        if(clName.equals("org.apache.turbine.om.NumberKey"))
+          val = new NumberKey(val.toString());
+
+        cd.setValue(obj, val);
+      }
+    }
+  }
+
+  /**
+   * Da una tabella di hashing ricostruisce l'oggetto
+   * che l'aveva generata.
+   */
+  static public Object ht2objFree(Hashtable ht)
+     throws Exception
+  {
+    String objName = (String) (ht.get(OBJTYPE));
+    BeanWrapper bw = new BeanWrapper(objName);
+
+    Enumeration enu = ht.keys();
+    while(enu.hasMoreElements())
+    {
+      String key = (String) (enu.nextElement());
+      if(bw.findProp(key) != null)
+      {
+        bw.setPropDescr(key);
+
+        String clName = bw.getValClass().getName();
+        Object val = ht.get(key);
+
+        if(clName.equals("org.apache.turbine.om.StringKey"))
+          val = new StringKey(val.toString());
+        if(clName.equals("org.apache.turbine.om.NumberKey"))
+          val = new NumberKey(val.toString());
+
+        bw.setValue(val);
+      }
+    }
+
+    return bw.getObject();
+  }
+
+  /**
+   * Da un oggetto generico costruisce una hashtable
+   * con tutte le proprieta' di tipo bean.
+   */
+  static public Hashtable obj2htFree(Object obj)
+     throws Exception
+  {
+    Hashtable rv = new Hashtable();
+    BeanWrapper bw = new BeanWrapper(obj);
+    Enumeration enu = bw.descriptors();
+    while(enu.hasMoreElements())
+    {
+      PropertyDescriptor pd = (PropertyDescriptor) (enu.nextElement());
+      if(checkForType(bw.getValClass().getName()))
+      {
+        Object val = bw.getValue();
+
+        if(val != null)
+        {
+          if(val instanceof StringKey)
+            val = ((StringKey) (val)).toString();
+
+          if(val instanceof NumberKey)
+            val = ((NumberKey) (val)).getBigDecimal().intValue();
+
+          rv.put(pd.getName().toLowerCase(), val);
+        }
+      }
+    }
+    rv.put(OBJTYPE, obj.getClass().getName());
+    return rv;
+  }
+
+  /**
+   * Da una tabella di hashing ricostruisce l'oggetto
+   * che l'aveva generata.
+   */
+  static public Object v2objFree(Vector v)
+     throws Exception
+  {
+    String objName = (String) (v.get(0));
+    BeanWrapper bw = new BeanWrapper(objName);
+
+    PropertyDescriptor[] pd = bw.getPropDescriptors();
+    for(int i = 0; i < pd.length; i++)
+    {
+      Object val = v.get(i);
+      if(!(val == null || val.toString().trim().length() == 0))
+      {
+        bw.setPropDescr(i);
+        String clName = bw.getValClass().getName();
+
+        if(clName.equals("org.apache.turbine.om.StringKey"))
+          val = new StringKey(val.toString());
+        if(clName.equals("org.apache.turbine.om.NumberKey"))
+          val = new NumberKey(val.toString());
+
+        bw.setValue(val);
+      }
+    }
+
+    return bw.getObject();
+  }
+
+  /**
+   * Da un oggetto generico costruisce un vector
+   * con tutte le proprieta' di tipo bean.
+   */
+  static public Vector obj2vFree(Object obj)
+     throws Exception
+  {
+    Vector rv = new Vector();
+    rv.add(obj.getClass().getName());
+
+    BeanWrapper bw = new BeanWrapper(obj);
+    PropertyDescriptor[] pd = bw.getPropDescriptors();
+    for(int i = 0; i < pd.length; i++)
+    {
+      bw.setPropDescr(i);
+      if(checkForType(bw.getValClass().getName()))
+      {
+        Object val = bw.getValue();
+
+        if(val != null)
+        {
+          if(val instanceof StringKey)
+            val = ((StringKey) (val)).toString();
+
+          if(val instanceof NumberKey)
+            val = ((NumberKey) (val)).getBigDecimal().intValue();
+
+          rv.add(val);
+        }
+        else
+        {
+          rv.add(bw.nullValue());
+        }
+      }
+    }
+    return rv;
+  }
+
+  /**
+   * Ritorna vero se la classe e' fra quelle di nostro interesse
+   * per il trasferimento dei peer.
+   */
+  static public boolean checkForType(String clName)
+  {
+    if(clName.equals("java.lang.String"))
+      return true;
+    if(clName.equals("java.lang.Integer"))
+      return true;
+    if(clName.equals("java.lang.Float"))
+      return true;
+    if(clName.equals("java.lang.Boolean"))
+      return true;
+    if(clName.equals("java.lang.Double"))
+      return true;
+    if(clName.equals("java.util.Date"))
+      return true;
+    if(clName.equals("org.apache.turbine.om.StringKey"))
+      return true;
+    if(clName.equals("org.apache.turbine.om.NumberKey"))
+      return true;
+
+    return false;
+  }
+
+  @Override
+  public MascheraRicercaGenerica getMascheraRG(RigelI18nInterface i18n)
+     throws Exception
+  {
+    return null;
+  }
+
+  @Override
+  public void reAttach()
+  {
+  }
+}

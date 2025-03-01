@@ -1,0 +1,83 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.tools;
+
+import java.util.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.StringUtils;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.services.pull.ApplicationTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.uri.TemplateURI;
+
+/**
+ * Tool per l'accesso ai dati di configurazione
+ * direttamente dalle pagine Velocity.
+ *
+ * FILENOI18N
+ * @author Nicola De Nisco
+ */
+public class ConfigurationReadTool implements ApplicationTool
+{
+  Configuration cfg = null;
+
+  @Override
+  public void init(Object data)
+  {
+    cfg = Turbine.getConfiguration();
+  }
+
+  @Override
+  public void refresh()
+  {
+  }
+
+  public String getString(String key, String defVal)
+  {
+    return cfg.getString(key, defVal);
+  }
+
+  public int getInt(String key, int defVal)
+  {
+    return cfg.getInt(key, defVal);
+  }
+
+  public boolean getBoolean(String key, boolean defVal)
+  {
+    return cfg.getBoolean(key, defVal);
+  }
+
+  public List getList(String key)
+  {
+    return cfg.getList(key);
+  }
+
+  public String getStrings(String key, String sep)
+  {
+    String[] vals = cfg.getStringArray(key);
+    return StringUtils.join(vals, sep);
+  }
+
+  public String getHomeLink(RunData data)
+  {
+    TemplateURI uri = new TemplateURI(data, cfg.getString("template.homepage", "Index.vm"));
+    return uri.getRelativeLink();
+  }
+
+  public boolean isButtonEnabled(String formID, String butLabel)
+  {
+    String key = butLabel.replace(' ', '_');
+    return cfg.getBoolean(formID+".menu.but."+key, true);
+  }
+}

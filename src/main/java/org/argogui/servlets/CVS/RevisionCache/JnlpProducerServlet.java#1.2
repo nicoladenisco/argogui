@@ -1,0 +1,299 @@
+/*
+ *  JnlpProducerServlet.java
+ *  Creato il Sep 7, 2016, 11:49:15 AM
+ *
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ */
+package it.radimage.argo.servlets;
+
+import com.pixelmed.dicom.TagFromName;
+import com.pixelmed.dicom.TransferSyntax;
+import it.radimage.argo.om.utils.I;
+import it.radimage.argo.services.cache.CACHE;
+import it.radimage.argo.services.cache.ServerConfiguration;
+import it.radimage.argo.services.dcmsrv.DicomServer;
+import it.radimage.argo.services.dcmsrv.InstanceResultBean;
+import it.radimage.argo.services.dcmsrv.PatientResultBean;
+import it.radimage.argo.services.dcmsrv.SerieResultBean;
+import it.radimage.argo.services.dcmsrv.StudyResultBean;
+import static it.radimage.argo.servlets.DcmImage.WADO_SERVER_CONFIG;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.velocity.VelocityParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.cache.CachedObject;
+import org.apache.turbine.services.cache.ObjectExpiredException;
+import org.apache.turbine.services.pull.TurbinePull;
+import org.apache.turbine.services.pull.tools.UITool;
+import org.apache.turbine.services.rundata.RunDataService;
+import org.apache.turbine.services.rundata.TurbineRunDataFacade;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.velocity.context.Context;
+
+/**
+ * Servlet per la generazione dinamica dei files jnlp.
+ *
+ * @author Nicola De Nisco
+ */
+public class JnlpProducerServlet extends HttpServlet
+{
+  /** A reference to the RunData Service */
+  private RunDataService rundataService = null;
+  /** Riferimento al servizio Dicom */
+  DicomServer dcmsrv = null;
+  /** Logging */
+  private static Log log = LogFactory.getLog(JnlpProducerServlet.class);
+  private UITool ui = null;
+
+  @Override
+  public void init()
+     throws ServletException
+  {
+    super.init();
+
+    if((rundataService = TurbineRunDataFacade.getService()) == null)
+      throw new ServletException("No RunData Service configured!");
+
+    if((dcmsrv = (DicomServer) TurbineServices.getInstance().getService(DicomServer.SERVICE_NAME)) == null)
+      throw new ServletException("No RunData Service configured!");
+  }
+
+  /**
+   * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+   * @param req servlet request
+   * @param res servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  protected void processRequest(HttpServletRequest req, HttpServletResponse res)
+     throws ServletException, IOException
+  {
+    // Placeholder for the RunData object.
+    ArgoRunData data = null;
+
+    try
+    {
+      res.setContentType("application/x-java-jnlp-file");
+
+      // le informazioni sul copyright sono nello skin
+      if(ui == null)
+        ui = (UITool) TurbinePull.getTool(TurbinePull.getGlobalContext(), "ui");
+
+      // Get general RunData here...
+      // Perform turbine specific initialization below.
+      data = (ArgoRunData) rundataService.getRunData(req, res, getServletConfig());
+
+      // recupera configurazione generale del server
+      ServerConfiguration sc = (ServerConfiguration) (getServletContext().getAttribute(WADO_SERVER_CONFIG));
+
+      if(sc == null)
+      {
+        sc = dcmsrv.getServerConfiguration();
+        sc.setHostName(req.getServerName());
+        getServletContext().setAttribute(WADO_SERVER_CONFIG, sc);
+      }
+
+      // estrae nome della richiesta
+      String sRequest = req.getPathInfo().substring(1);
+      log.debug("JNLP request: " + sRequest);
+
+      switch(SU.okStr(sRequest))
+      {
+        case "weasis":
+          processRequestWeasis(req, res, data, sc);
+          return;
+
+        case "weasis-data":
+          processRequestWeasisData(req, res, data, sc);
+          return;
+      }
+
+      throw new ServletException(I.I("Undefined application %s", sRequest));
+    }
+    catch(ServletException | IOException ex)
+    {
+      throw ex;
+    }
+    catch(Exception ex)
+    {
+      throw new ServletException("JNLP servlet fatal error.", ex);
+    }
+    finally
+    {
+      // Return the used RunData to the factory for recycling.
+      rundataService.putRunData(data);
+    }
+  }
+
+  // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+  /**
+   * Handles the HTTP <code>GET</code> method.
+   * @param request servlet request
+   * @param response servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+     throws ServletException, IOException
+  {
+    processRequest(request, response);
+  }
+
+  /**
+   * Handles the HTTP <code>POST</code> method.
+   * @param request servlet request
+   * @param response servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+     throws ServletException, IOException
+  {
+    processRequest(request, response);
+  }
+
+  /**
+   * Returns a short description of the servlet.
+   * @return a String containing servlet description
+   */
+  @Override
+  public String getServletInfo()
+  {
+    return "Short description";
+  }// </editor-fold>
+
+  private void processRequestWeasis(HttpServletRequest req, HttpServletResponse res, ArgoRunData data, ServerConfiguration sc)
+     throws Exception
+  {
+    Context ctx = TurbineVelocity.getContext(data);
+
+    //String requestType = req.getParameter("reqType");
+    String studyUID = req.getParameter("studyUID");
+    //String seriesUID = req.getParameter("seriesUID");
+    //String objectUID = req.getParameter("objectUID");
+    //String transferSyntax = req.getParameter("transferSyntax");
+    String aetitle = req.getParameter("aetitle");
+
+    ctx.put("studyUID", studyUID);
+    ctx.put("aetitle", aetitle);
+    ctx.put("baseUri", getBaseURI(req));
+    ctx.put("contextUri", getContextURI(req));
+
+    StudyResultBean bean = getBean(studyUID, aetitle);
+    ArrayList<String> arArgs = new ArrayList<>(1000);
+
+    for(SerieResultBean sb : bean.arSeries)
+    {
+      for(InstanceResultBean ib : sb.arInstances)
+      {
+        String wado = getWadoDicomUrl(sc, studyUID, sb.SerieInstanceUID, ib.SOPInstanceUID, aetitle);
+        arArgs.add(wado.replace("&", "&amp;"));
+      }
+    }
+
+    ctx.put("arguments", arArgs);
+    VelocityParser.parseFile("jnlp-weasis.xml", res.getWriter(), ctx);
+  }
+
+  private String getWadoDicomUrl(ServerConfiguration sc, String studyUID, String seriesUID, String objectUID, String aetitle)
+     throws Exception
+  {
+    String dicomURL = "http://" + sc.getHostName() + ":" + sc.getWadoPort() + "/wado?requestType=WADO&";
+
+    // Generates the URL for the requested DICOM Dataset page.
+    dicomURL += "contentType=application/dicom&studyUID=" + studyUID
+       + "&seriesUID=" + seriesUID + "&objectUID=" + objectUID
+       + "&transferSyntax=" + TransferSyntax.ExplicitVRLittleEndian
+       + "&aetitle=" + aetitle;
+
+    dicomURL = dicomURL.replace("+", "%2B");
+
+    return dicomURL;
+  }
+
+  private String getBaseURI(HttpServletRequest req)
+  {
+    String url = req.getRequestURL().toString();
+    String ctx = req.getContextPath();
+    int pos = url.indexOf(ctx);
+    return pos == -1 ? url : url.substring(0, pos);
+  }
+
+  private String getContextURI(HttpServletRequest req)
+  {
+    String url = req.getRequestURL().toString();
+    String ctx = req.getContextPath();
+    int pos = url.indexOf(ctx);
+    return pos == -1 ? url : url.substring(0, pos + ctx.length());
+  }
+
+  private void processRequestWeasisData(HttpServletRequest req, HttpServletResponse res, ArgoRunData data, ServerConfiguration sc)
+     throws Exception
+  {
+    res.setContentType("application/xml");
+    Context ctx = TurbineVelocity.getContext(data);
+
+    //String requestType = req.getParameter("reqType");
+    String studyUID = req.getParameter("studyUID");
+    //String seriesUID = req.getParameter("seriesUID");
+    //String objectUID = req.getParameter("objectUID");
+    //String transferSyntax = req.getParameter("transferSyntax");
+    String aetitle = req.getParameter("aetitle");
+
+    ctx.put("studyUID", studyUID);
+    ctx.put("aetitle", aetitle);
+    ctx.put("baseUri", getBaseURI(req));
+    ctx.put("contextUri", getContextURI(req));
+
+    StudyResultBean sb = getBean(studyUID, aetitle);
+    ArrayList<PatientResultBean> arPazienti = new ArrayList<>(1000);
+    PatientResultBean pb = new PatientResultBean();
+    arPazienti.add(pb);
+
+    pb.id = sb.getTagAsStringNotNull(TagFromName.PatientID);
+    pb.name = sb.getTagAsStringNotNull(TagFromName.PatientName);
+    pb.birth = sb.getTagAsStringNotNull(TagFromName.PatientBirthDate);
+    pb.arEsami.add(sb);
+
+    //String dicomURL = "http://" + sc.getHostName() + ":" + sc.getWadoPort() + "/wado?requestType=WADO&";
+    String wadoUri = "http://" + sc.getHostName() + ":" + sc.getWadoPort() + "/wado";
+
+    ctx.put("wadoUri", wadoUri);
+    ctx.put("patients", arPazienti);
+    VelocityParser.parseFile("data-weasis.xml", res.getWriter(), ctx);
+  }
+
+  private StudyResultBean getBean(String studyUID, String aetitle)
+     throws Exception
+  {
+    String key = "StudyBean_" + aetitle + "_" + studyUID;
+    try
+    {
+      return (StudyResultBean) CACHE.getObject(key).getContents();
+    }
+    catch(ObjectExpiredException ex)
+    {
+      StudyResultBean bean = dcmsrv.populateStudy(studyUID, aetitle, new StudyResultBean());
+      CACHE.addObject(key, new CachedObject(bean));
+      return bean;
+    }
+  }
+}

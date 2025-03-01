@@ -1,0 +1,67 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.rigel.custombuttons;
+
+import org.commonlib.utils.StringOper;
+import org.rigel.table.RigelTableModel;
+import org.rigel.table.WrapperBase;
+import org.rigel.table.html.wrapper.CustomButtonInfo;
+import org.rigel.table.html.wrapper.CustomButtonRuntimeInterface;
+
+/**
+ * Classe di gestione del custom button per la visualizzazione note risultato.
+ *
+ * @author Nicola De Nisco
+ */
+public class RisultatiCustomButtonNote implements CustomButtonRuntimeInterface
+{
+  private boolean rowVisible = false;
+
+  @Override
+  public boolean isVisible()
+  {
+    return rowVisible;
+  }
+
+  @Override
+  public boolean isEnabled()
+  {
+    return true;
+  }
+
+  @Override
+  public CustomButtonInfo setRowData(CustomButtonInfo info, RigelTableModel model, int row, int col)
+     throws Exception
+  {
+    rowVisible = false;
+    int c = model.findColumn("NOTA");
+    if(c != -1)
+    {
+      String val = StringOper.okStrNull(model.getValueAt(row, c));
+      if(val != null)
+      {
+        rowVisible = true;
+        info.setText(val);
+      }
+    }
+    return info;
+  }
+
+  @Override
+  public CustomButtonInfo setHeaderData(CustomButtonInfo info, WrapperBase lso)
+     throws Exception
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+}

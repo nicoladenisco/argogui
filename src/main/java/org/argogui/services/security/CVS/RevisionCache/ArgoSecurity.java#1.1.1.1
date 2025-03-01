@@ -1,0 +1,141 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.security;
+
+import javax.servlet.http.HttpSession;
+import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.Service;
+import org.apache.turbine.services.security.torque.TorqueUser;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.security.PermissionSet;
+
+/**
+ * Servizio gestione sicurezza.
+ *
+ * @author Nicola De Nisco
+ */
+public interface ArgoSecurity extends Service
+{
+  public static final String SERVICE_NAME = "PcsdmSecurity";
+  //
+  public static final String PERM_KEY = "PERM_KEY";
+  public static final String LAST_PERM_KEY = "LAST_PERM_KEY";
+  public static final int TURBINE_ROOT_ROLE_ID = 1;
+  public static final String ADMIN_NAME = "turbine";
+  public static final String ADMIN_ROLE = "turbine_root";
+  public static final String SVILUPPO_NAME = "sviluppo";
+  public static final String INFOMED_NAME = "infomed";
+  public static final String ALL_PERMISSION_CACHE_KEY = "ALL_PERMISSION_CACHE_KEY";
+  //
+
+  /**
+   * Autentica l'utente come da credenziali.
+   * Esegue tutti i test possibili sulle credenziali.
+   * @param uName nome utente
+   * @param uPasw relativa password
+   * @return l'utente o null se non loggabile
+   * @throws Exception
+   */
+  public User loginUser(String uName, String uPasw, MutableInt logonMode)
+     throws Exception;
+
+  /**
+   * Autentica l'utente come da credenziali.
+   * Le acl e l'utente sono salvati in sessione.
+   * Utile per logon fuori da turbine (esempio da una servlet).
+   * @param session sessione http
+   * @param uName nome utente
+   * @param uPasw relativa password
+   * @return l'utente o null se non loggabile
+   * @throws Exception
+   */
+  public User loginUser(HttpSession session, String uName, String uPasw, MutableInt logonMode)
+     throws Exception;
+
+
+  /**
+   * Ritorna lo userid (identificativo univoco dell'utente)
+   * riconducibile all'utente indicato.
+   * @param us struttura con i dati dell'utente
+   * @return userid oppure -1 in caso d'errore
+   */
+  public int getUserID(User us);
+
+  /**
+   * Estrae l'utente dai dati di sessione.
+   */
+  public TorqueUser getUser(HttpSession session);
+
+  /**
+   * Estrae permessi utente dalla sessione.
+   * @param session
+   * @return permessi o null
+   */
+  public AccessControlList getACL(HttpSession session);
+
+  /**
+   * Ritorna lo userid (identificativo univoco dell'utente).
+   * @param session dati della sessione corrente
+   * @return userid oppure -1 in caso d'errore
+   */
+  public int getUserID(HttpSession session);
+
+  /**
+   * Verifica se utente corrente è amministratore.
+   * @param session dati utente corrente
+   * @return vero se amministratore
+   */
+  public boolean isAdmin(HttpSession session);
+
+  /**
+   * Salvataggio automatico permessi non presenti.
+   * @param permessi lista di permessi separati da ',;' o spazio
+   */
+  public void salvaPermessi(String permessi);
+
+  /**
+   * Salvataggio automatico permesso non presente.
+   * @param permesso permesso da salvare
+   */
+  public void salvaPermesso(String permesso);
+
+  /**
+   * Recupera tutti i permessi (bufferata).
+   * @return tutti i permessi
+   * @throws Exception
+   */
+  public PermissionSet getAllPermissions()
+     throws Exception;
+
+  /**
+   * Controlla che l'utente loggato possieda tutti i permessi indicati.
+   * NOTA: l'utente amministratore ritorna sempre true.
+   * @param data dati di sessione
+   * @param permessi lista di permessi separati da ',;' o spazio
+   * @return true se l'utente posside tutti i permessi
+   */
+  public boolean checkAllPermission(HttpSession session, String permessi)
+     throws Exception;
+
+  /**
+   * Controlla che l'utente loggato possieda almeno uno dei permessi indicati.
+   * NOTA: l'utente amministratore ritorna sempre true.
+   * @param data dati di sessione
+   * @param permessi lista di permessi separati da ',;' o spazio
+   * @return true se l'utente possiede uno dei permessi
+   */
+  public boolean checkAnyPermission(HttpSession session, String permessi)
+     throws Exception;
+}

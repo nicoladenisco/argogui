@@ -1,0 +1,53 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services;
+
+import it.radimage.argo.utils.TR;
+import org.apache.turbine.services.InitializationException;
+import org.sirio.services.AbstractCoreBaseService;
+import org.sirio.services.AbstractCoreServiceBroker;
+
+/**
+ * Gestore servizi personalizzato per Argo.
+ * La sua funzione principale (rispetto al default) è di
+ * caricare gli override di setup prima dell'inizializzazione dei servizi.
+ * Questo service broker attiva prima il servizio Torque, quindi carica
+ * gli override di setup e solo dopo inizializza gli altri servizi.
+ *
+ * Per utilizzare questo service broker è necessario utilizzare la chimata
+ * TurbineServices.setManager(new CaleidoServiceBroker()) prima che la
+ * servlet Turbine sia inizializzata.
+ * Questo avviene nella servlet speciale TurbineCaleidoServlet che di fatto
+ * estende Turbine solo per settare questo service broker prima dell'inizializzazione.
+ *
+ * FILENOI18N
+ * @author Nicola De Nisco
+ */
+public class ArgoServiceBroker extends AbstractCoreServiceBroker
+{
+  @Override
+  protected void loadOverride()
+     throws InitializationException
+  {
+    try
+    {
+      AbstractCoreBaseService.setSanitizer(ArgoSanity.class);
+      TR.loadOverride(configuration);
+    }
+    catch(Exception e)
+    {
+      throw new InitializationException("Caricamento override di setup non possibile.", e);
+    }
+  }
+}

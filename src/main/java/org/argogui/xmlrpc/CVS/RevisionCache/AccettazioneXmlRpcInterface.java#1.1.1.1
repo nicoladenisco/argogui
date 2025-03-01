@@ -1,0 +1,32 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.xmlrpc;
+
+/**
+ * Definizione dei metodi per il servizio di accettazione.
+ *
+ * @author Nicola De Nisco
+ */
+public interface AccettazioneXmlRpcInterface
+{
+  /**
+   * Ritorna vero se l'accettazione specificata è in
+   * fase di elaborazione/spedizione verso gli strumenti.
+   * @param idAccettazione identificativo dell'accettazione
+   * @return numero di campioni in coda trasmissioni
+   * @throws Exception
+   */
+  public int numRunning(int idAccettazione)
+     throws Exception;
+}

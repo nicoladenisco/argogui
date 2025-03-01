@@ -1,0 +1,35 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.navigations;
+
+import it.radimage.argo.beans.turbine.xmlMenuBean;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+import org.sirio.beans.BeanFactory;
+
+/**
+ * Crea i menu per la navigazione.
+ *
+ * @author Nicola De Nisco
+ */
+public class MenuNew extends ArgoNavigation
+{
+  @Override
+  protected void doBuildTemplate(RunData data, Context context)
+     throws Exception
+  {
+    xmlMenuBean mb = BeanFactory.getFromSession(data, xmlMenuBean.class);
+    context.put("menu", mb.getHtml(data));
+  }
+}

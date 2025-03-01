@@ -1,0 +1,304 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.screens;
+
+import com.workingdogs.village.Record;
+import java.sql.SQLException;
+import java.util.Map;
+import org.apache.torque.TorqueException;
+import it.radimage.argo.services.allarmi.ServAllarmi;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+import org.apache.turbine.modules.screens.VelocitySecureScreen;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.*;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+import org.apache.turbine.util.uri.TemplateURI;
+import org.rigel.SetupHolder;
+import it.radimage.argo.ErrorMessageException;
+import it.radimage.argo.om.InfInAccettazioni;
+import it.radimage.argo.om.InfInAccettazioniPeer;
+import it.radimage.argo.om.InfInAnagrafiche;
+import it.radimage.argo.om.InfInAnagrafichePeer;
+import it.radimage.argo.rigel.ConcurrentDatabaseModificationException;
+import it.radimage.argo.rigel.RigelHtmlI18n;
+import it.radimage.argo.rigel.UnmodificableRecordException;
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.services.hl7.HL7remoteException;
+import it.radimage.argo.utils.ArgoRunData;
+import java.util.List;
+import org.apache.torque.util.BasePeer;
+
+/**
+ * Classe base di tutti gli screen di PCSDM.
+ *
+ * FILENOI8N
+ * @author Nicola De Nisco
+ */
+public class ArgoBaseScreen extends VelocitySecureScreen
+{
+  protected static ServAllarmi all = (ServAllarmi) getService(ServAllarmi.SERVICE_NAME);
+
+  public static Service getService(String serviceName)
+  {
+    return TurbineServices.getInstance().getService(serviceName);
+  }
+
+  /**
+   * Overide this method to perform the security check needed.
+   * Per default tutti gli screen sono permessi purche' l'utente
+   * sia loggato.
+   *
+   * @param data Turbine information.
+   * @return True if the user is authorized to access the screen.
+   * @exception Exception, a generic exception.
+   */
+  @Override
+  protected boolean isAuthorized(RunData data)
+     throws Exception
+  {
+    if(!data.getUser().hasLoggedIn())
+    {
+      // autorizzazione non concessa
+      // ((PcsdmRunData)data).setMessagei18n("E' necessario effettuare la logon!");
+      String loginScreen = TR.getString("template.login", "Login.vm"); // NOI18N
+      data.getTemplateInfo().setScreenTemplate(loginScreen);
+      return false;
+    }
+
+    return true;
+  }
+
+  protected boolean isAuthorizedAll(RunData data, String permissions)
+     throws Exception
+  {
+    if(SEC.checkAllPermission(data, permissions))
+      return true;
+
+    return redirectUnauthorized(data);
+  }
+
+  protected boolean isAuthorizedAny(RunData data, String permissions)
+     throws Exception
+  {
+    if(SEC.checkAnyPermission(data, permissions))
+      return true;
+
+    return redirectUnauthorized(data);
+  }
+
+  protected boolean redirectUnauthorized(RunData data)
+     throws Exception
+  {
+    User user = data.getUser();
+    if(user.hasLoggedIn())
+    {
+      data.getTemplateInfo().setScreenTemplate("/nopermessi.vm"); // NOI18N
+    }
+    else
+    {
+      String loginScreen = TR.getString("template.login", "Login.vm"); // NOI18N
+      data.getTemplateInfo().setScreenTemplate(loginScreen);
+    }
+    return false;
+  }
+
+  @Override
+  final protected void doBuildTemplate(RunData data, Context context)
+     throws Exception
+  {
+    int numAllarmi = 0;
+    ArgoRunData pdata = (ArgoRunData) data;
+
+    if((numAllarmi = all.getActiveAllarms()) != 0)
+    {
+      if(SEC.checkAnyPermission(data, "operatore_allarmi")) // NOI18N
+      {
+        // operatore allarmi
+        context.put("allarme", pdata.i18n("Attenzione: ci sono %d allarmi che richiedono attenzione.", numAllarmi));
+      }
+      else
+      {
+        // altri utenti non autorizzati
+        context.put("allarme", pdata.i18n("Avvisare un operatore per la risoluzione degli allarmi."));
+      }
+    }
+
+    try
+    {
+      doBuildTemplate2((ArgoRunData) data, context);
+    }
+    catch(HL7remoteException ex)
+    {
+      data.setMessage(ex.creaMessaggioErroreHtml());
+    }
+    catch(ErrorMessageException ex)
+    {
+      data.setMessage(ex.getMessage());
+    }
+    catch(SQLException ex)
+    {
+      reportNonFatalError(pdata, ex);
+    }
+    catch(TorqueException ex)
+    {
+      if(ex.getCause() != null && ex.getCause() instanceof SQLException)
+      {
+        SQLException sqe = (SQLException) ex.getCause();
+        reportNonFatalError(pdata, sqe);
+      }
+      else
+        throw ex;
+    }
+    catch(ConcurrentDatabaseModificationException ex)
+    {
+      pdata.setMessagei18n(
+         "<span class=\"txt-white-bold-12-nul\">Spiacente!</span><br>"
+         + "<span class=\"txt-white-regular-11-nul\">"
+         + "Un altro utente ha modificato il record che stai salvando.<br>"
+         + "Per evitare conflitti le tue modifiche non possono essere accettate."
+         + "</span><br>"
+         + "<span class=\"txt-white-regular-09\">%s</span>", ex.getMessage());
+    }
+    catch(UnmodificableRecordException ex)
+    {
+      pdata.setMessagei18n(
+         "<span class=\"txt-white-bold-12-nul\">Spiacente!</span><br>"
+         + "<span class=\"txt-white-regular-11-nul\">"
+         + "Non hai i permessi per modificare il record indicato."
+         + "</span><br>"
+         + "<span class=\"txt-white-regular-09\">%s</span>", ex.getMessage());
+    }
+  }
+
+  public void reportNonFatalError(ArgoRunData pdata, SQLException ex)
+     throws Exception
+  {
+    pdata.setMessage(
+       pdata.i18n(SetupHolder.getQueryBuilder().formatNonFatalError(ex, new RigelHtmlI18n(pdata))) + "<br>"
+       + "<span class=\"txt-white-regular-09\">"
+       + pdata.i18n("Messaggio originale: %s", ex.getLocalizedMessage())
+       + "</span>");
+  }
+
+  protected void doBuildTemplate2(ArgoRunData data, Context context)
+     throws Exception
+  {
+  }
+
+  protected void throwMessage(String message)
+     throws ErrorMessageException
+  {
+    throw new ErrorMessageException(message);
+  }
+
+  public static boolean getBooleanInContext(Context context, String key, boolean defVal)
+     throws Exception
+  {
+    String val = (String) context.get(key);
+    return SU.isOkStr(val) ? SU.checkTrueFalse(val) : defVal;
+  }
+
+  public static String getStringInContext(Context context, String key, String defVal)
+     throws Exception
+  {
+    String val = (String) context.get(key);
+    return SU.isOkStr(val) ? SU.okStr(val) : defVal;
+  }
+
+  public static int getIntInContext(Context context, String key, int defVal)
+     throws Exception
+  {
+    String val = (String) context.get(key);
+    return SU.isOkStr(val) ? Integer.parseInt(SU.okStr(val)) : defVal;
+  }
+
+  public static double getFloatInContext(Context context, String key, double defVal)
+     throws Exception
+  {
+    String val = (String) context.get(key);
+    return SU.isOkStr(val) ? Double.parseDouble(SU.okStr(val)) : defVal;
+  }
+
+  public String getHomeScreen()
+  {
+    return TR.getString("template.homepage", "Index.vm");
+  }
+
+  /**
+   * Ritorna il link alla home page come da setup.
+   */
+  public String getHomeLink(RunData data)
+  {
+    TemplateURI tui = new TemplateURI(data, getHomeScreen());
+    return tui.getRelativeLink();
+  }
+
+  public void populateAnaAccBySID(String sid, Context ctx)
+     throws Exception
+  {
+    String sSQL = "SELECT "
+       + "  in_accettazioni.in_accettazioni_id,"
+       + "  in_anagrafiche.in_anagrafiche_id,"
+       + "  in_anagrafiche.codice_alternativo,"
+       + "  in_anagrafiche.codice_fiscale,"
+       + "  in_anagrafiche.codice_sanitario,"
+       + "  in_campioni.sid"
+       + " FROM "
+       + "  inf.in_anagrafiche, "
+       + "  inf.in_campioni, "
+       + "  inf.in_accettazioni"
+       + " WHERE "
+       + "  in_accettazioni.id_anagrafiche = in_anagrafiche.in_anagrafiche_id"
+       + "  AND in_accettazioni.in_accettazioni_id = in_campioni.id_accettazioni"
+       + "  AND in_campioni.sid='" + sid + "'";
+
+    List<Record> lsRecs = BasePeer.executeQuery(sSQL);
+    if(lsRecs.isEmpty())
+      return;
+
+    Record r = lsRecs.get(0);
+    int idAcc = r.getValue(1).asInt();
+    int idAna = r.getValue(2).asInt();
+
+    InfInAnagrafiche ana = InfInAnagrafichePeer.retrieveByPKQuiet(idAna, null);
+    InfInAccettazioni acc = InfInAccettazioniPeer.retrieveByPKQuiet(idAcc, null);
+
+    if(ana != null)
+      ctx.put("ana", ana);
+
+    if(acc != null)
+      ctx.put("acc", acc);
+  }
+
+  /**
+   * Esecuzione di comandi. La forma invia un parametro speciale chiamato
+   * 'command' con una stringa identificativa dell'operazione richiesta
+   * dall'utente. Questa stringa diviene parte di un metodo doCmd_stringa
+   * ricercato a runtime e se presente eseguito. Vedi doCmd_... per ulteriori
+   * dettagli.
+   *
+   * @param command comando da eseguire
+   * @param data parametri generali della richiesta
+   * @param params mappa di tutti i parametri request più eventuali parametri
+   * permanenti
+   * @throws Exception
+   */
+  public void doCommand(String command, ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    SU.doCommand(this, command, data, params, args);
+  }
+}

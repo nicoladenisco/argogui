@@ -1,0 +1,148 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.allarmi;
+
+import java.util.*;
+
+import org.rigel.db.turbine.CriteriaRigel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.torque.util.BasePeer;
+import org.apache.torque.util.Criteria;
+
+import com.workingdogs.village.*;
+import it.radimage.argo.Costanti;
+import it.radimage.argo.om.*;
+import org.sirio.services.allarmi.AbstractCoreAllarmiService;
+import org.sirio.services.bus.BUS;
+import org.sirio.services.bus.BusMessages;
+
+/**
+ * Implementazione standard del servizio di gestion degli allarmi.
+ * @author Nicola De Nisco
+ */
+public class StandardAllarmi extends AbstractCoreAllarmiService
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(StandardAllarmi.class);
+
+  // scrive l 'allarme nella tabella
+  @Override
+  public void writelog(String sev, String serv, String comp, String msg, int vis)
+  {
+    try
+    {
+      Date now = new Date();
+
+      GenAllarmi all = new GenAllarmi();
+      all.setCreazione(now);
+      all.setSeverity(sev);
+      all.setServizio(serv);
+      all.setComponente(comp);
+      all.setMessaggio(msg);
+      all.setVisibilita(vis);
+      all.setStato("A");
+      all.setStatoRec(0);
+      all.setUltModif(now);
+      all.save();
+
+      BUS.sendMessage(BusMessages.ALLARM_ADDED, this);
+    }
+    catch(Exception ex)
+    {
+      log.error("Errore durante l'avvio del servizio GenAllarmi.", ex);
+    }
+  }
+
+  @Override
+  public List checkAllarmi(String serv)
+  {
+    try
+    {
+      Criteria c = new Criteria();
+      c.add(GenAllarmiPeer.STATO, Costanti.ALLARME_ATTIVO);
+      c.add(GenAllarmiPeer.SERVIZIO, serv);
+      CriteriaRigel.removeDeleted(c, GenAllarmiPeer.TABLE_NAME);
+      c.addAscendingOrderByColumn(GenAllarmiPeer.ALLARMI_ID);
+      return GenAllarmiPeer.doSelect(c);
+    }
+    catch(Exception ex)
+    {
+      ex.printStackTrace();
+      return new Vector();
+    }
+  }
+
+  @Override
+  public List checkAllarmi(String serv, String comp)
+  {
+    try
+    {
+      Criteria c = new Criteria();
+      c.add(GenAllarmiPeer.STATO, Costanti.ALLARME_ATTIVO);
+      c.add(GenAllarmiPeer.SERVIZIO, serv);
+      c.add(GenAllarmiPeer.COMPONENTE, comp);
+      CriteriaRigel.removeDeleted(c, GenAllarmiPeer.TABLE_NAME);
+      c.addAscendingOrderByColumn(GenAllarmiPeer.ALLARMI_ID);
+      return GenAllarmiPeer.doSelect(c);
+    }
+    catch(Exception ex)
+    {
+      ex.printStackTrace();
+      return new Vector();
+    }
+  }
+
+  @Override
+  public int getActiveAllarms() throws Exception
+  {
+    if((System.currentTimeMillis() - lastUpdNum) > DELAY_UPD_NUM)
+    {
+      String sSQL =
+         "SELECT count(ALLARMI_ID) AS num" +
+         " FROM GEN.ALLARMI" +
+         " WHERE (STATO_REC IS NULL OR STATO_REC < 10)" +
+         " AND STATO='" + Costanti.ALLARME_ATTIVO + "'";
+
+      List lRecs = BasePeer.executeQuery(sSQL);
+      if(lRecs.isEmpty())
+        return 0;
+
+      Record r = (Record) (lRecs.get(0));
+      numActive = r.getValue(1).asInt();
+
+      lastUpdNum = System.currentTimeMillis();
+    }
+
+    return numActive;
+  }
+
+
+  @Override
+  public void disattivaAllarmiAttivi(int idUser) throws Exception
+  {
+    CriteriaRigel crSel = new CriteriaRigel(GenAllarmiPeer.TABLE_NAME);
+    crSel.add(GenAllarmiPeer.STATO, Costanti.ALLARME_ATTIVO);
+
+    Criteria crUpd = new Criteria();
+    crUpd.add(GenAllarmiPeer.STATO, Costanti.ALLARME_DISATTIVATO);
+    crUpd.add(GenAllarmiPeer.ID_USER, idUser);
+    crUpd.add(GenAllarmiPeer.ULT_MODIF, new Date());
+
+    GenAllarmiPeer.doUpdate(crSel, crUpd);
+    BUS.sendMessage(BusMessages.ALLARM_SIGNED, this, idUser);
+  }
+}
+

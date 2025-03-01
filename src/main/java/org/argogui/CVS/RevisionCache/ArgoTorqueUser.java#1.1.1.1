@@ -1,0 +1,66 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.torque.om.Persistent;
+import org.apache.turbine.services.security.torque.TorqueUser;
+
+/**
+ * Rende compatibile PostgreSQL (ma anche altri database)
+ * con lo storage permanente di TorqueUser.
+ * Il campo objectdata sulla tabella turbine_users non può
+ * contenere dati binari, quindi ne manteniamo il valore
+ * con l'encoding base64, convertendo i valori alla lettura
+ * e al salvataggio.
+ *
+ * Questa classe va specificata nel file TurbineResourse.properties:
+ * #services.SecurityService.user.class=org.apache.turbine.services.security.torque.TorqueUser
+ * services.SecurityService.user.class=pcsdm.PcsdmTorqueUser
+ * @author Nicola De Nisco
+ */
+public class ArgoTorqueUser extends TorqueUser
+{
+  public ArgoTorqueUser(Persistent obj)
+  {
+    super(obj);
+  }
+
+  public ArgoTorqueUser()
+  {
+    super();
+  }
+
+  @Override
+  public byte[] getObjectdata()
+  {
+    byte[] b64 = super.getObjectdata();
+    if(b64 == null)
+      return null;
+
+    Base64 deco = new Base64();
+    return deco.decode(b64);
+  }
+
+  @Override
+  public void setObjectdata(byte[] objectdata)
+  {
+    if(objectdata == null)
+      return;
+
+    Base64 enco = new Base64();
+    byte[] b64 = enco.encode(objectdata);
+    super.setObjectdata(b64);
+  }
+}

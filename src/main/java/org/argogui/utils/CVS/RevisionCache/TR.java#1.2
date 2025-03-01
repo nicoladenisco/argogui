@@ -1,0 +1,120 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.utils;
+
+import it.radimage.argo.om.GenSetupOverride;
+import it.radimage.argo.om.GenSetupOverridePeer;
+import java.util.List;
+
+import org.apache.commons.configuration.Configuration;
+
+import org.apache.turbine.Turbine;
+import org.apache.turbine.TurbineConstants;
+import org.apache.turbine.util.ServerData;
+import org.apache.turbine.util.uri.URIConstants;
+import org.rigel.db.turbine.CriteriaRigel;
+
+/**
+ * Accesso alle variabili di setup generali dell'application server.
+ *
+ * @author Nicola De Nisco
+ */
+public class TR extends org.sirio.utils.TR
+{
+  /**
+   * Carica gli override delle properties da database.
+   * @param cfg
+   * @throws Exception
+   */
+  public static void loadOverride(Configuration cfg)
+     throws Exception
+  {
+    // carica gli override delle properties da database
+    String last = null;
+
+    CriteriaRigel cr = new CriteriaRigel(GenSetupOverridePeer.TABLE_NAME);
+    cr.addAscendingOrderByColumn(GenSetupOverridePeer.NOME);
+    List<GenSetupOverride> lp = GenSetupOverridePeer.doSelect(cr);
+
+    for(GenSetupOverride gp : lp)
+    {
+      String nome = SU.okStrNull(gp.getNome());
+      String valore = SU.okStrNull(gp.getValore());
+
+      if(nome == null || valore == null)
+        continue;
+
+      if(SU.isEqu(last, nome))
+        cfg.addProperty(nome, valore);
+      else
+        cfg.setProperty(nome, valore);
+
+      last = gp.getNome();
+    }
+  }
+
+  public static void loadOverride()
+     throws Exception
+  {
+    loadOverride(Turbine.getConfiguration());
+  }
+
+  /**
+   * Imposta proprietà e salva negli override.
+   * La proprieta viene impostata immediatamente e comunque
+   * salvata su db per le esecuzioni successive.
+   * @param key
+   * @param value
+   * @throws java.lang.Exception
+   */
+  public static void saveProperty(String key, String value)
+     throws Exception
+  {
+    Turbine.getConfiguration().setProperty(key, value);
+
+    GenSetupOverride p = GenSetupOverridePeer.retrieveByNameUniqueAll(key, null);
+    if(p == null)
+      p = new GenSetupOverride();
+
+    p.setNome(key);
+    p.setValore(value);
+    p.setStatoRec(0);
+    p.save();
+  }
+
+  /**
+   * Preleva dati server dal file di configurazione.
+   * Legge le informazioni del server da file di setup.
+   * La servlet turbine implementa un metodo simili estraendo
+   * le informazioni dalla prima richiesta.
+   *
+   * @return An initialized ServerData object
+   */
+  public static ServerData getDefaultServerData()
+  {
+    if(serverData == null)
+    {
+      Configuration configuration = getConfiguration();
+
+      serverData = new ServerData(
+         configuration.getString(TurbineConstants.DEFAULT_SERVER_NAME_KEY),
+         configuration.getInt(TurbineConstants.DEFAULT_SERVER_PORT_KEY, URIConstants.HTTP_PORT),
+         configuration.getString(TurbineConstants.DEFAULT_SERVER_SCHEME_KEY, URIConstants.HTTP),
+         configuration.getString(TurbineConstants.DEFAULT_SCRIPT_NAME_KEY),
+         configuration.getString(TurbineConstants.DEFAULT_CONTEXT_PATH_KEY));
+    }
+
+    return serverData;
+  }
+}

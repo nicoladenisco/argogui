@@ -1,0 +1,150 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.beans.turbine;
+
+import it.radimage.argo.utils.ArgoRunData;
+import java.util.Map;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.services.Service;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.pull.PullService;
+import org.apache.turbine.services.pull.TurbinePull;
+import org.apache.turbine.services.pull.tools.UITool;
+import org.apache.turbine.util.RunData;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+
+/**
+ * Bean padre di tutti i beans.
+ *
+ * @author Nicola De Nisco
+ */
+public class ArgoTurbineBaseBeans
+{
+  protected PullService ps = null;
+  protected String currJspName = null;
+  protected UITool ui = null;
+  public String tagTabelleForm = null;
+  public String tagTabelleList = null;
+
+  /** Creates a new instance of NewstarBaseBeans */
+  public ArgoTurbineBaseBeans()
+  {
+  }
+
+  /**
+   * Inizializza il bean.
+   * @param data dati di lavoro
+   * @throws Exception
+   */
+  public void init(RunData data)
+     throws Exception
+  {
+    ps = (PullService) getService(PullService.SERVICE_NAME);
+    ui = (UITool) TurbinePull.getTool(TurbinePull.getGlobalContext(), "ui");
+
+    tagTabelleForm = TR.getString("tag.tabelle.form", // NOI18N
+       "TABLE WIDTH=100% BORDER=0 CELLSPACING=0 CELLPADDING=1"); // NOI18N
+
+    tagTabelleList = TR.getString("tag.tabelle.list", // NOI18N
+       "TABLE WIDTH=100% BORDER=0 CELLSPACING=0 CELLPADDING=1"); // NOI18N
+  }
+
+  /**
+   * Verifica se questa istanza del bean è ancora valida.
+   * Usata generalmente nella getFromSession per verificare
+   * se questa istanza è ancora valida per i parametri passati
+   * oppure occorre ignorarla e creare una nuova istanza.
+   * @param data dati di lavoro
+   * @return vero se istanza valida
+   * @throws Exception
+   */
+  public boolean isValid(RunData data)
+     throws Exception
+  {
+    return true;
+  }
+
+  /**
+   * Data una url relativa torna l'url completa a seconda dell'ambiente.
+   * La stringa si riferisce a una risorsa JSP
+   * ES url=jsmia.jsp -> http://localhost:8080/src/jsmia.jsp
+   * oppure http://mio.server.it:8080/miaapp/servlet/miaapp/template/jsmia.jsp
+   */
+  public String getServerTemplateUrl(String url)
+  {
+    if(!SU.isOkStr(url))
+      return "";
+
+    if(url.startsWith("/"))
+      url = url.substring(1);
+
+    if(url.contains(".vm"))
+      return Turbine.getContextPath() + "/pgm/template/" + url;
+
+    if(url.startsWith("http:") || url.startsWith("https:")) // NOI18N
+      return url;
+
+    return Turbine.getContextPath() + "/" + url;
+  }
+
+  public String getImgGenericUI(String imgName, String tip)
+     throws Exception
+  {
+    return "<img src=\"" + ui.image(imgName)
+       + " \" alt=\"" + tip + "\" tip=\"" + tip + "\" title=\"" + tip + "\" border=\"0\">";
+  }
+
+  public String getImgGenericImages(String imgName, String tip)
+     throws Exception
+  {
+    return "<img src=\"" + Turbine.getContextPath() + "/images/" + imgName
+       + " \" alt=\"" + tip + "\" tip=\"" + tip + "\" title=\"" + tip + "\" border=\"0\">";
+  }
+
+  public String getCurrJspName()
+  {
+    return currJspName;
+  }
+
+  public void setCurrJspName(String currJspName)
+  {
+    this.currJspName = currJspName;
+  }
+
+  public Service getService(String service)
+  {
+    return TurbineServices.getInstance().getService(service);
+  }
+
+  /**
+   * Esecuzione di comandi. La forma invia un parametro speciale chiamato
+   * 'command' con una stringa identificativa dell'operazione richiesta
+   * dall'utente. Questa stringa diviene parte di un metodo doCmd_stringa
+   * ricercato a runtime e se presente eseguito. Vedi doCmd_... per ulteriori
+   * dettagli.
+   *
+   * @param command comando da eseguire
+   * @param data parametri generali della richiesta
+   * @param params mappa di tutti i parametri request più eventuali parametri
+   * permanenti
+   * @throws Exception
+   */
+  public void doCommand(String command, ArgoRunData data, Map params, Object... args)
+     throws Exception
+  {
+    SU.doCommand(this, command, data, params, args);
+  }
+}
+

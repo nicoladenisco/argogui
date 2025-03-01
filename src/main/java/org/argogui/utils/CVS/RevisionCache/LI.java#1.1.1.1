@@ -1,0 +1,214 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.utils;
+
+import it.radimage.argo.services.modellixml.modelliXML;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.pull.TurbinePull;
+import org.apache.turbine.services.pull.tools.UITool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.uri.TemplateURI;
+import org.rigel.HtmlUtils;
+
+/**
+ * Funzioni di servizio la creazione e manipolazione di links.
+ *
+ * @author Nicola De Nisco
+ */
+public class LI extends HtmlUtils
+{
+  /** aggancia il settaggio a quello del tool ui (link relativi/assoluti) */
+  private static boolean wantRelative =
+     Turbine.getConfiguration().getBoolean("tool.ui.want.relative", true);
+  /** si aggancia al servizio modelli per le funzioni di url immagini */
+  private static modelliXML mdl = null;
+
+  /**
+   * Ritorna la uri (http://.../pgm/template/mia.vm)
+   * del file di modello vm indicato.
+   * @param data
+   * @param templatePage
+   * @return
+   */
+  public static String getTemplateLink(RunData data, String templatePage)
+  {
+    TemplateURI tui = new TemplateURI(data, templatePage);
+    return wantRelative ? tui.getRelativeLink() : tui.getAbsoluteLink();
+  }
+
+  /**
+   * Ritorna la path di base per le url.<br>
+   * In genere 'http://localhost:8080/newstar/'
+   * oppure '/newstar/' se i link sono relativi.
+   * @return la contextPath
+   */
+  public static String getContextPath()
+  {
+    if(mdl == null)
+      mdl = (modelliXML) TurbineServices.getInstance().getService(modelliXML.SERVICE_NAME);
+
+    return mdl.getContextPath() + "/";
+  }
+
+  /**
+   * Ritorna l'html compelto dell'immagine con
+   * dimensioni fisse da icona (16x16).
+   * @param imgFile nome del file immagine
+   * @param alt stringa alternativa e di popup
+   * @return html dell'immagine
+   */
+  public static String getIconHtml(String imgFile, String alt)
+  {
+    return "<img border=0 src=\"" + getImageUrl(imgFile)
+       + "\" alt=\"" + alt + "\" title=\"" + alt + "\" width=16 height=16>";
+  }
+
+  /**
+   * Ritorna l'html compelto dell'immagine;
+   * le dimensioni non sono specificate.
+   * @param imgFile nome del file immagine
+   * @param alt stringa alternativa e di popup
+   * @return html dell'immagine
+   */
+  public static String getImageHtml(String imgFile, String alt)
+  {
+    return "<img border=0 src=\"" + getImageUrl(imgFile)
+       + "\" alt=\"" + alt + "\" title=\"" + alt + "\">";
+  }
+
+  /**
+   * Ritorna l'html compelto dell'immagine.
+   * @param imgFile nome del file immagine
+   * @param alt stringa alternativa e di popup
+   * @param w larghezza
+   * @param h altezza
+   * @return html dell'immagine
+   */
+  public static String getImageHtml(String imgFile, String alt, int w, int h)
+  {
+    return "<img border=0 src=\"" + getImageUrl(imgFile)
+       + "\" alt=\"" + alt + "\" title=\"" + alt + "\" width=\"" + w + "\" height=\"" + h + "\">";
+  }
+
+  /**
+   * Ritorna l'html compelto dell'immagine 1.gif ovvero
+   * l'immagine trucco per creare aree occupate a piacere.
+   * @param w larghezza
+   * @param h altezza
+   * @return html dell'immagine
+   */
+  public static String getImageTrucco(int w, int h)
+  {
+    return "<img border=0 src=\"" + getImageUrl("1.gif")
+       + "\" width=\"" + w + "\" height=\"" + h + "\">";
+  }
+
+  /**
+   * Ritorna l'url completa dell'immagine (http://.../images/nomeima),
+   * prelevandola dalla directory images dell'applicazione web.
+   */
+  public static String getImageUrl(String nomeima)
+  {
+    UITool ui = (UITool) TurbinePull.getTool(TurbinePull.getGlobalContext(), "ui");
+    return ui.image(nomeima);
+  }
+
+  /**
+   * Ritorna l'url assoluta di una url relativa.
+   * Se l'url e' il nome di una pagina vm ritorna
+   * il corretto link all'area template.
+   * @param relLink
+   * @return
+   */
+  public static String getLinkUrl(String url)
+  {
+    if(!url.startsWith("http:"))
+    {
+      if(url.contains(".vm"))
+        return getContextPath() + "pgm/template/" + url;
+      else
+        return getContextPath() + url;
+    }
+    return url;
+  }
+
+  /**
+   * Ritorna l'url per la funzione abbandona e salva ed esci
+   * ovvero l'url di ritorno di un form interpretando il contenuto
+   * della string a jlc
+   */
+  public static String getFormAbbandonaUrl(String jlc)
+  {
+    if(jlc.contains(".vm") || jlc.contains(".jsp"))
+    {
+      return getLinkUrl(jlc);
+    }
+    else
+    {
+      return getLinkUrl("maint.vm/type/" + jlc); // NOI18N
+    }
+  }
+
+  /**
+   * Fonde una url e un parametro applicando i controlli
+   * sui caratteri di concatenamento.
+   * @param url
+   * @param param
+   * @return
+   */
+  public static String mergeUrl(String url, String paramName, String paramValue)
+  {
+    if(url == null)
+      return null;
+
+    if(!SU.isOkStr(paramName) || !SU.isOkStr(paramValue))
+      return url;
+    if(paramValue.startsWith("&"))
+      paramValue = paramValue.substring(1);
+
+    try
+    {
+      return url + ((url.indexOf('?') == -1) ? '?' : '&')
+         + URLEncoder.encode(paramName, "UTF-8") + "=" + URLEncoder.encode(paramValue, "UTF-8");
+    }
+    catch(UnsupportedEncodingException ex)
+    {
+      return url + ((url.indexOf('?') == -1) ? '?' : '&')
+         + paramName + "=" + paramValue;
+    }
+  }
+
+  public static String mergeUrl(String url, String paramName, int paramValue)
+  {
+    return mergeUrl(url, paramName, String.valueOf(paramValue));
+  }
+
+  public static String mergeUrl(String url, String paramName, double paramValue)
+  {
+    return mergeUrl(url, paramName, String.valueOf(paramValue));
+  }
+
+  public static String mergeUrl(String url, String paramName, boolean paramValue)
+  {
+    return mergeUrl(url, paramName, String.valueOf(paramValue));
+  }
+
+  public static String getTurbineContextPath()
+  {
+    return getContextPath();
+  }
+}

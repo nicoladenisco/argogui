@@ -1,0 +1,153 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.screens;
+
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.om.GenVersion;
+import it.radimage.argo.om.GenVersionPeer;
+import it.radimage.argo.services.InfoSetupBlock;
+import it.radimage.argo.services.InfoSetupInterface;
+import it.radimage.argo.services.SERVICE;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import it.radimage.argo.utils.TR;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import javax.servlet.ServletContext;
+import org.apache.commons.configuration.Configuration;
+import org.apache.torque.Torque;
+import org.apache.torque.util.Criteria;
+import org.apache.turbine.Turbine;
+import org.apache.velocity.context.Context;
+
+/**
+ * Controllore per InfoSetup.vm.
+ *
+ * @author Nicola De Nisco
+ */
+public class InfoSetup extends ArgoBaseScreen
+{
+  @Override
+  protected void doBuildTemplate2(ArgoRunData data, Context context)
+     throws Exception
+  {
+    super.doBuildTemplate2(data, context);
+
+    boolean isAdmin = SEC.checkAllPermission(data, "vis-admin-setup");
+    List<InfoSetupBlock> arInfo = new ArrayList<InfoSetupBlock>();
+
+    // dati generali
+    ServletContext sctx = data.getSession().getServletContext();
+    arInfo.add(new InfoSetupBlock(data.i18n("Generale"), "AAA").
+       add(data.i18n("Directory"), SU.okStr(Turbine.getApplicationRoot())).
+       add(data.i18n("Context"), SU.okStr(data.getRequest().getContextPath())).
+       add(data.i18n("Durata sessione (secondi)"), SU.okStr(data.getSession().getMaxInactiveInterval())).
+       add(data.i18n("Server Info"), SU.okStr(sctx.getServerInfo())));
+
+    // non legati a nessun servizio
+    populateInfoSetup(data, arInfo, isAdmin);
+    populateInfoComponenti(data, arInfo, isAdmin);
+
+    // servizi che implementano interfaccia InfoSetupInterface
+    List<InfoSetupInterface> lsInfos = SERVICE.getInfoSetup();
+    for(InfoSetupInterface isi : lsInfos)
+      isi.populateInfoSetup(arInfo, isAdmin);
+
+    // proprietà di sistema
+    Properties sysProp = System.getProperties();
+    InfoSetupBlock isbSysProp = new InfoSetupBlock("Parametri di sistema", "ZZZ");
+    for(Map.Entry<Object, Object> esp : sysProp.entrySet())
+    {
+      String key = SU.okStr(esp.getKey());
+      String val = SU.okStr(esp.getValue());
+      isbSysProp.add(key, val);
+    }
+    arInfo.add(isbSysProp);
+
+    Collections.sort(arInfo, new Comparator<InfoSetupBlock>()
+    {
+      @Override
+      public int compare(InfoSetupBlock o1, InfoSetupBlock o2)
+      {
+        return o1.getPriority().compareTo(o2.getPriority());
+      }
+    });
+
+    context.put("info", arInfo);
+  }
+
+  /**
+   * Informazioni di setup.
+   * Dati generali di setup non legati a
+   * servizi specifici di Pcsdm (database SQL, porta Tomcat, ecc.).
+   * @param info
+   * @param isAdmin
+   * @throws Exception
+   */
+  public void populateInfoSetup(ArgoRunData data, List<InfoSetupBlock> arInfo, boolean isAdmin)
+     throws Exception
+  {
+    Configuration config = Torque.getConfiguration();
+    Configuration connection = config.subset("dsfactory.pcsdm.connection");
+    arInfo.add(new InfoSetupBlock(data.i18n("Database"), "B").
+       add(data.i18n("DB url"), connection.getString("url")).
+       add(data.i18n("DB user"), connection.getString("user")).
+       add(data.i18n("DB password"), isAdmin ? connection.getString("password") : "****"));
+
+    arInfo.add(new InfoSetupBlock(data.i18n("XML-RPC"), "X").
+       add(data.i18n("XML-RPC port"), TR.getString("services.XmlRpcService.port", "12400")));
+  }
+
+  /**
+   * Informazioni sui componenti installati.
+   * Dati sulle versioni dei componenti installati.
+   * @param arInfo
+   * @param isAdmin
+   * @throws Exception
+   */
+  public void populateInfoComponenti(ArgoRunData data, List<InfoSetupBlock> arInfo, boolean isAdmin)
+     throws Exception
+  {
+    List<GenVersion> lsVers = GenVersionPeer.doSelect(new Criteria());
+    HashMap<String, GenVersion> mapComponenti = new HashMap<String, GenVersion>();
+
+    for(GenVersion v : lsVers)
+    {
+      if(v.getStatoRec() >= 10)
+        continue;
+
+      GenVersion vf = mapComponenti.get(v.getComponente());
+      if(vf == null || v.compareTo(vf) > 0)
+        mapComponenti.put(v.getComponente(), v);
+    }
+
+    if(mapComponenti.isEmpty())
+      return;
+
+    InfoSetupBlock isb = new InfoSetupBlock(data.i18n("Componenti"), "C");
+    for(Map.Entry<String, GenVersion> ecmp : mapComponenti.entrySet())
+    {
+      String nome = ecmp.getKey();
+      GenVersion v = ecmp.getValue();
+
+      isb.add(nome, "<code><pre>" + v.format() + "</pre></code>");
+    }
+    arInfo.add(isb);
+  }
+}

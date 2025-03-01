@@ -1,0 +1,236 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package org.argogui.xmlrpc.server;
+
+import java.util.Hashtable;
+import org.apache.turbine.services.TurbineServices;
+import org.argogui.xmlrpc.XmlRpcCostant;
+import org.argogui.xmlrpc.utils.HashtableRpc;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argogui.utils.I;
+import org.sirio6.services.token.TokenAuthItem;
+import org.sirio6.services.token.TokenAuthService;
+import org.sirio6.utils.DT;
+
+/**
+ * Classe base degli XmlRpc Server di Argo con autenticazione utente.
+ * Definisce una serie di funzioni di base comuni a tutti
+ * i server che devono supportare un concetto di autenticazione e sessione
+ * associata al client che si connette al servizio.
+ *
+ * ATTENZIONE: non inizializzare nessun servizio nel costruttore
+ * alrimenti si crea una incongruenza nello startup dei servizi
+ * e l'applicazione non può procedere.
+ */
+abstract public class BaseXmlRpcServerUserAuth
+{
+  /** Logging */
+  protected Log log = LogFactory.getLog(this.getClass());
+
+  /**
+   * Costruttore.
+   *
+   * ATTENZIONE: non collegarsi a servizi turbine nel costruttore
+   * perchè il caricamento degli override di setup blocca l'inizializzazione
+   * del servizio XMLRPC.
+   * Vale anche per classi derivate.
+   */
+  public BaseXmlRpcServerUserAuth()
+  {
+  }
+
+  /**
+   * Inizializza un client.
+   * @param param credenziali di logon
+   * @return informazioni di logon
+   * @throws Exception
+   */
+  public Hashtable initClient(Hashtable param)
+     throws Exception
+  {
+    // crea il token agganciando una action per il logout
+    TokenAuthItem item = addClient(param, new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        TokenAuthItem item = (TokenAuthItem) e.getSource();
+        try
+        {
+          onLogout(item);
+        }
+        catch(Exception ex)
+        {
+          log.error(I.I("Errore nel logout di %s", item.getUsr().getName()), ex);
+        }
+      }
+    });
+
+    try
+    {
+      // la prima volta che si logga chiama onLogon
+      if(DT.isEqu(item.getLastAccess(), item.getLogon()))
+        onLogon(item);
+    }
+    catch(Exception e)
+    {
+      log.error(I.I("Errore nel login di %s", item.getUsr().getName()), e);
+      closeClient(item.getIdClient());
+      throw e;
+    }
+
+    log.info(I.I("Autenticazione utente %s avvenuta.", item.getUsr().getName()));
+    return prepareLogonReturn(item);
+  }
+
+  protected HashtableRpc prepareLogonReturn(TokenAuthItem item)
+     throws Exception
+  {
+    HashtableRpc rv = new HashtableRpc();
+    rv.put(XmlRpcCostant.RV_CLIENT_ID, item.getIdClient());
+    return rv;
+  }
+
+  /**
+   * Logout esplicito di un client.
+   * @param clientID identificativo del token
+   * @return 0=OK
+   * @throws Exception
+   */
+  public int logout(String clientID)
+     throws Exception
+  {
+    TokenAuthItem token = getClient(clientID);
+    onLogout(token);
+    return closeClient(clientID);
+  }
+
+  /**
+   * Aggiunge un client anonimo.
+   * Utilizza il servizio TokenAuthService per l'autenticazione.
+   * @param expireAction eventuale action da eseguire al logout o alla scadenza del token (può essere null)
+   * @return token di autenticazione
+   * @throws Exception
+   */
+  protected static TokenAuthItem addClient(ActionListener expireAction)
+     throws Exception
+  {
+    TokenAuthService tAuth = (TokenAuthService) (TurbineServices.getInstance().
+       getService(TokenAuthService.SERVICE_NAME));
+
+    return tAuth.addClient(expireAction);
+  }
+
+  /**
+   * Aggiunge un client con credenziali.
+   * Utilizza il servizio TokenAuthService per l'autenticazione.
+   * @param htParam credenziali di autenticazione
+   * @param expireAction eventuale action da eseguire al logout o alla scadenza del token (può essere null)
+   * @return token di autenticazione
+   * @throws Exception
+   */
+  protected static TokenAuthItem addClient(Hashtable htParam, ActionListener expireAction)
+     throws Exception
+  {
+    TokenAuthService tAuth = (TokenAuthService) (TurbineServices.getInstance().
+       getService(TokenAuthService.SERVICE_NAME));
+
+    String sesid = (String) htParam.get(XmlRpcCostant.AUTH_SESSION);
+    if(sesid != null)
+      return tAuth.addClient(sesid, expireAction);
+
+    String uName = (String) htParam.get(XmlRpcCostant.AUTH_USER);
+    String uPass = (String) htParam.get(XmlRpcCostant.AUTH_PASS);
+    if(uName != null && uPass != null)
+      return tAuth.addClient(uName, uPass, expireAction);
+
+    return tAuth.addClient(expireAction);
+  }
+
+  /**
+   * Ritorna oggetto di autenticazione.
+   * @param id identificato del token
+   * @return token di autenticazione
+   * @throws Exception
+   */
+  protected static TokenAuthItem getClient(String id)
+     throws Exception
+  {
+    TokenAuthService tAuth = (TokenAuthService) (TurbineServices.getInstance().
+       getService(TokenAuthService.SERVICE_NAME));
+
+    return tAuth.getClient(id);
+  }
+
+  /**
+   * Invalida esplicitamente un token.
+   * @param id identificato del token
+   * @return 0=OK
+   * @throws Exception
+   */
+  protected static int closeClient(String id)
+     throws Exception
+  {
+    TokenAuthService tAuth = (TokenAuthService) (TurbineServices.getInstance().
+       getService(TokenAuthService.SERVICE_NAME));
+
+    tAuth.removeClient(tAuth.getClient(id));
+    return 0;
+  }
+
+  /**
+   * Ritorna vero se la connessione è ancora valida.
+   * @param id identificato del token
+   * @return vero se il token è ancora valido
+   */
+  public boolean isValidConnection(String id)
+  {
+    try
+    {
+      return getClient(id) != null;
+    }
+    catch(Throwable e)
+    {
+      return false;
+    }
+  }
+
+  /**
+   * Notifica avvenuto logon.
+   * Questa funzione è un segnaposto ridefinibile in classi
+   * derivate per aggiungere informazioni a item dopo il logon.
+   * @param item oggetto di autenticazione
+   */
+  protected void onLogon(TokenAuthItem item)
+     throws Exception
+  {
+  }
+
+  /**
+   * Notifica avvenuto logout.
+   * Questa funzione è un segnaposto ridefinibile in classi
+   * derivate per effettuare operazioni di chiusura al logout.
+   * Il logout può avvenire o esplicitamente oppure per timeout
+   * del token di autenticazione.
+   * @param item
+   * @throws Exception
+   */
+  protected void onLogout(TokenAuthItem item)
+     throws Exception
+  {
+  }
+}

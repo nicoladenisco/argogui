@@ -1,0 +1,44 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.security;
+
+import it.radimage.argo.services.cache.UsersDataCache;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.turbine.services.security.torque.TorqueUser;
+import org.sirio.services.security.AbstractCoreSecurity;
+
+/**
+ * Servizio avanzato di gestione sicurezza.
+ *
+ * @author Nicola De Nisco
+ */
+public class ArgoStandardSecurity extends AbstractCoreSecurity
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(ArgoStandardSecurity.class);
+
+  @Override
+  public TorqueUser getUser(int idUser)
+  {
+    try
+    {
+      return (TorqueUser) UsersDataCache.getInstance().getTurbineUser(idUser);
+    }
+    catch(Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+}

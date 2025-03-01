@@ -1,0 +1,225 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.security;
+
+import javax.servlet.http.HttpSession;
+import org.apache.commons.lang.mutable.MutableInt;
+
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.security.torque.TorqueRole;
+import org.apache.turbine.services.security.torque.TorqueUser;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.services.TurbineServices;
+
+/**
+ * Gestione della sicurezza.
+ *
+ * @author Nicola De Nisco
+ */
+public class SEC
+{
+  private static ArgoSecurity sec = (ArgoSecurity) TurbineServices.getInstance().
+     getService(ArgoSecurity.SERVICE_NAME);
+
+  public static User loginUser(String uName, String uPasw)
+     throws Exception
+  {
+    return loginUser(uName, uPasw, null);
+  }
+
+  public static User loginUser(String uName, String uPasw, MutableInt logonMode)
+     throws Exception
+  {
+    return sec.loginUser(uName, uPasw, logonMode);
+  }
+
+  /**
+   * Recupera la AccessControlList relativa all'utente indicato
+   */
+  public static AccessControlList getUserACL(User us)
+     throws Exception
+  {
+    return TurbineSecurity.getACL(us);
+  }
+
+  /**
+   * Controlla l'acl correntemente salvata nella sessione e verifica
+   * se l'utente ha il permesso indicato in tutti i gruppi possibili
+   */
+  public static boolean checkPermission(AccessControlList acl, String permname)
+     throws Exception
+  {
+    return acl == null ? false : acl.hasPermission(permname, TurbineSecurity.getAllGroups())
+       || acl.hasRole(ArgoSecurity.ADMIN_ROLE);
+  }
+
+  /**
+   * Controlla l'acl correntemente salvata nella sessione e verifica
+   * se l'utente ha il permesso indicato in tutti i gruppi possibili
+   */
+  public static boolean checkRole(AccessControlList acl, String rolename)
+     throws Exception
+  {
+    return acl == null ? false : acl.hasRole(rolename, TurbineSecurity.getAllGroups())
+       || acl.hasRole(ArgoSecurity.ADMIN_ROLE);
+  }
+
+  /**
+   * Ritorna lo userid (identificativo univoco dell'utente)
+   * riconducibile all'utente indicato.
+   * @param us struttura con i dati dell'utente
+   * @return userid oppure -1 in caso d'errore
+   */
+  public static int getUserID(User us)
+  {
+    return sec.getUserID(us);
+  }
+
+  /**
+   * Estrae l'utente dai dati di sessione.
+   */
+  public static TorqueUser getUser(HttpSession session)
+  {
+    return sec.getUser(session);
+  }
+
+  public static int getRoleID(Role rl)
+  {
+    try
+    {
+      return ((TorqueRole) (rl)).getId();
+    }
+    catch(Exception ex)
+    {
+      return -1;
+    }
+  }
+
+  public static int getUserID(RunData data)
+  {
+    return getUserID(data.getUser());
+  }
+
+  public static int getUserID(HttpSession session)
+  {
+    return sec.getUserID(session);
+  }
+
+  /**
+   * Verifica per utente amministratore
+   * @param session sessione con i dati dell'utente
+   * @return vero se amministratore
+   */
+  public static boolean isAdmin(HttpSession session)
+  {
+    return sec.isAdmin(session);
+  }
+
+  public static boolean isAdmin(RunData data)
+  {
+    return isAdmin(data.getSession());
+  }
+
+  /**
+   * Recupera lista permessi dalla sessione.
+   * @param session sessione con i dati dell'utente
+   * @return lista permessi o null
+   */
+  public static AccessControlList getACL(HttpSession session)
+  {
+    return sec.getACL(session);
+  }
+
+  /**
+   * Controlla che l'utente loggato possieda almeno uno dei permessi indicati.
+   * NOTA: l'utente amministratore ritorna sempre true.
+   * @param data dati di sessione
+   * @param permessi lista di permessi separati da ',;' o spazio
+   * @return true se l'utente possiede uno dei permessi
+   */
+  public static boolean checkAnyPermission(RunData data, String permessi)
+     throws Exception
+  {
+    return sec.checkAnyPermission(data.getSession(), permessi);
+  }
+
+  /**
+   * Controlla che l'utente loggato possieda tutti i permessi indicati.
+   * NOTA: l'utente amministratore ritorna sempre true.
+   * @param data dati di sessione
+   * @param permessi lista di permessi separati da ',;' o spazio
+   * @return true se l'utente posside tutti i permessi
+   */
+  public static boolean checkAllPermission(RunData data, String permessi)
+     throws Exception
+  {
+    return sec.checkAllPermission(data.getSession(), permessi);
+  }
+
+  /**
+   * Controlla che l'utente loggato possieda almeno uno dei permessi indicati.
+   * NOTA: l'utente amministratore ritorna sempre true.
+   * @param data dati di sessione
+   * @param permessi lista di permessi separati da ',;' o spazio
+   * @return true se l'utente possiede uno dei permessi
+   */
+  public static boolean checkAnyPermission(HttpSession session, String permessi)
+     throws Exception
+  {
+    return sec.checkAnyPermission(session, permessi);
+  }
+
+  /**
+   * Controlla che l'utente loggato possieda tutti i permessi indicati.
+   * NOTA: l'utente amministratore ritorna sempre true.
+   * @param data dati di sessione
+   * @param permessi lista di permessi separati da ',;' o spazio
+   * @return true se l'utente posside tutti i permessi
+   */
+  public static boolean checkAllPermission(HttpSession session, String permessi)
+     throws Exception
+  {
+    return sec.checkAllPermission(session, permessi);
+  }
+
+  public static boolean loginUser(HttpSession session, String uName, String uPasw)
+     throws Exception
+  {
+    return sec.loginUser(session, uName, uPasw, null) != null;
+  }
+
+  /**
+   * Controlla l'acl correntemente salvata nella sessione e verifica
+   * se l'utente ha il permesso indicato in tutti i gruppi possibili.
+   */
+  public static boolean checkPermission(HttpSession session, String permname)
+     throws Exception
+  {
+    return sec.checkAnyPermission(session, permname);
+  }
+
+  /**
+   * Controlla l'acl correntemente salvata nella sessione e verifica
+   * se l'utente ha il permesso indicato in tutti i gruppi possibili.
+   */
+  public static boolean checkRole(HttpSession session, String rolename)
+     throws Exception
+  {
+    AccessControlList acl = getACL(session);
+    return checkRole(acl, rolename);
+  }
+}

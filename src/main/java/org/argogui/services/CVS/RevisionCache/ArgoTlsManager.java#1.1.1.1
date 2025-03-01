@@ -1,0 +1,234 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services;
+
+import java.io.*;
+import java.net.*;
+import javax.net.ssl.*;
+import javax.security.cert.CertificateExpiredException;
+import javax.security.cert.CertificateNotYetValidException;
+import javax.security.cert.X509Certificate;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.turbine.Turbine;
+import it.radimage.argo.om.utils.I;
+
+/**
+ * Gestore delle connessioni TLS client per Pcsdm.
+ * Le connessioni server di Tomcat sono impostate in server.xml.
+ *
+ * @author Nicola De Nisco
+ */
+public class ArgoTlsManager
+{
+  /** Logging */
+  private static Log log = LogFactory.getLog(ArgoTlsManager.class);
+  /** Istanza del singletone */
+  private static ArgoTlsManager theInstance = null;
+  /**
+   * path del keystore utilizzato per comunicare col server
+   */
+  protected String keyStore = null;
+  /**
+   * tipo del keystore utilizzato per comunicare col server
+   */
+  protected String keyStoreType = null;
+  /**
+   * password del keystore utilizzato per comunicare col server
+   */
+  protected String keyStorePassword = null;
+  /**
+   * path del truststore utilizzato per comunicare col server
+   */
+  protected String trustStore = null;
+  /**
+   * tipo del truststore utilizzato per comunicare col server
+   */
+  protected String trustStoreType = null;
+  /**
+   * password del truststore utilizzato per comunicare col server
+   */
+  protected String trustStorePassword = null;
+  /**
+   * Abilita il controllo del nome host nel certificato TLS.
+   * Per default e' disabilitato.
+   */
+  protected boolean testHostName = false;
+  /**
+   * Abilita il controllo della validità dei certificati.
+   * Per default e' disabilitato.
+   */
+  protected boolean testCertificate = false;
+
+  private ArgoTlsManager()
+  {
+  }
+
+  public static ArgoTlsManager getInstance()
+  {
+    if(theInstance == null)
+      theInstance = new ArgoTlsManager();
+
+    return theInstance;
+  }
+
+  public void initTLScomunication()
+     throws Exception
+  {
+    Configuration cfg = Turbine.getConfiguration();
+
+    // inizializzazione dei parametri per le connessioni TLS
+    keyStore = cfg.getString("ssl.keyStore", "keystore.jks");
+    keyStoreType = cfg.getString("ssl.keyStoreType", "JKS");
+    keyStorePassword = cfg.getString("ssl.keyStorePassword", "PASSWORD");
+    trustStore = cfg.getString("ssl.trustStore", "cacerts.jks");
+    trustStoreType = cfg.getString("ssl.trustStoreType", "JKS");
+    trustStorePassword = cfg.getString("ssl.trustStorePassword", "PASSWORD");
+
+    testHostName = cfg.getBoolean("ssl.testHostName", false);
+    testCertificate = cfg.getBoolean("ssl.testCertificate", false);
+
+    if(keyStore == null || keyStoreType == null || keyStorePassword == null
+       || trustStore == null || trustStoreType == null || trustStorePassword == null)
+      throw new ArgoServiceException(I.I("Mancano parametri indispensabili per il keystore."));
+
+    // identifica sul sistema la directory /usr/local/tdk/conf/ o simile
+    String sCatalinaHome = System.getProperty("catalina.base", "/usr/local/tdk");
+    File dirCatalinaConf = new File(sCatalinaHome, "conf");
+
+    // localizza i files nel file system
+    File fKeyStore = new File(dirCatalinaConf, keyStore);
+    File fTrustStore = new File(dirCatalinaConf, trustStore);
+
+    log.debug(I.I("Uso %s come file keyStore.", fKeyStore.getCanonicalPath()));
+    log.debug(I.I("Uso %s come file trustStore.", fTrustStore.getCanonicalPath()));
+
+    if(fKeyStore.canRead() && fTrustStore.canRead())
+    {
+      System.setProperty("javax.net.ssl.keyStore", fKeyStore.getAbsolutePath());
+      System.setProperty("javax.net.ssl.keyStoreType", keyStoreType);
+      System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword);
+      System.setProperty("javax.net.ssl.trustStore", fTrustStore.getAbsolutePath());
+      System.setProperty("javax.net.ssl.trustStoreType", trustStoreType);
+      System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
+    }
+    else
+    {
+      log.error(I.I("I files del keystore e/o del truststore non sono presenti o leggibili; uso settaggi di default della JVM."));
+    }
+
+    if(!testHostName)
+    {
+      // Create empty HostnameVerifier
+      HostnameVerifier hv = new HostnameVerifier()
+      {
+        @Override
+        public boolean verify(String urlHostName, SSLSession session)
+        {
+          return true;
+        }
+      };
+
+      HttpsURLConnection.setDefaultHostnameVerifier(hv);
+    }
+
+    log.debug(I.I("Layer SSL/TLS inizializzato."));
+  }
+
+  /**
+   * Setta l'ambiente TLS nel caso in cui
+   * il registry necessiti di autenticazione tramite certificato.
+   *
+   * @throws java.lang.Exception
+   */
+  public void setEnvTLS(String uri)
+     throws Exception
+  {
+    URL url = new URL(uri);
+    String host = url.getHost();
+
+    try
+    {
+      // apro la connessione e verifico il certificato
+      SSLSocket sslsocket = getTLSsocket(url);
+      sslsocket.close();
+    }
+    catch(Exception ex)
+    {
+      throw new ArgoServiceException(
+         I.I("Il certificato fornito per %s non e' valido: %s.", host, ex.getMessage()));
+    }
+  }
+
+  public SSLSocket getTLSsocket(URL url)
+     throws Exception
+  {
+    String host = url.getHost();
+    int port = url.getPort();
+
+    if(host == null || port == -1)
+      throw new ArgoServiceException(
+         I.I("L'url deve essere nella forma https://host:port/other ; altre forme non sono ammesse!"));
+
+    return getTLSsocket(host, port);
+  }
+
+  public SSLSocket getTLSsocket(String host, int port)
+     throws Exception
+  {
+    SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+    SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
+    sslsocket.setUseClientMode(true);
+    sslsocket.setEnabledProtocols(new String[]
+    {
+      "TLSv1", "SSLv3"
+    });
+
+    // apro la connessione e verifico il certificato
+    sslsocket.startHandshake();
+
+    if(testCertificate)
+    {
+      boolean valid = true;
+      log.debug(I.I("Inizio verifica certificati per %s:%d", host, port));
+      X509Certificate[] cert = sslsocket.getSession().getPeerCertificateChain();
+      for(int i = 0; i < cert.length; i++)
+      {
+        try
+        {
+          X509Certificate ce = cert[i];
+          ce.checkValidity();
+        }
+        catch(CertificateExpiredException e1)
+        {
+          log.debug(I.I("Certificato scaduto: %s", e1.getMessage()));
+          valid = false;
+        }
+        catch(CertificateNotYetValidException e2)
+        {
+          log.debug(I.I("Certificato non valido: %s", e2.getMessage()));
+          valid = false;
+        }
+      }
+      log.debug(I.I("Fine verifica certificati per %s:%d", host, port));
+
+      if(!valid)
+        throw new ArgoServiceException(
+           I.I("Certificati forniti dal server non validi o scaduti (consultare log per i dettagli)."));
+    }
+
+    return sslsocket;
+  }
+}

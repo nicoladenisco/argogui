@@ -1,0 +1,45 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.xmlrpc.server;
+
+import com.workingdogs.village.Record;
+import org.apache.torque.util.BasePeer;
+import it.radimage.argo.xmlrpc.AccettazioneXmlRpcInterface;
+
+/**
+ * Server XML-RPC per i servizi di accettazione.
+ *
+ * @author Nicola De Nisco
+ */
+public class AccetazioneXmlRpcServer implements AccettazioneXmlRpcInterface
+{
+  @Override
+  public int numRunning(int idAccettazione) throws Exception
+  {
+    String sSQL =
+       "SELECT "
+       + "  count(coda_trasmissioni.coda_trasmissioni_id) "
+       + " FROM "
+       + "  inf.in_campioni, "
+       + "  inf.run_campioni, "
+       + "  inf.coda_trasmissioni"
+       + " WHERE "
+       + "  in_campioni.in_campioni_id = run_campioni.id_campioni AND"
+       + "  run_campioni.run_campioni_id = coda_trasmissioni.id_campioni AND"
+       + "  in_campioni.id_accettazioni=" + idAccettazione;
+
+    Record r = (Record) BasePeer.executeQuery(sSQL).get(0);
+    return r.getValue(1).asInt();
+  }
+}

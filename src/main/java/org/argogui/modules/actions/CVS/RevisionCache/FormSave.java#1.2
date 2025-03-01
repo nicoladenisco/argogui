@@ -1,0 +1,283 @@
+/*
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ *
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da
+ *  considerarsi tutelati ai sensi di legge.
+ *
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ *
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.modules.actions;
+
+import it.radimage.argo.rigel.RigelUtils;
+import it.radimage.argo.services.bus.BUS;
+import it.radimage.argo.services.bus.BusMessages;
+import it.radimage.argo.services.security.SEC;
+import it.radimage.argo.utils.ArgoRunData;
+import it.radimage.argo.utils.SU;
+import java.util.*;
+import org.apache.torque.om.BaseObject;
+import org.apache.turbine.util.*;
+import org.apache.velocity.context.*;
+import org.rigel.RigelCacheManager;
+import org.rigel.SetupHolder;
+import org.rigel.exceptions.MissingListException;
+import org.rigel.glue.pager.PeerTablePagerEditApp;
+import org.rigel.glue.table.PeerAppMaintFormTable;
+import org.rigel.glue.validators.Validator;
+import org.rigel.table.html.hEditTable;
+import org.rigel.table.peer.html.*;
+
+/**
+ * Salvataggio dei dati per i forms XML.
+ *
+ * @author Nicola De Nisco
+ */
+public class FormSave extends RigelEditBaseAction
+{
+  @Override
+  protected void doWork(ArgoRunData data, Context context, String type,
+     boolean saveDB, boolean saveTmp, boolean nuovoDetail, boolean cancellaDetail)
+     throws Exception
+  {
+    doWork(data, context, SU.getParMap(data), type, saveDB, saveTmp, nuovoDetail, cancellaDetail);
+  }
+
+  protected void doWork(ArgoRunData data, Context context, Map params, String type,
+     boolean saveDB, boolean saveTmp, boolean nuovoDetail, boolean cancellaDetail)
+     throws Exception
+  {
+    PeerWrapperFormHtml pwl = getForm(data, type);
+    if(pwl == null)
+      throw new Exception(data.i18n("Inizializzazione non corretta."));
+
+    if(!RigelUtils.checkPermessiLettura(data, pwl))
+    {
+      // permessi della lista non posseduti dall'utente
+      redirectUnauthorized(data);
+      return;
+    }
+
+    if(saveDB)
+    {
+      if(!pwl.isSaveEnabled())
+        throw new Exception(data.i18n("Salvataggio non consentito."));
+
+      if(!RigelUtils.checkPermessiScrittura(data, pwl))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    if(SU.isOkStr(data.getParameters().getString("new")))
+    {
+      if(!pwl.isNewEnabled())
+        throw new Exception(data.i18n("Creazione nuovi oggetti non consentita."));
+
+      if(!RigelUtils.checkPermessiCreazione(data, pwl))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    PeerAppMaintFormTable pfe = (PeerAppMaintFormTable) (pwl.getTbl());
+    boolean isNewObject = pfe.isNewObject(data.getSession());
+
+    // imposta credenziali e aggiorna dati
+    pfe.setUserInfo(SEC.getUserID(data), SEC.isAdmin(data));
+    pfe.aggiornaDati(data.getSession(), params, saveDB, saveTmp, data);
+    BaseObject objInEdit = pfe.getLastObjectInEdit(data.getSession());
+
+    // verifica per master/detail
+    if(!isNewObject && pwl.getMdInfo() != null)
+    {
+      String dettType = pwl.getMdInfo().getEditList();
+      if(dettType == null)
+        throw new Exception(data.i18n("Manca dettaglio nella definizione master-detail. Controllare lista.xml."));
+
+      doWorkDetail(data, context, params, type, dettType, pwl, objInEdit,
+         saveDB, saveTmp, nuovoDetail, cancellaDetail);
+
+      // attiva le azioni di post parsing eventualmente presenti nel blocco <master-detail/> del master
+      Validator.postParseValidate(pwl.getMdInfo().getEleXml(),
+         objInEdit, pwl.getPtm(), null, 0,
+         data.getSession(), params, null, data);
+    }
+
+    // aggancio per classi derivate
+    doPostSave(data, context, params, type, saveDB, objInEdit);
+
+    // Attiva le azioni di post save
+    Validator.postSaveAction(pwl.getEleXml(), objInEdit, pwl.getPtm(), pfe, 0, data.getSession(), params, data);
+
+    if(saveDB)
+    {
+      // invalida le cache di Rigel interessate dalla tabella modificata
+      RigelCacheManager cm = SetupHolder.getCacheManager();
+      cm.purgeTabella(pwl.getNomeTabella());
+
+      BUS.sendMessage(BusMessages.GENERIC_OBJECT_SAVED, this, objInEdit, params, isNewObject);
+    }
+
+    context.put("obj", objInEdit);
+  }
+
+  /**
+   * Salva eventuale detail del form.
+   * @param data
+   * @param context
+   * @param params
+   * @param type
+   * @param dettType
+   * @param pwl
+   * @param objInEdit the value of objInEdit
+   * @param saveDB
+   * @param saveTmp
+   * @param nuovoDetail
+   * @param cancellaDetail the value of cancellaDetail
+   * @throws Exception
+   */
+  protected void doWorkDetail(ArgoRunData data, Context context,
+     Map params, String type, String dettType, PeerWrapperFormHtml pwl, BaseObject objInEdit,
+     boolean saveDB, boolean saveTmp, boolean nuovoDetail, boolean cancellaDetail)
+     throws Exception
+  {
+    PeerWrapperEditHtml eh = (PeerWrapperEditHtml) getLista(data, dettType);
+    if(eh == null)
+      throw new MissingListException(data.i18n("Lista dettaglio %s non trovata. Controllare lista.xml.", dettType));
+
+    if(!RigelUtils.checkPermessiLettura(data, eh))
+    {
+      // permessi della lista non posseduti dall'utente
+      redirectUnauthorized(data);
+      return;
+    }
+
+    if(saveDB)
+    {
+      if(!eh.isSaveEnabled())
+        throw new Exception(data.i18n("Salvataggio non consentito."));
+
+      if(!RigelUtils.checkPermessiScrittura(data, eh))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    if(nuovoDetail)
+    {
+      if(!eh.isNewEnabled())
+        throw new Exception(data.i18n("Creazione nuovi oggetti non consentita."));
+
+      if(!RigelUtils.checkPermessiCreazione(data, eh))
+      {
+        // permessi della lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+    }
+
+    if(cancellaDetail)
+    {
+      if(!eh.isSaveEnabled())
+        throw new Exception(data.i18n("Cancellazione non consentita."));
+
+      if(!RigelUtils.checkPermessiCancellazione(data, eh))
+      {
+        // permessi cancellazione lista non posseduti dall'utente
+        redirectUnauthorized(data);
+        return;
+      }
+
+      String sKey = data.getParameters().getString("key");
+      RigelUtils.deleteRecord(data, sKey, eh);
+      doClear(data, type);
+    }
+
+    // estae i parametri di collegamento dal master
+    Map linkParams = pwl.makeMapMasterDetail(0);
+
+    PeerTablePagerEditApp peh = (PeerTablePagerEditApp) (eh.getPager());
+
+    // aggiorna e salva i dati sul db
+    peh.aggiornaDati(data.getSession(), params, nuovoDetail, saveDB, data, linkParams);
+
+    // oggetti modificati
+    List<BaseObject> objectsDetail = ((PeerTableModel) eh.getPtm()).getVBuf();
+    if(objectsDetail != null)
+    {
+      context.put("objDet", objectsDetail);
+
+      if(saveDB && !objectsDetail.isEmpty())
+      {
+        // invalida le cache di Rigel interessate dalla tabella modificata
+        RigelCacheManager cm = SetupHolder.getCacheManager();
+        cm.purgeTabella(eh.getNomeTabella());
+      }
+    }
+
+    // attiva le azioni di post parsing eventualmente presenti
+    Validator.postSaveMasterDetail(pwl.getMdInfo().getEleXml(),
+       objInEdit, pwl.getPtm(), (hEditTable) pwl.getTbl(), 0,
+       objectsDetail, eh.getPtm(), (hEditTable) eh.getTbl(),
+       data.getSession(), params, null, data);
+  }
+
+  @Override
+  protected void doClear(ArgoRunData data, String type)
+     throws Exception
+  {
+    PeerWrapperFormHtml pwl = getForm(data, type);
+    if(pwl == null)
+      return;
+
+    // rimuove dalla sessione i dati sul form
+    PeerAppMaintFormTable pfe = (PeerAppMaintFormTable) (pwl.getTbl());
+    pfe.clearStore(data.getSession());
+
+    // se attivo master-detail rimuove i dati del detail
+    if(pwl.getMdInfo() != null)
+    {
+      String dettType = pwl.getMdInfo().getEditList();
+      if(dettType != null)
+      {
+        PeerWrapperEditHtml eh = (PeerWrapperEditHtml) getLista(data, dettType);
+        if(eh != null)
+        {
+          PeerTablePagerEditApp peh = (PeerTablePagerEditApp) (eh.getPager());
+          peh.clearStore(data.getSession());
+          peh.rebindAllRecords(data.getSession());
+        }
+      }
+    }
+  }
+
+  /**
+   * Operazioni di post salvataggio oggetto.
+   * Questa funzione è un segnaposto per classi derivate
+   * che vogliono salvare altri dati a seguito del salvataggio
+   * dell'oggetto principale. In questa classe l'implementazione è vuota.
+   * @param data
+   * @param context
+   * @param params
+   * @param type
+   * @param saveDB
+   * @param objInEdit offetto sottoposto ad edit
+   * @throws Exception
+   */
+  protected void doPostSave(RunData data, Context context,
+     Map params, String type, boolean saveDB, BaseObject objInEdit)
+     throws Exception
+  {
+  }
+}

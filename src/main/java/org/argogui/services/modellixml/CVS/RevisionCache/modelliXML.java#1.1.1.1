@@ -1,0 +1,183 @@
+/* 
+ *  Copyright (C) 2016 RAD-IMAGE s.r.l.
+ * 
+ *  Questo software è proprietà di RAD-IMAGE s.r.l.
+ *  Tutti gli usi non esplicitimante autorizzati sono da 
+ *  considerarsi tutelati ai sensi di legge.
+ * 
+ *  RAD-IMAGE s.r.l.
+ *  Via San Giovanni, 1 - Contrada Belvedere
+ *  San Nicola Manfredi (BN)
+ * 
+ *  Creato il 10 Febbraio 2016, 19:06:00
+ */
+package it.radimage.argo.services.modellixml;
+
+import it.radimage.argo.services.ArgoService;
+import org.rigel.table.peer.html.*;
+import org.rigel.table.peer.xml.*;
+import org.rigel.table.sql.html.*;
+import org.rigel.table.sql.xml.SqlWrapperListaXml;
+import org.jdom2.Document;
+
+/**
+ * Interfaccia di un generatore di liste in collegamento
+ * con Rigel per la generazione di html.
+ *
+ * @author Nicola De Nisco
+ */
+public interface modelliXML extends ArgoService
+{
+  public static final String SERVICE_NAME = "ModelliXML";
+
+  /**
+   * Ritorna la context path di questa applicazione
+   * @return context path (di solito /newstar)
+   */
+  public String getContextPath();
+
+  /**
+   * Ritorna il documento XML da cui vengono lette le liste.
+   * @return
+   */
+  public Document getDocument();
+
+  /**
+   * Forza un ricaricamento del documento dai files relativi.
+   * @throws Exception
+   */
+  public void forceReloadXML() throws Exception;
+
+  /**
+   * Ritorna una lista basata su oggetti Peer (Torque).
+   * @param nomeLista nome della lista (sezione sul file XML)
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public PeerWrapperListaHtml getListaPeer(String nomeLista) throws Exception;
+
+  /**
+   * Ritorna una lista di edit basata su oggetti Peer (Torque).
+   * @param nomeLista nome della lista (sezione sul file XML)
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public PeerWrapperEditHtml getListaEditPeer(String nomeLista) throws Exception;
+
+  /**
+   * Ritorna un form basato su query libere (SQL).
+   * @param nomeForm nome del form (sezione sul file XML)
+   * @return wrapper inizializzato con il form richiesto.
+   * @throws Exception
+   */
+  public PeerWrapperFormHtml getFormPeer(String nomeForm) throws Exception;
+
+  /**
+   * Ritorna una lista specializzata per la generazione di XML.
+   * @param nomeLista nome della lista (sezione sul file XML)
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public PeerWrapperListaXml getListaXmlPeer(String nomeLista) throws Exception;
+
+  /**
+   * Ritorna una lista basata su query libera (SQL).
+   * @param nomeLista nome della lista (sezione sul file XML)
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public SqlWrapperListaHtml getListaSql(String nomeLista) throws Exception;
+
+  /**
+   * Ritorna un form basato su query libere (SQL).
+   * @param nomeForm nome del form (sezione sul file XML)
+   * @return wrapper inizializzato con il form richiesto.
+   * @throws Exception
+   */
+  public SqlWrapperFormHtml getFormSql(String nomeForm) throws Exception;
+
+  /**
+   * Ritorna una lista specializzata per la generazione di XML.
+   * @param nomeLista nome della lista (sezione sul file XML)
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public SqlWrapperListaXml getListaXmlSql(String nomeLista) throws Exception;
+
+  /**
+   * Ritorna una lista basata sulla tablemap (Torque).
+   * @param nomeTabella nome della tabella di cui generare la lista.
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public PeerWrapperListaHtml getListaTmap(String nomeTabella) throws Exception;
+
+  /**
+   * Ritorna una lista di edit basata sulla tablemap (Torque).
+   * @param nomeTabella nome della tabella di cui generare la lista.
+   * @return wrapper inizializzato con la lista richiesta.
+   * @throws Exception
+   */
+  public PeerWrapperEditHtml getListaEditTmap(String nomeTabella) throws Exception;
+
+  /**
+   * Ritorna un form basato sulla tablemap (Torque).
+   * @param nomeTabella nome della tabella di cui generare il form.
+   * @return wrapper inizializzato con il form richiesto.
+   * @throws Exception
+   */
+  public PeerWrapperFormHtml getFormTmap(String nomeTabella) throws Exception;
+
+  /**
+   * Ritorna i tags HTML necessari per un campo data con l'ausilio del calendario
+   * @param nomeCampo nome HTML del campo
+   * @param nomeForm nome del form che contiene i controlli generati
+   * @param valore eventuale valore di default (puo' essere null)
+   * @param size dimensione richiesta
+   * @return l'HTML completo del campo e del javascript per l'editing
+   */
+  public String getCampoData(String nomeCampo, String nomeForm,
+                             String valore, int size) throws Exception;
+
+  /**
+   * Ritorna i tags HTML necessari per un campo data con l'ausilio del calendario.
+   * Il campo generato verra' utilizzato con il suo gemello generato da
+   * 'getCampoDataIntervalloFine' che genera il campo finale dell'intervallo.
+   * @param nomeCampoInizio  nome HTML del campo di inizio intervallo
+   * @param nomeCampoFine  nome HTML del campo di fine intervallo
+   * @param valore eventuale valore di default (puo' essere null)
+   * @param size dimensione richiesta
+   * @return l'HTML completo del campo di inizio intervallo e del javascript per l'editing
+   */
+  public String getCampoDataIntervalloInizio(String nomeCampoInizio, String nomeCampoFine,
+                                             String nomeForm, String valore, int size) throws Exception;
+
+  /**
+   * Ritorna i tags HTML necessari per un campo data con l'ausilio del calendario
+   * Il campo generato verra' utilizzato con il suo gemello generato da
+   * 'getCampoDataIntervalloInizio' che genera il campo iniziale dell'intervallo.
+   * @param nomeCampoInizio  nome HTML del campo di inizio intervallo
+   * @param nomeCampoFine  nome HTML del campo di fine intervallo
+   * @param valore eventuale valore di default (puo' essere null)
+   * @param size dimensione richiesta
+   * @return l'HTML completo del campo di fine intervallo e del javascript per l'editing
+   */
+  public String getCampoDataIntervalloFine(String nomeCampoInizio, String nomeCampoFine,
+                                           String nomeForm, String valore, int size) throws Exception;
+
+  /**
+   * Costruisce un campo di edit con la funzione di ricerca classica
+   * di Newstar (come da Rigel).
+   * @param nomeCampo nome del campo generato
+   * @param valore valore di default all'interno del campo
+   * @param size dimensione del campo
+   * @param url url per l'editing del campo (lista dei valori)
+   * @param valForeign valore per il foreign (se null no descrizione foreign)
+   * @param extraScript evantuale extrascript (puo' essere null)
+   * @return l'HTML completo del campo e del javascript per l'editing
+   */
+  public String getCampoForeign(String nomeCampo, String valore, int size, String url,
+                                String valForeign, String extraScript) throws Exception;
+
+}
+
