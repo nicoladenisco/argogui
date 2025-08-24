@@ -155,6 +155,6 @@ public class ArgoReportParametersInfo extends AbstractReportParametersInfo
   @Override
   public String getDataMaker()
   {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 }

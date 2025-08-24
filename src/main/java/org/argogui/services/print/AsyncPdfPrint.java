@@ -20,6 +20,7 @@ import org.apache.commons.logging.*;
 import org.sirio6.services.CoreServiceException;
 import org.sirio6.services.print.AbstractAsyncPdfPrint;
 import org.sirio6.services.print.AbstractReportParametersInfo;
+import org.sirio6.services.print.PrintContext;
 
 /**
  * Servizio di stampa via PDF.
@@ -40,7 +41,7 @@ public class AsyncPdfPrint extends AbstractAsyncPdfPrint
   private static Log log = LogFactory.getLog(AsyncPdfPrint.class);
 
   @Override
-  protected AbstractReportParametersInfo createReportInfo(String codiceStampa)
+  protected AbstractReportParametersInfo createReportInfo(String codiceStampa, PrintContext context)
      throws Exception
   {
     GenStampe gs = GenStampePeer.retrieveByCodice(codiceStampa);
